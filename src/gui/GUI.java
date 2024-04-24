@@ -4,6 +4,7 @@
  */
 package gui;
 
+import ds.assignment.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -30,7 +31,8 @@ public class GUI extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        launch(args);
+        
+        //launch(args);
     }
     
 }
