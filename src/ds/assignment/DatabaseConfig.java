@@ -11,5 +11,5 @@ package ds.assignment;
 public class DatabaseConfig {
     public static final String URL = "jdbc:mysql://localhost:3006/datastructure";
     public static final String USERNAME = "root";
-    public static final String PASSWORD = "Mp2023@350#"; 
+    public static final String PASSWORD = "Mp2023@350#"; //hello
 }
