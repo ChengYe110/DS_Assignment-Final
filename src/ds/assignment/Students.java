@@ -245,5 +245,45 @@ public class Students {
             e.printStackTrace();
         }
     }
+    
+    public static void sendFriendRequest(String senderUsername, String receiverUsername) {
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
 
+            // Check if the receiver username exists in the student table
+            String checkReceiverQuery = "SELECT * FROM student WHERE Username = '" + receiverUsername + "'";
+            Statement checkReceiverStatement = connectDB.createStatement();
+            ResultSet checkReceiverResult = checkReceiverStatement.executeQuery(checkReceiverQuery);
+
+            if (!checkReceiverResult.next()) {
+                System.out.println("Receiver username does not exist.");
+                return;
+            }
+
+            // Check if the sender already sent a friend request to the receiver
+            String checkRequestQuery = "SELECT FriendRequest FROM student WHERE Username = '" + receiverUsername + "'";
+            Statement checkRequestStatement = connectDB.createStatement();
+            ResultSet checkRequestResult = checkRequestStatement.executeQuery(checkRequestQuery);
+
+            if (checkRequestResult.next()) {
+                String currentRequests = checkRequestResult.getString("FriendRequest");
+                if (currentRequests != null && currentRequests.contains(senderUsername)) {
+                    System.out.println("Friend request already sent to this user.");
+                    return;
+                }
+            }
+
+            // Update the receiver's friend request list with the new request
+            String updateQuery = "UPDATE student SET FriendRequest = CONCAT(IFNULL(FriendRequest,''), '" + senderUsername + ",') WHERE Username = '" + receiverUsername + "'";
+            Statement updateStatement = connectDB.createStatement();
+            updateStatement.executeUpdate(updateQuery);
+
+            System.out.println("Friend request sent successfully.");
+            
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
 }
