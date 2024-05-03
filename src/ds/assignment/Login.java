@@ -1,5 +1,13 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package ds.assignment;
 
+/**
+ *
+ * @author USER
+ */
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
@@ -53,7 +61,7 @@ public class Login {
             connection = dbConnect.linkDatabase();
 
             // SQL query to retrieve the hashed password based on email
-            String selectQuery = "SELECT Password FROM profile WHERE Email = ?";
+            String selectQuery = "SELECT Password FROM " + SessionManager.currentUser.getRole()+" WHERE Email = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
                 preparedStatement.setString(1, email);
 
