@@ -23,7 +23,7 @@ public class GUI extends Application {
         stage.show();
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
-        stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2); 
+        stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
     }
 
     public static void main(String[] args) {

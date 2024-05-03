@@ -32,7 +32,13 @@ public class Login_RegisterController implements Initializable {
     private PasswordField passwordHidden_register;
 
     @FXML
+    private PasswordField confirmpasswordHidden_register;
+
+    @FXML
     private TextField passwordText_register;
+
+    @FXML
+    private TextField confirmpasswordText_register;
 
     @FXML
     private CheckBox student;
@@ -79,37 +85,20 @@ public class Login_RegisterController implements Initializable {
         // Bidirectional text binding between password field and text field
         passwordHidden_register.textProperty().bindBidirectional(passwordText_register.textProperty());
         passwordHidden_login.textProperty().bindBidirectional(passwordText_login.textProperty());
+        confirmpasswordHidden_register.textProperty().bindBidirectional(confirmpasswordText_register.textProperty());
 
         // Toggles the visibility of the password fields in Register Page based on the state of a checkbox.
         showPassword_register.selectedProperty().addListener((observable, oldValue, newValue) -> {
             passwordHidden_register.setVisible(!newValue);
             passwordText_register.setVisible(newValue);
+            confirmpasswordHidden_register.setVisible(!newValue);
+            confirmpasswordText_register.setVisible(newValue);
         });
 
         // Toggles the visibility of the password fields in Login Page based on the state of a checkbox.
         showPassword_login.selectedProperty().addListener((observable, oldValue, newValue) -> {
             passwordHidden_login.setVisible(!newValue);
             passwordText_login.setVisible(newValue);
-        });
-
-        passwordHidden_register.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                passwordHidden_register.setStyle("-fx-font-size: 15px;");
-            } else if (!passwordHidden_register.getText().isEmpty()) {
-                passwordHidden_register.setStyle("-fx-font-size: 16px;");
-            } else {
-                passwordHidden_register.setStyle("-fx-font-size: 20px;");
-            }
-        });
-
-        passwordHidden_login.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                passwordHidden_login.setStyle("-fx-font-size: 15px;");
-            } else if (!passwordHidden_login.getText().isEmpty()) {
-                passwordHidden_login.setStyle("-fx-font-size: 16px;");
-            } else {
-                passwordHidden_login.setStyle("-fx-font-size: 20px;");
-            }
         });
 
         // Change to LogIn Page
@@ -120,7 +109,6 @@ public class Login_RegisterController implements Initializable {
             passwordHidden_login.clear();
             passwordText_login.clear();
             showPassword_login.setSelected(false);
-            passwordHidden_login.setStyle("-fx-font-size: 20px;");
         });
 
         // Change to Register Page
@@ -131,14 +119,15 @@ public class Login_RegisterController implements Initializable {
             email_register.clear();
             passwordHidden_register.clear();
             passwordText_register.clear();
+            confirmpasswordHidden_register.clear();
+            confirmpasswordText_register.clear();
             student.setSelected(false);
             educator.setSelected(false);
             parent.setSelected(false);
             showPassword_register.setSelected(false);
-            passwordHidden_register.setStyle("-fx-font-size: 20px;");
         });
 
-        // Event handlers for each checkbox
+        // Set only one checkbox can be selected at any time
         student.setOnAction(event -> {
             if (student.isSelected()) {
                 educator.setSelected(false);

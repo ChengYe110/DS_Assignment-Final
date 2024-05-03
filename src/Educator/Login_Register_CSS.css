@@ -8,7 +8,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 */
 
 .bg{
-    
+
 }
 
 .bg Button{
@@ -17,4 +17,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 
 .bg Button:hover{
     -fx-font-family: "Segoe UI Black";
+}
+
+.bg PasswordField {
+    -fx-background-radius: 10;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 22;
+}
+
+.bg TextField {
+    -fx-background-radius: 10;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 22;
 }
