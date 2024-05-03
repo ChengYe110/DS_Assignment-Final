@@ -1,0 +1,32 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : May 3, 2024, 1:49:21 PM
+    Author     : User
+*/
+
+.bg{
+
+}
+
+.bg Button{
+    -fx-font-family: "Segoe UI Semibold";
+}
+
+.bg Button:hover{
+    -fx-font-family: "Segoe UI Black";
+}
+
+.bg PasswordField {
+    -fx-background-radius: 10;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 22;
+}
+
+.bg TextField {
+    -fx-background-radius: 10;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 22;
+}
