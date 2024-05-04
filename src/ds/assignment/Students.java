@@ -113,6 +113,9 @@ public class Students {
             while(queryOutput.next()){
                 friendLists.add(queryOutput.getString("Friends"));
             }
+            
+            statement.close();
+            connectDB.close();
         }
         catch(Exception e){
             System.out.println("SQL query failed.");
@@ -136,6 +139,9 @@ public class Students {
             while(queryOutput.next()){
                 friendLists.add(queryOutput.getString("Friends"));
             }
+            
+            statement.close();
+            connectDB.close();
         }
         catch(Exception e){
             System.out.println("SQL query failed.");
@@ -147,6 +153,11 @@ public class Students {
     
     //add a friend to a student's friend list
     public static void addFriend(String username, String newFriend) {
+        if (isDuplicate(username, newFriend)) {
+            System.out.println("Friend already in the list.");
+            return;
+        }
+
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
@@ -165,12 +176,38 @@ public class Students {
                 String updateQuery = "UPDATE student SET Friends = '" + updatedFriends + "' WHERE Username = '" + username + "'";
                 statement.executeUpdate(updateQuery);
             }
+            statement.close();
+            connectDB.close();
         } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
     }
     
+    public static boolean isDuplicate(String username, String newFriend) {
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            Statement statement = connectDB.createStatement();
+            String connectQuery = "SELECT Friends FROM student WHERE Username = '" + username + "'";
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+
+            if (queryOutput.next()) {
+                String currentFriends = queryOutput.getString("Friends");
+                if (currentFriends != null && currentFriends.contains(newFriend)) {
+                    return true; // Friend already in the list
+                }
+            }
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+
+        return false; // Friend not in the list or error occurred
+    }
+
     //delete a friend from a student's friend list
     public static void deleteFriend(String username, String friendToRemove){
         try{
@@ -188,6 +225,9 @@ public class Students {
                 String updateQuery = "UPDATE student SET Friends = '" + updatedFriends + "' WHERE Username = '" + username + "'";
                 statement.executeUpdate(updateQuery);
             }
+            
+            statement.close();
+            connectDB.close();
         }
         catch(Exception e){
             System.out.println("SQL query failed.");
@@ -209,6 +249,9 @@ public class Students {
             while(queryOutput.next()){
                 friendRequestLists.add(queryOutput.getString("FriendRequest"));
             }
+            
+            statement.close();
+            connectDB.close();
         }
         catch(Exception e){
             System.out.println("SQL query failed.");
@@ -239,6 +282,9 @@ public class Students {
                 // Add the friend to the friend list
                 addFriend(username, friendToAccept);
             }
+            
+            statement.close();
+            connectDB.close();
         }
         catch(Exception e){
             System.out.println("SQL query failed.");
@@ -281,9 +327,89 @@ public class Students {
 
             System.out.println("Friend request sent successfully.");
             
+            checkReceiverStatement.close();
+            checkRequestStatement.close();
+            connectDB.close();
+            
         } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
     }
+    
+    public static void checkParentEvent(String username){
+        ArrayList<String> eventList = new ArrayList<>();
+        
+        try{
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT Date FROM event WHERE Username = '" + username + "'";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+            
+            while(queryOutput.next()){
+                eventList.add(queryOutput.getString("Date"));
+            }
+            
+            // Print out the events
+            if (eventList.isEmpty()) {
+                System.out.println("No events registered by parents.");
+            } 
+            else {
+                System.out.println("Events registered by parents for " + username + ":");
+                    for (String eventDate : eventList) {
+                        System.out.println(eventDate);
+                    }
+            }
+            
+            statement.close();
+            connectDB.close();
+        }
+        catch(Exception e){
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+    
+//    //I temporary comment it because do not have event class yet
+//    public static void checkClashing(String username) {
+//        ArrayList<Event> eventList = new ArrayList<>();
+//
+//        try {
+//            DatabaseConnection connectNow = new DatabaseConnection();
+//            Connection connectDB = connectNow.linkDatabase();
+//            String connectQuery = "SELECT * FROM event WHERE Username = '" + username + "'";
+//            Statement statement = connectDB.createStatement();
+//            ResultSet queryOutput = statement.executeQuery(connectQuery);
+//
+//            while (queryOutput.next()) {
+//                // Assuming you have an Event class with appropriate getters
+//                Event event = new Event(queryOutput.getString("EventName"), queryOutput.getString("Date"));
+//                eventList.add(event);
+//            }
+//
+//            for (Event event : eventList) {
+//                if (isEventClashing(event, eventList)) {
+//                    System.out.println("Event " + event.getEventName() + " clashes with another event.");
+//                }
+//            }
+//
+//        } catch (Exception e) {
+//            System.out.println("SQL query failed.");
+//            e.printStackTrace();
+//        }
+//    }
+//    
+//    public boolean isEventClashing(Event eventSelected, List<Event> eventsList) {
+//        for (Event eventSelected : eventsList) {
+//            // Check if the current event is different from the event being compared
+//            if (!eventSelected.equals(eventsList)) {
+//                // Check if the dates clash
+//                if (eventSelected.getDate().equals(eventsList.getDate())) {
+//                    return true; // Dates clash
+//                }
+//            }
+//        }
+//        return false; // No clashes
+//    }
 }
