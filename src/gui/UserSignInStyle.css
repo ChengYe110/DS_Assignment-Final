@@ -1,0 +1,4 @@
+.root{
+    -fx-background-image:url('../png/UserSignInBackground.png');
+    -fx-background-size:950px 534px;
+}

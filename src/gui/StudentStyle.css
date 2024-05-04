@@ -1,0 +1,30 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+    -fx-background-image:url('../png/BasicBackground.gif');
+    -fx-background-size:950px, 534px;
+}
+
+.menu{
+    -fx-background-image:url('../png/MenuIcon.png');
+    -fx-background-size: cover;
+    /* Disable button effects */
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-background: transparent;
+    -fx-padding: 0;
+    -fx-text-fill: inherit;
+    -fx-effect: null;
+}
+
+.colorGradientButton{
+    -fx-background-color: linear-gradient( to right,#8c52ff, #5ce1e6);
+}
+
+.colorGradientBackground{
+    -fx-background-color: linear-gradient( to right,#cdffd8, #94b9ff);
+}
+
