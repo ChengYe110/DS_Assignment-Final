@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ds.assignment;
 
-/**
- *
- * @author USER
- */
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
@@ -23,15 +15,15 @@ public class Login {
     public Login() {
         // Initialization without a session manager
     }
-    
+
     public String getLastLoginDate() {
         return lastLoginDate;
     }
-    
+
     public void setLastLoginDate(String lastLoginDate) {
         this.lastLoginDate = lastLoginDate;
     }
-    
+
     // Second constructor with a session manager
     public Login(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
@@ -61,7 +53,7 @@ public class Login {
             connection = dbConnect.linkDatabase();
 
             // SQL query to retrieve the hashed password based on email
-            String selectQuery = "SELECT Password FROM profile WHERE Email = ?";
+            String selectQuery = "SELECT Password FROM " + SessionManager.currentUser.getRole() + " WHERE Email = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
                 preparedStatement.setString(1, email);
 
@@ -79,12 +71,12 @@ public class Login {
     }
 
     public boolean isPasswordCorrectForUser(String enteredPassword) {
-        
+
         System.out.println(sessionManager.getCurrentUsername());
         String username = sessionManager.getCurrentUsername();
 
         if (username != null) {
-            
+
             String enteredEmail = sessionManager.currentUser.getEmail(username);
             String hashedPasswordFromDatabase = getHashedPasswordFromDatabase(enteredEmail);
 
