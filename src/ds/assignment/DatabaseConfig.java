@@ -14,5 +14,8 @@ public class DatabaseConfig {
     public static final String PASSWORD = "Mp2023@350#"; 
     
     // Line for testing
+<<<<<<< HEAD
     //line tzw
+=======
+>>>>>>> 028ac6c5ae2991f33f1f0159f5d41439473dc754
 }

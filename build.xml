@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< OURS
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- You may freely edit this file. See commented blocks below for -->
@@ -128,6 +129,8 @@
     -->
 </project>
 =======
+=======
+>>>>>>> 028ac6c5ae2991f33f1f0159f5d41439473dc754
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- You may freely edit this file. See commented blocks below for -->
 <!-- some examples of how to customize the build. -->
@@ -201,4 +204,7 @@
 
     -->
 </project>
+<<<<<<< HEAD
 >>>>>>> THEIRS
+=======
+>>>>>>> 028ac6c5ae2991f33f1f0159f5d41439473dc754
