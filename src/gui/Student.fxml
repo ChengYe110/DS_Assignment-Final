@@ -2,7 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -51,94 +51,6 @@
       </BorderPane>
       <StackPane fx:id="stackPane" layoutY="80.0" prefWidth="1260.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <AnchorPane fx:id="CreateQuizPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@../../../GUI/src/gui/StudentStyle.css">
-                     <children>
-                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Title">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Description">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Theme">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Content">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <TextArea fx:id="QuizTitleField" layoutX="291.0" layoutY="57.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextArea fx:id="QuizDescriptionField" layoutX="291.0" layoutY="143.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextArea fx:id="QuizContentField" layoutX="291.0" layoutY="351.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <ComboBox fx:id="QuizThemeComboBox" layoutX="291.0" layoutY="279.0" prefHeight="43.0" prefWidth="254.0" style="-fx-background-color: white;" />
-                        <Button fx:id="DoneCreateQuiz" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" onAction="#switchQuizPage" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI Black" size="20.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE QUIZ">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="QuizPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@../../../GUI/src/gui/StudentStyle.css">
-                     <children>
-                        <ScrollPane layoutX="56.0" layoutY="36.0" prefHeight="313.0" prefWidth="742.0">
-                           <content>
-                              <TableView fx:id="QuizTable" prefHeight="310.0" prefWidth="741.0" style="-fx-background-color: white;">
-                                 <columns>
-                                    <TableColumn editable="false" prefWidth="103.5" text="TITLE" />
-                                    <TableColumn editable="false" prefWidth="370.5" text="DESCRIPTION" />
-                                    <TableColumn editable="false" prefWidth="130.0" text="THEME" />
-                                    <TableColumn editable="false" prefWidth="136.0" text="CONTENT" />
-                                 </columns>
-                              </TableView>
-                           </content>
-                        </ScrollPane>
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZ">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <Button fx:id="CreateQuizPage" alignment="CENTER_RIGHT" layoutX="1048.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchCreateQuizPage" prefHeight="29.0" prefWidth="137.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW QUIZ  ">
-                     <font>
-                        <Font name="Arial Black" size="13.0" />
-                     </font>
-                  </Button>
-                  
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/FilterIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
             <AnchorPane fx:id="HomePagePane" prefHeight="606.0" prefWidth="1260.0">
                <children>
                   <Text fill="WHITE" layoutX="66.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="WELCOME" wrappingWidth="389.865234375">
@@ -693,6 +605,111 @@
                   <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../png/FilterIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="QuizPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@../../../GUI/src/gui/StudentStyle.css">
+                     <children>
+                        <ScrollPane layoutX="56.0" layoutY="36.0" prefHeight="313.0" prefWidth="742.0">
+                           <content>
+                              <TableView fx:id="QuizTable" prefHeight="310.0" prefWidth="741.0" style="-fx-background-color: white;">
+                                 <columns>
+                                    <TableColumn editable="false" prefWidth="103.5" text="TITLE" />
+                                    <TableColumn editable="false" prefWidth="370.5" text="DESCRIPTION" />
+                                    <TableColumn editable="false" prefWidth="130.0" text="THEME" />
+                                    <TableColumn editable="false" prefWidth="136.0" text="CONTENT" />
+                                 </columns>
+                              </TableView>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZ">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="CreateQuizPage" alignment="CENTER_RIGHT" layoutX="1048.0" layoutY="12.0" mnemonicParsing="false" onAction="#switchCreateQuizPage" prefHeight="35.0" prefWidth="137.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW QUIZ  ">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </Button>
+                  
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/FilterIcon.png" />
+                     </image>
+                  </ImageView>
+                  <ChoiceBox fx:id="FilterChoiceBox" layoutX="870.0" layoutY="13.0" prefHeight="35.0" prefWidth="167.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Arial Black&quot;; -fx-font-size: 13px;" stylesheets="@StudentStyle.css">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="30.0" />
+                     </padding>
+                  </ChoiceBox>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="878.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/FilterIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="CreateQuizPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@../../../GUI/src/gui/StudentStyle.css">
+                     <children>
+                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Title">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Description">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Theme">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Content">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <TextArea fx:id="QuizTitleField" layoutX="291.0" layoutY="57.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextArea fx:id="QuizDescriptionField" layoutX="291.0" layoutY="143.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextArea fx:id="QuizContentField" layoutX="291.0" layoutY="351.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <Button fx:id="DoneCreateQuiz" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" onAction="#switchQuizPage" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="20.0" />
+                           </font>
+                        </Button>
+                        <ChoiceBox fx:id="QuizThemeChoiceBox" layoutX="291.0" layoutY="279.0" prefHeight="43.0" prefWidth="203.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </ChoiceBox>
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE QUIZ">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
                      </image>
                   </ImageView>
                </children>

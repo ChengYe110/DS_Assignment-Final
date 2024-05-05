@@ -40,12 +40,7 @@
     -fx-background-color: #b3b3b3;
     -fx-border-color: transparent;
     -fx-background-radius: 20px;
-    -fx-text-fill: #ffffff;
-}
-
-.combo-box:hover{
-    -fx-text-fill: #ffffff; 
-    -fx-alignment: CENTER; 
+    -fx-prompt-text-fill:#ffffff;
 }
 
 .text-field {

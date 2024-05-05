@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,11 +17,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -48,13 +52,13 @@ public class StudentController implements Initializable {
     @FXML
     private TextArea QuizTitleField, QuizDescriptionField, QuizContentField, EventTitleField, EventDescriptionField, EventVenueField, EventTimeField;
     @FXML
-    private ComboBox<String> FilterComboBox, QuizThemeComboBox;
+    private ChoiceBox<String> FilterChoiceBox, QuizThemeChoiceBox;
     @FXML
     private DatePicker EventDatePicker;
     @FXML
     private HBox MENU;
     private Button selectedButton = null;
-    private String[] theme = {"Science", "Technology", "Engineering", "Mathematic"};
+    private ObservableList<String> theme = FXCollections.observableArrayList("SCIENCE", "TECHNOLOGY", "ENGINEERING", "MATHEMATIC");
     @FXML
     private TableView<?> QuizTable;
 
@@ -90,8 +94,9 @@ public class StudentController implements Initializable {
                 }
             });
 
-            FilterComboBox.getItems().addAll(theme);
-            QuizThemeComboBox.getItems().addAll(theme);
+            FilterChoiceBox.setItems(theme);
+            FilterChoiceBox.setValue("FILTER");
+            QuizThemeChoiceBox.setItems(theme);
 
             ProfilePage.setOnAction(event -> {
                 // Handle Profile button click
@@ -162,7 +167,6 @@ public class StudentController implements Initializable {
 //                CreateEventPane.setVisible(false);
 //                EventPane.toFront();
 //            });
-
             for (Node node : MENU.getChildren()) {
                 ((Button) node).setOnAction(event -> {
                     Button btn = (Button) event.getSource();
@@ -186,31 +190,49 @@ public class StudentController implements Initializable {
     }
 
     public void switchHomePage() {
+        if (MenuPane.getTranslateX() == 0) {
+            slideInTransition.play();
+        }
         stackPane.getChildren().clear();
         stackPane.getChildren().add(HomePagePane);
     }
 
     public void switchLeaderboardPage() {
+        if (MenuPane.getTranslateX() == 0) {
+            slideInTransition.play();
+        }
         stackPane.getChildren().clear();
         stackPane.getChildren().add(LeaderboardPane);
     }
 
     public void switchEventPage() {
+        if (MenuPane.getTranslateX() == 0) {
+            slideInTransition.play();
+        }
         stackPane.getChildren().clear();
         stackPane.getChildren().add(EventPane);
     }
 
     public void switchCreateEventPage() {
+        if (MenuPane.getTranslateX() == 0) {
+            slideInTransition.play();
+        }
         stackPane.getChildren().clear();
         stackPane.getChildren().add(CreateEventPane);
     }
 
     public void switchQuizPage() {
+        if (MenuPane.getTranslateX() == 0) {
+            slideInTransition.play();
+        }
         stackPane.getChildren().clear();
         stackPane.getChildren().add(QuizPane);
     }
 
     public void switchCreateQuizPage() {
+        if (MenuPane.getTranslateX() == 0) {
+            slideInTransition.play();
+        }
         stackPane.getChildren().clear();
         stackPane.getChildren().add(CreateQuizPane);
     }
@@ -239,7 +261,7 @@ public class StudentController implements Initializable {
     }
 
     public void getFilterChoice(ActionEvent event) {
-        String theme = FilterComboBox.getValue();
+        String theme = FilterChoiceBox.getValue();
     }
 
     public void setUpQuizTable() {
