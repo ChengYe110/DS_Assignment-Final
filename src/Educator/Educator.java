@@ -32,7 +32,7 @@ public class Educator extends User {
             // Database connection details
             connection=dbConnect.linkDatabase();
             
-            String insertQuery = "INSERT INTO educator (Username, Email, Password, Role, NumEvent, NumQuiz) VALUES (?, ?, ?, ?, ?, ?)";
+            String insertQuery = "INSERT INTO educator (Username, Email, Password, Role, NumEvent, NumQuiz, Location) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
 
             preparedStatement.setString(1, username);
@@ -41,6 +41,7 @@ public class Educator extends User {
             preparedStatement.setString(4, role);
             preparedStatement.setInt(5, numEvent);
             preparedStatement.setInt(6, numQuiz);
+            preparedStatement.setString(7, location);
             
             preparedStatement.executeUpdate();
             

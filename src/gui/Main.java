@@ -29,6 +29,7 @@ public class Main extends Application {
             // Disable window resizing
             primaryStage.setResizable(false);
             primaryStage.show();
+
         }catch(IOException e){
             e.printStackTrace();
         }

@@ -4,7 +4,7 @@
 
 .mainFxmlClass {
     -fx-background-image:url('../png/BasicBackground.gif');
-    -fx-background-size:950px, 534px;
+    -fx-background-size:1260px, 709px;
 }
 
 .menu{
