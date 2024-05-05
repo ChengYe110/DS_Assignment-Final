@@ -4,7 +4,7 @@
 
 .mainFxmlClass {
     -fx-background-image:url('../png/BasicBackground.gif');
-    -fx-background-size:950px, 534px;
+    -fx-background-size: 1260px,709px;
 }
 
 .menu{
@@ -20,11 +20,56 @@
     -fx-effect: null;
 }
 
+.selected:hover{
+    -fx-background-color: #E1E1E1;
+    -fx-border-color: #2f5597;
+    -fx-border-width: 0 3 0 0;
+}
+
 .colorGradientButton{
     -fx-background-color: linear-gradient( to right,#8c52ff, #5ce1e6);
 }
 
 .colorGradientBackground{
     -fx-background-color: linear-gradient( to right,#cdffd8, #94b9ff);
+}
+
+.combo-box{
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial Black";
+    -fx-background-color: #b3b3b3;
+    -fx-border-color: transparent;
+    -fx-background-radius: 20px;
+    -fx-text-fill: #ffffff;
+}
+
+.combo-box:hover{
+    -fx-text-fill: #ffffff; 
+    -fx-alignment: CENTER; 
+}
+
+.text-field {
+    -fx-background-color: #ffffff; 
+    -fx-border-color: #ccc; 
+    -fx-font-size: 14px; 
+    -fx-font-family: "Yu Gothic UI Semibold";
+}
+
+.student Button{
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 14;
+}
+
+.student Button:hover{
+    -fx-font-family: "Segoe UI Black";
+    -fx-font-size: 14;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: #FFFFFF;
+}
+
+#selected{
+    -fx-font-family: "Segoe UI Black";
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: #FFFFFF;
 }
 

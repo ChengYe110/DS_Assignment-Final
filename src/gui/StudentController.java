@@ -6,17 +6,24 @@ package gui;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -29,32 +36,32 @@ import javafx.util.Duration;
 public class StudentController implements Initializable {
 
     @FXML
-    private Button DiscussionPage, EventPage, HomePage, LeaderboardPage, MenuButton, ProfilePage, QuizPage;
+    private StackPane stackPane;
+    @FXML
+    private Button DiscussionPage, EventPage, HomePage, LeaderboardPage, MenuButton, ProfilePage, QuizPage, CreateQuizPage, DoneCreateQuiz, DoneCreateEvent, CreateEventPage;
     @FXML
     private VBox DrawerPane;
     @FXML
-    private AnchorPane MenuPane, TopPane, HomePagePane,LeaderboardPane,QuizPane;
+    private AnchorPane MenuPane, TopPane, HomePagePane, LeaderboardPane, QuizPane, CreateQuizPane, EventPane, CreateEventPane;
     @FXML
     private Text UsernameText;
     @FXML
-    private Line LineHomePage, LineLeaderboardPage;
+    private TextArea QuizTitleField, QuizDescriptionField, QuizContentField, EventTitleField, EventDescriptionField, EventVenueField, EventTimeField;
+    @FXML
+    private ComboBox<String> FilterComboBox, QuizThemeComboBox;
+    @FXML
+    private DatePicker EventDatePicker;
+    @FXML
+    private HBox MENU;
+    private Button selectedButton = null;
+    private String[] theme = {"Science", "Technology", "Engineering", "Mathematic"};
+    @FXML
+    private TableView<?> QuizTable;
 
     private TranslateTransition slideOutTransition, slideInTransition;
     private Stage stage;
     private Scene scene;
     private Parent root;
-
-    public Line getLineHomePage() {
-        return this.LineHomePage;
-    }
-
-    public Line getLineLeaderboardPage() {
-        return this.LineLeaderboardPage;
-    }
-
-    public Button getHomePage() {
-        return this.HomePage;
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -63,8 +70,7 @@ public class StudentController implements Initializable {
         Platform.runLater(() -> {
             // Initially hide the MenuPane off the screen
             MenuPane.setTranslateX(-MenuPane.getWidth());
-            LeaderboardPane.setVisible(false);
-            QuizPane.setVisible(false);
+            switchHomePage();
 
             // Create TranslateTransitions for sliding in and out
             slideOutTransition = new TranslateTransition(Duration.seconds(0.5), MenuPane);
@@ -74,37 +80,18 @@ public class StudentController implements Initializable {
             slideInTransition.setToX(-MenuPane.getWidth()); // Slide back to the initial position
 
             // Set up the action for the MenuButton
+            // Add button effect
+            ButtonEffect(MenuButton);
             MenuButton.setOnAction(event -> {
-                // Add button effect
-                ButtonEffect(MenuButton);
                 if (MenuPane.getTranslateX() != 0) {
                     slideOutTransition.play(); // Slide out the menu
-                    MenuPane.setMouseTransparent(true); // Make MenuPane non-interactive when hidden
                 } else {
                     slideInTransition.play(); // Slide in the menu
-                    MenuPane.setMouseTransparent(false); // Make MenuPane interactive when shown
                 }
             });
 
-            // Set initial opacity of the line to 0
-            LineLeaderboardPage.setOpacity(0);
-            // Set up the action for each button
-            LeaderboardPage.setOnAction(event -> {
-                RemoveLineEffect(LineHomePage);
-                AddLineEffect(LineLeaderboardPage);
-                HomePagePane.setVisible(false);
-                LeaderboardPane.setVisible(true);
-                QuizPane.setVisible(false);
-            });
-
-            // Add event handlers for other buttons
-            HomePage.setOnAction(event -> {
-                RemoveLineEffect(LineLeaderboardPage);
-                AddLineEffect(LineHomePage);
-                LeaderboardPane.setVisible(false);
-                HomePagePane.setVisible(true);
-                QuizPane.setVisible(false);
-            });
+            FilterComboBox.getItems().addAll(theme);
+            QuizThemeComboBox.getItems().addAll(theme);
 
             ProfilePage.setOnAction(event -> {
                 // Handle Profile button click
@@ -114,14 +101,118 @@ public class StudentController implements Initializable {
                 // Handle Discussion button click
             });
 
-            EventPage.setOnAction(event -> {
-                // Handle Event button click
-            });
+//            QuizPage.setOnAction(event -> {
+//                LeaderboardPane.setVisible(false);
+//                HomePagePane.setVisible(false);
+//                QuizPane.setVisible(true);
+//                CreateQuizPane.setVisible(false);
+//                EventPane.setVisible(false);
+//                CreateEventPane.setVisible(false);
+//                QuizPane.toFront();
+//            });
+//            FilterComboBox.getItems().addAll(theme);
+//
+//            CreateQuizPage.setOnAction(event -> {
+//                LeaderboardPane.setVisible(false);
+//                HomePagePane.setVisible(false);
+//                QuizPane.setVisible(false);
+//                CreateQuizPane.setVisible(true);
+//                EventPane.setVisible(false);
+//                CreateEventPane.setVisible(false);
+//                CreateQuizPane.toFront();
+//            });
+//            QuizThemeComboBox.getItems().addAll(theme);
+//
+//            DoneCreateQuiz.setOnAction(event -> {
+//                LeaderboardPane.setVisible(false);
+//                HomePagePane.setVisible(false);
+//                QuizPane.setVisible(true);
+//                CreateQuizPane.setVisible(false);
+//                EventPane.setVisible(false);
+//                CreateEventPane.setVisible(false);
+//                QuizPane.toFront();
+//            });
+//
+//            EventPage.setOnAction(event -> {
+//                LeaderboardPane.setVisible(false);
+//                HomePagePane.setVisible(false);
+//                QuizPane.setVisible(false);
+//                CreateQuizPane.setVisible(false);
+//                EventPane.setVisible(true);
+//                CreateEventPane.setVisible(false);
+//                EventPane.toFront();
+//            });
+//
+//            CreateEventPage.setOnAction(event -> {
+//                LeaderboardPane.setVisible(false);
+//                HomePagePane.setVisible(false);
+//                QuizPane.setVisible(false);
+//                CreateQuizPane.setVisible(false);
+//                EventPane.setVisible(false);
+//                CreateEventPane.setVisible(true);
+//                CreateEventPane.toFront();
+//            });
+//
+//            DoneCreateEvent.setOnAction(event -> {
+//                LeaderboardPane.setVisible(false);
+//                HomePagePane.setVisible(false);
+//                QuizPane.setVisible(false);
+//                CreateQuizPane.setVisible(false);
+//                EventPane.setVisible(true);
+//                CreateEventPane.setVisible(false);
+//                EventPane.toFront();
+//            });
 
-            QuizPage.setOnAction(event -> {
-                // Handle Quiz button click
-            });
+            for (Node node : MENU.getChildren()) {
+                ((Button) node).setOnAction(event -> {
+                    Button btn = (Button) event.getSource();
+                    if (!btn.equals(selectedButton)) {
+                        if (selectedButton != null) {
+                            selectedButton.setId("");
+                        }
+                        selectedButton = btn;
+                        selectedButton.setId("selected");
+                    }
+                    if (btn.equals(HomePage)) {
+                        switchHomePage();
+                    } else if (btn.equals(LeaderboardPage)) {
+                        switchLeaderboardPage();
+                    }
+                });
+            }
+            selectedButton = (Button) ((HBox) MENU.getChildren().get(0)).getChildren().get(0);
+            selectedButton.setId("selected");
         });
+    }
+
+    public void switchHomePage() {
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(HomePagePane);
+    }
+
+    public void switchLeaderboardPage() {
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(LeaderboardPane);
+    }
+
+    public void switchEventPage() {
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(EventPane);
+    }
+
+    public void switchCreateEventPage() {
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(CreateEventPane);
+    }
+
+    public void switchQuizPage() {
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(QuizPane);
+    }
+
+    public void switchCreateQuizPage() {
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(CreateQuizPane);
     }
 
     // Button effect method
@@ -147,24 +238,45 @@ public class StudentController implements Initializable {
         });
     }
 
-    // Method to add line effect under a button
-    public void AddLineEffect(Line line) {
-        // Create a fade-in animation for the line
-        FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.3), line);
-        fadeIn.setToValue(1); // Set final opacity to fully visible
-
-        // Play the fade-in animation
-        fadeIn.play();
+    public void getFilterChoice(ActionEvent event) {
+        String theme = FilterComboBox.getValue();
     }
 
-    // Method to remove line effect under a button
-    public void RemoveLineEffect(Line line) {
+    public void setUpQuizTable() {
+        TableColumn title = new TableColumn("TITLE");
+        TableColumn description = new TableColumn("DESCRIPTION");
+        TableColumn theme = new TableColumn("THEME");
+        TableColumn content = new TableColumn("CONTENT");
 
-        // Create a fade-in animation for the line
-        FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.3), line);
-        fadeOut.setToValue(0); // Set final opacity to fully visible
+        QuizTable.getColumns().addAll(title, description, theme, content);
 
-        // Play the fade-in animation
-        fadeOut.play();
+//        
+//        //Step : 1# Create a person class that will represtent data
+//        
+//        //Step : 2# Define data in an Observable list and add data as you want to show inside table    
+//         final ObservableList<Person> data = FXCollections.observableArrayList(
+//                new Person("1", "Jacob", "24", "", "jacob.smith@example.com", "jacob.smith@example.com"),
+//                new Person("2","Isabella", "25", "","isabella.johnson@example.com", "jacob.smith@example.com"),
+//                new Person("3","Ethan", "27","" ,"ethan.williams@example.com", "jacob.smith@example.com"),
+//                new Person("4","Emma", "28","" ,"emma.jones@example.com", "jacob.smith@example.com"),                        
+//                new Person("5","Michael", "29", "" ,"michael.brown@example.com", "jacob.smith@example.com"),
+//                new Person("5","Michael", "29", "","michael.brown@example.com", "jacob.smith@example.com")   );
+//
+//        
+//        //Step : 3#  Associate data with columns  
+//            id.setCellValueFactory(new PropertyValueFactory<Person,String>("id"));
+//        
+//            name.setCellValueFactory(new PropertyValueFactory<Person,String>("name"));
+//
+//            age.setCellValueFactory(new PropertyValueFactory<Person,String>("age"));
+//
+//            primary.setCellValueFactory(new PropertyValueFactory<Person,String>("primary"));
+//            
+//            secondry.setCellValueFactory(new PropertyValueFactory<Person,String>("secondry"));
+//            
+//               
+//                        
+//        //Step 4: add data inside table
+//           myTable.setItems(data);
     }
 }
