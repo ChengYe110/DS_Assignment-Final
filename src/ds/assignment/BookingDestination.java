@@ -16,5 +16,5 @@ import java.sql.SQLTimeoutException;
 import java.io.FileReader;
 
 public class BookingDestination {
-    private x and 
+    
 }
