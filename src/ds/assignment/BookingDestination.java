@@ -8,13 +8,19 @@ package ds.assignment;
  *
  * @author Tan Zhi Wei
  */
-import ds.assignment.BookingDestination;
-import ds.assignment.User;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLTimeoutException;
-import java.io.FileReader;
 
-public class BookingDestination {
+public interface BookingDestination {
+
+    public String bookingDestination(String chooseTour);//to book the tour, need readfile, checkCollision, calculate distance
+    
+    public double readFile();//read the coordinates inside the txt file
+    
+    public double distance();//calculate the distance between all coordinates
+    
+    public boolean checkCollision();//booking date inside the parentheses
+    
+    public String viewEvent();///method to how the upcoming event
+    
+    public String displayBookingMade();//display the booking made
     
 }
