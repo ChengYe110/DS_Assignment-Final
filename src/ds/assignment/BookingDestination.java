@@ -8,6 +8,13 @@ package ds.assignment;
  *
  * @author Tan Zhi Wei
  */
+import ds.assignment.BookingDestination;
+import ds.assignment.User;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLTimeoutException;
+import java.io.FileReader;
+
 public class BookingDestination {
-    
+    private x and 
 }
