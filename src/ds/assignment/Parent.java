@@ -31,8 +31,24 @@ public class Parent extends User implements BookingDestination{
     }
 
     @Override
-    public double readFile() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void readFile(String filename) {
+        try{
+            BufferedReader rd = new BufferedReader(new FileReader(filename));
+            String fileinput = null;
+            String read = null;
+            while((read = rd.readLine())!=null){
+                fileinput += rd.readLine();
+                fileinput += (rd.readLine() == null)? "": ":";//if the file do not have information already then do not add things, if still have things, add :
+            }
+            
+            String[][] destInformation = new String[1][2];
+            
+        }catch(FileNotFoundException e){
+            System.out.println("Problem with file not found");
+            
+        }catch(IOException e){
+            System.out.println("Problem with file input and output");
+        }
     }
 
     @Override

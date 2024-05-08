@@ -13,7 +13,7 @@ public interface BookingDestination {
 
     public String bookingDestination(String chooseTour);//to book the tour, need readfile, checkCollision, calculate distance
     
-    public double readFile();//read the coordinates inside the txt file
+    public void readFile(String filename);//read the coordinates inside the txt file
     
     public double distance();//calculate the distance between all coordinates
     
