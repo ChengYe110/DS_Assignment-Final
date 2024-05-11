@@ -20,6 +20,32 @@
     -fx-effect: null;
 }
 
+.exit{
+    -fx-background-image:url('../png/XIconBlack.png');
+    -fx-background-size: cover;
+    /* Disable button effects */
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-background: transparent;
+    -fx-padding: 0;
+    -fx-text-fill: inherit;
+    -fx-effect: null;
+}
+
+.friendList{
+    -fx-background-image:url('../png/SearchIconGrey.png');
+    -fx-background-size: cover;
+    /* Disable button effects */
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-background: transparent;
+    -fx-padding: 0;
+    -fx-text-fill: inherit;
+    -fx-effect: null;
+}
+
 .selected:hover{
     -fx-background-color: #E1E1E1;
     -fx-border-color: #2f5597;
@@ -52,7 +78,7 @@
 
 .student Button{
     -fx-font-family: "Segoe UI Semibold";
-    -fx-font-size: 14;
+    -fx-font-size: 14px;
 }
 
 .student Button:hover{
@@ -66,5 +92,21 @@
     -fx-font-family: "Segoe UI Black";
     -fx-border-width: 0 0 3 0;
     -fx-border-color: #FFFFFF;
+}
+
+.confirm{
+    -fx-font-family: "Segoe UI Black";
+    -fx-background-color: #4fc8ab;
+    -fx-background-radius: 20px;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.delete{
+    -fx-font-family: "Segoe UI Black";
+    -fx-background-color: #ff3131;
+    -fx-background-radius: 20px;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
 }
 

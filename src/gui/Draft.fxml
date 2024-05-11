@@ -12,7 +12,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="709.0" prefWidth="1260.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane fx:id="MenuPane" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;">
+      <AnchorPane fx:id="MenuPane" layoutX="20.0" layoutY="20.0" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;">
          <children>
             <ImageView fitHeight="222.0" fitWidth="203.0" layoutX="37.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -82,7 +82,7 @@
                   <Insets />
                </opaqueInsets>
             </VBox>
-            <Text fx:id="UsernameText" layoutX="71.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" wrappingWidth="134.13671875">
+            <Text fx:id="UsernameText2" layoutX="71.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" wrappingWidth="134.13671875">
                <font>
                   <Font name="Bell MT Bold" size="30.0" />
                </font>
