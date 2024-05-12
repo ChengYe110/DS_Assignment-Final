@@ -2,11 +2,16 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -88,6 +93,134 @@
                </font>
             </Text>
             <Button layoutX="75.0" layoutY="251.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" style="-fx-background-color: ff3131; -fx-background-radius: 20px;" text="STUDENT" textFill="#fffcfc">
+               <font>
+                  <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="ViewFriendProfilePage1" layoutX="95.0" layoutY="110.0" prefHeight="461.0" prefWidth="1074.0" style="-fx-background-radius: 40px; -fx-background-color: e1e1e1;" stylesheets="@StudentStyle.css">
+         <children>
+            <ScrollPane layoutX="493.0" layoutY="217.0" prefHeight="106.0" prefWidth="539.0">
+               <content>
+                  <TableView fx:id="FriendEventTable1" prefHeight="105.0" prefWidth="537.0" style="-fx-background-color: white;">
+                     <columns>
+                        <TableColumn editable="false" prefWidth="103.5" text="DATE" />
+                        <TableColumn editable="false" prefWidth="182.5" text="TITLE" />
+                        <TableColumn editable="false" prefWidth="272.0" text="VENUE" />
+                        <TableColumn editable="false" prefWidth="114.0" text="TIME" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </content>
+            </ScrollPane>
+            <Text fx:id="FriendUsernameText1" layoutX="57.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="USERNAME" wrappingWidth="404.2734375">
+               <font>
+                  <Font name="Segoe UI Black" size="30.0" />
+               </font>
+            </Text>
+            <Button layoutX="61.0" layoutY="109.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="123.0" style="-fx-background-color: ff3131; -fx-background-radius: 20px;" text="STUDENT" textFill="#fffcfc">
+               <font>
+                  <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+               </font>
+            </Button>
+            <Text fill="#5b5b5b" layoutX="279.0" layoutY="135.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Friend(s)" wrappingWidth="96.99609375">
+               <font>
+                  <Font name="Segoe UI Black" size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="FriendNumOfFriend1" fill="#5b5b5b" layoutX="192.0" layoutY="135.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" textAlignment="CENTER" wrappingWidth="87.0">
+               <font>
+                  <Font name="Segoe UI Black" size="20.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="55.0" fitWidth="61.0" layoutX="30.0" layoutY="177.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../png/ProfileIconBlack.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="43.0" layoutY="271.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../png/EmailIconBlack.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="65.0" fitWidth="55.0" layoutX="30.0" layoutY="259.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../png/CircleIcon.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="35.0" fitWidth="39.0" layoutX="40.0" layoutY="348.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../png/LocationIcon.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="65.0" fitWidth="55.0" layoutX="30.0" layoutY="338.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../png/CircleIcon.png" />
+               </image>
+            </ImageView>
+            <Line endX="100.0" endY="281.5" layoutX="364.0" layoutY="162.0" startX="97.2734375" startY="-88.7919921875" stroke="WHITE" strokeWidth="5.0" />
+            <Text fx:id="UsernameText111" layoutX="493.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Parent" wrappingWidth="404.2734375">
+               <font>
+                  <Font name="Segoe UI Black" size="20.0" />
+               </font>
+            </Text>
+            <TableView fx:id="FriendParentTable1" layoutX="493.0" layoutY="105.0" prefHeight="72.0" prefWidth="539.0" style="-fx-background-color: white;">
+               <columns>
+                  <TableColumn editable="false" prefWidth="103.5" text="NO" />
+                  <TableColumn editable="false" prefWidth="370.5" text="PARENT" />
+               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <Text fx:id="UsernameText1111" layoutX="493.0" layoutY="203.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Upcoming Events" wrappingWidth="404.2734375">
+               <font>
+                  <Font name="Segoe UI Black" size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="UsernameText11111" layoutX="493.0" layoutY="351.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Upcoming Booked Study Tour" wrappingWidth="404.2734375">
+               <font>
+                  <Font name="Segoe UI Black" size="20.0" />
+               </font>
+            </Text>
+            <ScrollPane layoutX="493.0" layoutY="363.0" prefHeight="87.0" prefWidth="539.0">
+               <content>
+                  <TableView fx:id="FriendBookedStudyTourTable1" prefHeight="87.0" prefWidth="612.0" style="-fx-background-color: white;">
+                     <columns>
+                        <TableColumn editable="false" prefWidth="103.5" text="DATE" />
+                        <TableColumn editable="false" prefWidth="272.0" text="VENUE" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </content>
+            </ScrollPane>
+            <Label fx:id="FriendEmail1" layoutX="110.0" layoutY="269.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;" text="email">
+               <font>
+                  <Font name="Segoe UI Semibold" size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="FriendLocation1" layoutX="110.0" layoutY="346.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;" text="location">
+               <font>
+                  <Font name="Segoe UI Semibold" size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="FriendUsername1" layoutX="110.0" layoutY="187.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;" text="username">
+               <font>
+                  <Font name="Segoe UI Semibold" size="24.0" />
+               </font>
+            </Label>
+            <Text layoutX="514.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PROFILE">
+               <font>
+                  <Font name="Segoe UI Black" size="33.0" />
+               </font>
+            </Text>
+            <Button fx:id="ExitViewFriendProfilePage1" layoutX="1024.0" layoutY="28.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="17.0" styleClass="exit" stylesheets="@StudentStyle.css" />
+            <Button fx:id="AddFriendButton1" layoutX="174.0" layoutY="406.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="153.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="ADD FRIEND" textFill="#fffcfc">
                <font>
                   <Font name="Berlin Sans FB Demi Bold" size="20.0" />
                </font>

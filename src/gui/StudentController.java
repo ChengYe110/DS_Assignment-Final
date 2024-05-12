@@ -34,6 +34,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -50,12 +52,13 @@ public class StudentController implements Initializable {
     @FXML
     private Button DiscussionPage, EventPage, HomePage, LeaderboardPage, MenuButton, ProfilePage, QuizPage,
             CreateQuizPage, DoneCreateQuiz, DoneCreateEvent, CreateEventPage, FriendListPage, ExitFriendListPage,
-            FriendRequestPage, ExitFriendRequestPage;
+            FriendRequestPage, ExitFriendRequestPage,ExitViewFriendProfilePage;
     @FXML
-    private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox;
+    private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox,DiscussionVBox;
     @FXML
     private AnchorPane MenuPane, TopPane, HomePagePane, LeaderboardPane, QuizPane, CreateQuizPane, EventPane,
-            CreateEventPane, BookingPane, StudentProfilePane, FriendListPane, FriendRequestPane;
+            CreateEventPane, BookingPane, StudentProfilePane, FriendListPane, FriendRequestPane,ViewFriendProfilePage,
+            DiscussionPane;
     @FXML
     private Text UsernameText, Suggested1, Suggested2, Suggested3, Suggested4, Suggested5, Distance1, Distance2, Distance3, Distance4, Distance5;
     @FXML
@@ -71,7 +74,7 @@ public class StudentController implements Initializable {
     @FXML
     private TableView<?> QuizTable;
     @FXML
-    private ScrollPane FriendListScrollPane, FriendRequestScrollPane, QuizScrollPane;
+    private ScrollPane FriendListScrollPane, FriendRequestScrollPane, QuizScrollPane,DiscussionScrollPane;
 
     private TranslateTransition slideOutTransition, slideInTransition;
     private Stage stage;
@@ -118,6 +121,7 @@ public class StudentController implements Initializable {
                 stackPane.getChildren().add(StudentProfilePane);
                 FriendListPane.setVisible(false);
                 FriendRequestPane.setVisible(false);
+                //ViewFriendProfilePage.setVisible(false);
             });
 
             FriendListScrollPane.setContent(FriendListVBox);
@@ -139,9 +143,19 @@ public class StudentController implements Initializable {
             ExitFriendRequestPage.setOnAction(event -> {
                 FriendRequestPane.setVisible(false);
             });
+            
+//            ButtonEffect(ExitViewFriendProfilePage);
+//            ExitViewFriendProfilePage.setOnAction(event -> {
+//                ViewFriendProfilePage.setVisible(false);
+//            });
 
+            DiscussionScrollPane.setContent(DiscussionVBox);
             DiscussionPage.setOnAction(event -> {
-                // Handle Discussion button click
+                if (MenuPane.getTranslateX() == 0) {
+                    slideInTransition.play();
+                }
+                stackPane.getChildren().clear();
+                stackPane.getChildren().add(DiscussionPane);
             });
 
             QuizScrollPane.setContent(QuizVBox);
@@ -247,6 +261,14 @@ public class StudentController implements Initializable {
         addNewQuiz("MockTestQuestion", "ENGINEERING", "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
         addNewQuiz("MockTestQuestion", "TECHNOLOGY", "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
         addNewQuiz("MockTestQuestion", "TECHNOLOGY", "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
+        addNewDiscussion("HiTesting", "STUDENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
+        addNewDiscussion("HiTesting", "PARENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
+        addNewDiscussion("HiTesting", "EDUCATOR", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
+        addNewDiscussion("HiTesting", "STUDENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
+        addNewDiscussion("HiTesting", "PARENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
+        addNewDiscussion("HiTesting", "STUDENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
+        addNewDiscussion("HiTesting", "EDUCATOR", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
+        addNewDiscussion("HiTesting", "STUDENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
     }
 
     public void switchHomePage() {
@@ -463,6 +485,68 @@ public class StudentController implements Initializable {
             }
         }
         return "";
+    }
+    
+    private void addNewDiscussion(String title, String role, String username, String content) {
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        hBox.setSpacing(3);
+
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.TOP_LEFT);
+        vBox.setPadding(new Insets(0, 0, 0, 20));
+
+        Text titleText = new Text(title);
+        
+        HBox temp = new HBox();
+        temp.setSpacing(5);
+        temp.setAlignment(Pos.TOP_LEFT);
+        Text t = new Text("Posted By: ");
+        t.setStyle("-fx-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
+        Button roleButton = new Button(role);
+        String setColour = "";
+        if (role.equals("STUDENT")){
+            setColour = "-fx-background-color: #ff5757;";
+        } else if (role.equals("EDUCATOR")){
+            setColour = "-fx-background-color: #ffde59;";
+        } else if (role.equals("PARENT")){
+            setColour = "-fx-background-color: #4fc8ab;";
+        } 
+        roleButton.setStyle(setColour+"-fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 12px; -fx-background-radius: 20px;");
+
+        Button usernameButton = new Button(username);
+        temp.getChildren().addAll(t,roleButton, usernameButton);
+        
+        Text contentText = new Text(content);
+        contentText.setWrappingWidth(900);
+        titleText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 30px; ");
+        usernameButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; -fx-padding: 0; ");
+        contentText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
+        vBox.getChildren().addAll(titleText, temp, contentText);
+
+        // Create a heart shape using SVGPath
+        SVGPath heartShape = new SVGPath();
+        heartShape.setContent("M 5 15 Q 15 0 25 15 Q 35 0 45 15 Q 47.5 20 25 40 Q 2.5 20 5 15");
+        heartShape.setFill(Color.BLACK); // Initial color
+        
+        // Create a button with the heart shape
+        Button loveButton = new Button();
+        loveButton.setStyle("-fx-background-color: transparent;");
+        loveButton.setGraphic(heartShape);
+        loveButton.setOnAction(event -> {
+            // Toggle button color between red and black
+            if (heartShape.getFill().equals(Color.BLACK)) {
+                heartShape.setFill(Color.RED);
+            } else {
+                heartShape.setFill(Color.BLACK);
+            }
+        });
+
+        // Add the VBox and the button to the HBox
+        hBox.getChildren().addAll(vBox, loveButton);
+
+        // Add the HBox to the main VBox
+        DiscussionVBox.getChildren().add(hBox);
     }
 
 }

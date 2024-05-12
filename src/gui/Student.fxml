@@ -661,6 +661,57 @@
                   </ImageView>
                </children>
             </AnchorPane>
+            <AnchorPane fx:id="QuizPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <ScrollPane fx:id="QuizScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
+                                 <children>
+                                    <VBox fx:id="QuizVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZ">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="CreateQuizPage" alignment="CENTER_RIGHT" layoutX="1048.0" layoutY="12.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="137.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW QUIZ  ">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </Button>
+                  
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/FilterIcon.png" />
+                     </image>
+                  </ImageView>
+                  <ChoiceBox fx:id="FilterChoiceBox" layoutX="870.0" layoutY="13.0" prefHeight="35.0" prefWidth="167.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Arial Black&quot;; -fx-font-size: 13px;" stylesheets="@StudentStyle.css">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="30.0" />
+                     </padding>
+                  </ChoiceBox>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="878.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/FilterIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
             <AnchorPane fx:id="BookingPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
@@ -998,6 +1049,16 @@
                               <Button fx:id="ExitFriendRequestPage" layoutX="376.0" layoutY="22.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="17.0" styleClass="exit" stylesheets="@StudentStyle.css" />
                            </children>
                         </AnchorPane>
+                        <Button fx:id="CreateDiscussionPage1" alignment="CENTER_RIGHT" layoutX="996.0" layoutY="21.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="109.0" style="-fx-background-color: white; -fx-background-radius: 15px;" text="PARENT ">
+                           <font>
+                              <Font name="Arial Black" size="13.0" />
+                           </font>
+                        </Button>
+                        <ImageView fx:id="AddParentPage" fitHeight="23.0" fitWidth="24.0" layoutX="1006.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../png/AddIcon.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </AnchorPane>
                   <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PROFILE">
@@ -1010,63 +1071,39 @@
                         <Font name="Arial Black" size="13.0" />
                      </font>
                   </Button>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/FilterIcon.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="878.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/FilterIcon.png" />
-                     </image>
-                  </ImageView>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="QuizPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+            <AnchorPane fx:id="DiscussionPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
                      <children>
-                        <ScrollPane fx:id="QuizScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
+                        <ScrollPane fx:id="DiscussionScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
                                  <children>
-                                    <VBox fx:id="QuizVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <VBox fx:id="DiscussionVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
-                          </content>
+                           </content>
                         </ScrollPane>
                      </children>
                   </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZ">
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DISCUSSION">
                      <font>
                         <Font name="Segoe UI Black" size="36.0" />
                      </font>
                   </Text>
-                  <Button fx:id="CreateQuizPage" alignment="CENTER_RIGHT" layoutX="1048.0" layoutY="12.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="137.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW QUIZ  ">
+                  <Button fx:id="CreateDiscussionPage" alignment="CENTER_RIGHT" layoutX="1012.0" layoutY="12.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="173.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW DISCUSSION">
                      <font>
                         <Font name="Arial Black" size="13.0" />
                      </font>
                   </Button>
-                  
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1020.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../png/AddIcon.png" />
                      </image>
                   </ImageView>
                   <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/FilterIcon.png" />
-                     </image>
-                  </ImageView>
-                  <ChoiceBox fx:id="FilterChoiceBox" layoutX="870.0" layoutY="13.0" prefHeight="35.0" prefWidth="167.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Arial Black&quot;; -fx-font-size: 13px;" stylesheets="@StudentStyle.css">
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <padding>
-                        <Insets left="30.0" />
-                     </padding>
-                  </ChoiceBox>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="878.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../png/FilterIcon.png" />
                      </image>
