@@ -4,20 +4,19 @@
  */
 package ds.assignment;
 
-/**
- *
- * @author Tan Zhi Wei
- */
 import ds.assignment.BookingDestination;
 import ds.assignment.User;
+import ds.assignment.Parent;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLTimeoutException;
+import java.sql.Statement;
+import java.sql.DriverManager;
+
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import ds.assignment.Parent;
 
 
 public class Parent extends User implements BookingDestination{
@@ -73,7 +72,10 @@ public class Parent extends User implements BookingDestination{
 
     @Override
     public String displayBookingMade() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        DatabaseConnection dbConnection = new DatabaseConnection(); 
+        Connection connectDB = dbConnection.linkDatabase();
+        String connectQuery = "";
+        Statement statement = connectDB.createStatement();
     }
 
         
