@@ -5,10 +5,12 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -227,59 +229,6 @@
                         <Font name="Segoe UI Black" size="22.0" />
                      </font>
                   </Text>
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="CreateEventPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Title">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Description" wrappingWidth="195.69140625">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Venue">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="77.0" layoutY="405.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Time">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <TextArea fx:id="EventTitleField" layoutX="291.0" layoutY="57.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextArea fx:id="EventDescriptionField" layoutX="291.0" layoutY="121.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextArea fx:id="EventTimeField" layoutX="291.0" layoutY="371.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <Button fx:id="DoneCreateEvent" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI Black" size="20.0" />
-                           </font>
-                        </Button>
-                        <Text layoutX="79.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Date">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <TextArea fx:id="EventVenueField" layoutX="291.0" layoutY="243.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <DatePicker fx:id="EventDatePicker" layoutX="291.0" layoutY="307.0" prefHeight="49.0" prefWidth="294.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE EVENT">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
                </children>
             </AnchorPane>
             <AnchorPane fx:id="EventPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
@@ -883,26 +832,94 @@
                   </ImageView>
                </children>
             </AnchorPane>
+            <AnchorPane fx:id="DiscussionPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <ScrollPane fx:id="DiscussionScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
+                                 <children>
+                                    <VBox fx:id="DiscussionVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DISCUSSION">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="CreateDiscussionPage" alignment="CENTER_RIGHT" layoutX="1012.0" layoutY="12.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="173.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW DISCUSSION">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </Button>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1020.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/FilterIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="CreateDiscussionPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Discussion Title">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Discussion Content" wrappingWidth="195.69140625">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <TextArea fx:id="DiscussionTitleField" layoutX="291.0" layoutY="57.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextArea fx:id="DiscussionContentField" layoutX="291.0" layoutY="121.0" prefHeight="294.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <Button fx:id="DoneCreateDiscussion" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE DISCUSSION">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
             <AnchorPane fx:id="StudentProfilePane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
                      <children>
-                        <ScrollPane layoutX="493.0" layoutY="191.0" prefHeight="124.0" prefWidth="612.0">
-                           <content>
-                              <TableView fx:id="EventTable" prefHeight="87.0" prefWidth="612.0" style="-fx-background-color: white;">
-                                 <columns>
-                                    <TableColumn editable="false" prefWidth="103.5" text="DATE" />
-                                    <TableColumn editable="false" prefWidth="182.5" text="TITLE" />
-                                    <TableColumn editable="false" prefWidth="272.0" text="VENUE" />
-                                    <TableColumn editable="false" prefWidth="114.0" text="TIME" />
-                                 </columns>
-                                 <columnResizePolicy>
-                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                 </columnResizePolicy>
-                              </TableView>
-                           </content>
-                        </ScrollPane>
-                        <Text fx:id="UsernameText" layoutX="57.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="USERNAME" wrappingWidth="404.2734375">
+                        <TableView fx:id="EventTable" layoutX="493.0" layoutY="191.0" prefHeight="123.0" prefWidth="612.0" style="-fx-background-color: white;">
+                           <columns>
+                              <TableColumn fx:id="DateColumn" editable="false" prefWidth="103.5" style="-fx-alignment: center;" text="DATE" />
+                              <TableColumn fx:id="TitleColumn" editable="false" prefWidth="182.5" style="-fx-alignment: center;" text="TITLE" />
+                              <TableColumn fx:id="VenueColumn" editable="false" prefWidth="272.0" style="-fx-alignment: center;" text="VENUE" />
+                              <TableColumn fx:id="TimeColumn" editable="false" prefWidth="114.0" style="-fx-alignment: center;" text="TIME" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                        <Text fx:id="UsernameProfilePage" layoutX="57.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="USERNAME" wrappingWidth="404.2734375">
                            <font>
                               <Font name="Segoe UI Black" size="40.0" />
                            </font>
@@ -963,10 +980,10 @@
                               <Font name="Segoe UI Black" size="24.0" />
                            </font>
                         </Text>
-                        <TableView fx:id="ParentTable" layoutX="493.0" layoutY="59.0" prefHeight="87.0" prefWidth="612.0" style="-fx-background-color: white;">
+                        <TableView fx:id="ParentTable" layoutX="493.0" layoutY="66.0" prefHeight="74.0" prefWidth="612.0" style="-fx-background-color: white;">
                            <columns>
-                              <TableColumn editable="false" prefWidth="103.5" text="NO" />
-                              <TableColumn editable="false" prefWidth="370.5" text="PARENT" />
+                              <TableColumn fx:id="NoColumn" editable="false" prefWidth="103.5" style="-fx-alignment: center;" text="NO" />
+                              <TableColumn fx:id="ParentColumn" editable="false" prefWidth="370.5" style="-fx-alignment: center;" text="PARENT" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -982,33 +999,38 @@
                               <Font name="Segoe UI Black" size="24.0" />
                            </font>
                         </Text>
-                        <ScrollPane layoutX="493.0" layoutY="363.0" prefHeight="124.0" prefWidth="612.0">
-                           <content>
-                              <TableView fx:id="BookedStudyTourTable" prefHeight="87.0" prefWidth="612.0" style="-fx-background-color: white;">
-                                 <columns>
-                                    <TableColumn editable="false" prefWidth="103.5" text="DATE" />
-                                    <TableColumn editable="false" prefWidth="272.0" text="VENUE" />
-                                 </columns>
-                                 <columnResizePolicy>
-                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                 </columnResizePolicy>
-                              </TableView>
-                           </content>
-                        </ScrollPane>
-                        <Label layoutX="110.0" layoutY="246.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;" text="email">
+                        <TableView fx:id="BookedStudyTourTable" layoutX="493.0" layoutY="363.0" prefHeight="125.0" prefWidth="612.0" style="-fx-background-color: white;">
+                           <columns>
+                              <TableColumn fx:id="BookedDateColumn" editable="false" prefWidth="103.5" style="-fx-alignment: center;" text="DATE" />
+                              <TableColumn fx:id="BookedVenueColumn" editable="false" prefWidth="272.0" style="-fx-alignment: center;" text="VENUE" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                        <Label fx:id="EmailLabel" layoutX="110.0" layoutY="246.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;">
                            <font>
-                              <Font name="Segoe UI Semibold" size="24.0" />
+                              <Font name="Segoe UI Semibold" size="20.0" />
                            </font>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
                         </Label>
-                        <Label layoutX="110.0" layoutY="323.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;" text="location">
+                        <Label fx:id="LocationLabel" layoutX="110.0" layoutY="323.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;">
                            <font>
-                              <Font name="Segoe UI Semibold" size="24.0" />
+                              <Font name="Segoe UI Semibold" size="20.0" />
                            </font>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
                         </Label>
-                        <Label layoutX="110.0" layoutY="164.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;" text="username">
+                        <Label fx:id="UsernameLabel" layoutX="110.0" layoutY="164.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;">
                            <font>
-                              <Font name="Segoe UI Semibold" size="24.0" />
+                              <Font name="Segoe UI Semibold" size="20.0" />
                            </font>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
                         </Label>
                         <Button fx:id="FriendListPage" layoutX="378.0" layoutY="88.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="friendList" stylesheets="@StudentStyle.css" />
                         <AnchorPane fx:id="FriendListPane" layoutX="426.0" layoutY="15.0" prefHeight="476.0" prefWidth="374.0" style="-fx-background-color: effeff; -fx-background-radius: 20px;">
@@ -1020,9 +1042,9 @@
                               </Text>
                               <ScrollPane fx:id="FriendListScrollPane" fitToWidth="true" layoutX="55.0" layoutY="91.0" prefHeight="356.0" prefWidth="264.0" style="-fx-background-color: white;">
                                 <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="358.0" prefWidth="250.0">
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="358.0" prefWidth="250.0" style="-fx-background-color: white;">
                                        <children>
-                                          <VBox fx:id="FriendListVBox" alignment="TOP_CENTER" layoutX="76.0" layoutY="35.0" prefHeight="342.0" prefWidth="248.0" spacing="5.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <VBox fx:id="FriendListVBox" alignment="TOP_CENTER" layoutX="76.0" layoutY="35.0" prefHeight="342.0" prefWidth="248.0" spacing="5.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                 </content>
@@ -1041,7 +1063,7 @@
                                  <content>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="358.0" prefWidth="301.0">
                                        <children>
-                                          <VBox fx:id="FriendRequestVBox" layoutX="-32.0" layoutY="35.0" prefHeight="354.0" prefWidth="346.0" spacing="5.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <VBox fx:id="FriendRequestVBox" layoutX="-32.0" layoutY="35.0" prefHeight="354.0" prefWidth="346.0" spacing="5.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                  </content>
@@ -1049,16 +1071,127 @@
                               <Button fx:id="ExitFriendRequestPage" layoutX="376.0" layoutY="22.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="17.0" styleClass="exit" stylesheets="@StudentStyle.css" />
                            </children>
                         </AnchorPane>
-                        <Button fx:id="CreateDiscussionPage1" alignment="CENTER_RIGHT" layoutX="996.0" layoutY="21.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="109.0" style="-fx-background-color: white; -fx-background-radius: 15px;" text="PARENT ">
+                        <Button fx:id="AddParentPage" alignment="CENTER_RIGHT" layoutX="996.0" layoutY="21.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="109.0" style="-fx-background-color: white; -fx-background-radius: 15px;" text="PARENT ">
                            <font>
                               <Font name="Arial Black" size="13.0" />
                            </font>
                         </Button>
-                        <ImageView fx:id="AddParentPage" fitHeight="23.0" fitWidth="24.0" layoutX="1006.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="23.0" fitWidth="24.0" layoutX="1006.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../png/AddIcon.png" />
                            </image>
                         </ImageView>
+                        <AnchorPane fx:id="EditProfilePane" layoutX="360.0" layoutY="15.0" prefHeight="476.0" prefWidth="529.0" style="-fx-background-color: e1e1e1; -fx-background-radius: 20px;">
+                           <children>
+                              <Text layoutX="145.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EDIT PROFILE">
+                                 <font>
+                                    <Font name="Segoe UI Black" size="36.0" />
+                                 </font>
+                              </Text>
+                              <Button fx:id="ExitEditProfilePage" layoutX="489.0" layoutY="22.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="17.0" styleClass="exit" stylesheets="@StudentStyle.css" />
+                              <HBox alignment="TOP_CENTER" layoutX="15.0" layoutY="92.0" prefHeight="41.0" prefWidth="499.0" spacing="24.0">
+                                 <children>
+                                    <Button fx:id="ChangeUsernameAndEmailButton" mnemonicParsing="false" prefHeight="49.0" prefWidth="269.0" style="-fx-background-color: white; -fx-background-radius: 10px;" text="CHANGE USERNAME / EMAIL">
+                                       <font>
+                                          <Font name="Segoe UI Black" size="17.0" />
+                                       </font>
+                                    </Button>
+                                    <Button fx:id="ChangePasswordButton" layoutX="172.0" layoutY="10.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="200.0" style="-fx-background-color: transparent; -fx-background-radius: 10px;" text="CHANGE PASSWORD">
+                                       <font>
+                                          <Font name="Segoe UI Black" size="17.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <StackPane fx:id="ExtraStackPane" layoutX="18.0" layoutY="127.0" prefHeight="306.0" prefWidth="493.0">
+                                 <children>
+                                    <AnchorPane fx:id="ChangeUsernameAndEmailPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
+                                       <children>
+                                          <Text layoutX="49.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Old Password">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="49.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Username">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="49.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Email">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <TextField fx:id="NewUsername" layoutX="211.0" layoutY="103.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="12.0" />
+                                             </font>
+                                          </TextField>
+                                          <TextField fx:id="NewEmail" layoutX="211.0" layoutY="160.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="12.0" />
+                                             </font>
+                                          </TextField>
+                                          <Button fx:id="SaveChangeUsernameAndEmailButton" layoutX="195.0" layoutY="230.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="103.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="SAVE" textFill="#fffcfc">
+                                             <font>
+                                                <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+                                             </font>
+                                          </Button>
+                                          <PasswordField fx:id="OldPassword1" layoutX="211.0" layoutY="46.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane fx:id="ChangePasswordPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
+                                       <children>
+                                          <Text layoutX="26.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Old Password">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="26.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Password">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="26.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm Password">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Button fx:id="SaveChangePasswordButton" layoutX="195.0" layoutY="230.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="103.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="SAVE" textFill="#fffcfc">
+                                             <font>
+                                                <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+                                             </font>
+                                          </Button>
+                                          <PasswordField fx:id="OldPassword2" layoutX="211.0" layoutY="46.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
+                                          <PasswordField fx:id="NewPassword" layoutX="211.0" layoutY="103.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
+                                          <PasswordField fx:id="ConfirmPassword" layoutX="211.0" layoutY="160.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="AddParentPane" layoutX="428.0" layoutY="15.0" prefHeight="337.0" prefWidth="374.0" style="-fx-background-color: effeff; -fx-background-radius: 20px;">
+                           <children>
+                              <Text layoutX="68.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ADD PARENT">
+                                 <font>
+                                    <Font name="Segoe UI Black" size="36.0" />
+                                 </font>
+                              </Text>
+                              <Button fx:id="ExitAddParentPane" layoutX="336.0" layoutY="22.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="17.0" styleClass="exit" stylesheets="@StudentStyle.css" />
+                              <Text layoutX="86.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Parent Username">
+                                 <font>
+                                    <Font name="Segoe UI Black" size="24.0" />
+                                 </font>
+                              </Text>
+                              <Button fx:id="AddParentButton" layoutX="139.0" layoutY="258.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="97.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="ADD" textFill="WHITE">
+                                 <font>
+                                    <Font name="Segoe UI Black" size="20.0" />
+                                 </font>
+                              </Button>
+                              <TextField fx:id="ParentUsernameField" layoutX="47.0" layoutY="169.0" prefHeight="31.0" prefWidth="280.0" />
+                           </children>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                   <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PROFILE">
@@ -1073,46 +1206,62 @@
                   </Button>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="DiscussionPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+            <AnchorPane fx:id="CreateEventPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
                      <children>
-                        <ScrollPane fx:id="DiscussionScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
-                                 <children>
-                                    <VBox fx:id="DiscussionVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </ScrollPane>
+                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Title">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="79.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Description" wrappingWidth="195.69140625">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Venue">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="77.0" layoutY="405.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Time">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <TextArea fx:id="EventDescriptionField" layoutX="291.0" layoutY="121.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <Button fx:id="DoneCreateEvent" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="20.0" />
+                           </font>
+                        </Button>
+                        <Text layoutX="79.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Date">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <DatePicker fx:id="EventDatePicker" layoutX="291.0" layoutY="314.0" prefHeight="35.0" prefWidth="294.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextField fx:id="EventTitleField" layoutX="291.0" layoutY="64.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextField fx:id="EventVenueField" layoutX="291.0" layoutY="250.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <ChoiceBox fx:id="EventTimeChoiceBox" layoutX="291.0" layoutY="378.0" prefHeight="35.0" prefWidth="294.0" style="-fx-background-color: white;" styleClass="text-field" stylesheets="@StudentStyle.css" />
                      </children>
                   </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DISCUSSION">
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE EVENT">
                      <font>
                         <Font name="Segoe UI Black" size="36.0" />
                      </font>
                   </Text>
-                  <Button fx:id="CreateDiscussionPage" alignment="CENTER_RIGHT" layoutX="1012.0" layoutY="12.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="173.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW DISCUSSION">
-                     <font>
-                        <Font name="Arial Black" size="13.0" />
-                     </font>
-                  </Button>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1020.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/FilterIcon.png" />
                      </image>
                   </ImageView>
                </children>
             </AnchorPane>
          </children>
       </StackPane>
-      <AnchorPane fx:id="MenuPane" layoutX="30.0" layoutY="30.0" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+      <AnchorPane fx:id="MenuPane" layoutX="20.0" layoutY="20.0" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
          <children>
             <ImageView fitHeight="222.0" fitWidth="203.0" layoutX="37.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -1182,7 +1331,7 @@
                   <Insets />
                </opaqueInsets>
             </VBox>
-            <Text fx:id="UsernameText2" layoutX="71.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" wrappingWidth="134.13671875">
+            <Text fx:id="UsernameMenuPane" layoutX="71.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" wrappingWidth="134.13671875">
                <font>
                   <Font name="Bell MT Bold" size="30.0" />
                </font>
