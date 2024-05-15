@@ -231,436 +231,6 @@
                   </Text>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="EventPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <Text layoutX="72.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Live Event">
-                           <font>
-                              <Font name="Segoe UI Black" size="30.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="72.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Upcoming Event">
-                           <font>
-                              <Font name="Segoe UI Black" size="30.0" />
-                           </font>
-                        </Text>
-                        <AnchorPane layoutX="72.0" layoutY="54.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
-                           <children>
-                              <Button fx:id="JoinEvent1" layoutX="816.0" layoutY="22.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="JOIN" textFill="WHITE">
-                                 <font>
-                                    <Font name="Segoe UI Black" size="20.0" />
-                                 </font>
-                              </Button>
-                              <HBox layoutX="14.0" layoutY="-6.0" prefHeight="87.0" prefWidth="789.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="182.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <VBox prefHeight="87.0" prefWidth="512.0">
-                                       <children>
-                                          <Label prefHeight="32.0" prefWidth="519.0" text="Event1">
-                                             <font>
-                                                <Font name="Segoe UI Black" size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Description" wrappingWidth="108.63671875">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="12.0" />
-                                             </font>
-                                          </Text>
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="CENTER" prefHeight="87.0" prefWidth="282.0">
-                                       <children>
-                                          <HBox alignment="CENTER" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: ff5757; -fx-background-radius: 20px;" text="VENUE" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Venue" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="38.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #4fc8ab; -fx-background-radius: 20px;" text="DATE" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Date" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="54.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #ffd230; -fx-background-radius: 20px;" text="TIME" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Time" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                 </children></HBox>
-                           </children></AnchorPane>
-                        <AnchorPane layoutX="72.0" layoutY="188.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
-                           <children>
-                              <Button fx:id="JoinEvent2" layoutX="816.0" layoutY="22.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="JOIN" textFill="WHITE">
-                                 <font>
-                                    <Font name="Segoe UI Black" size="20.0" />
-                                 </font>
-                              </Button>
-                              <HBox layoutX="14.0" layoutY="-6.0" prefHeight="87.0" prefWidth="789.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="182.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <VBox prefHeight="87.0" prefWidth="512.0">
-                                       <children>
-                                          <Label prefHeight="32.0" prefWidth="519.0" text="Event2">
-                                             <font>
-                                                <Font name="Segoe UI Black" size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event2Description" wrappingWidth="108.63671875">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="12.0" />
-                                             </font>
-                                          </Text>
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="CENTER" prefHeight="87.0" prefWidth="282.0">
-                                       <children>
-                                          <HBox alignment="CENTER" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: ff5757; -fx-background-radius: 20px;" text="VENUE" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event2Venue" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="38.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #4fc8ab; -fx-background-radius: 20px;" text="DATE" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event2Date" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="54.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #ffd230; -fx-background-radius: 20px;" text="TIME" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event2Time" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane layoutX="73.0" layoutY="289.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
-                           <children>
-                              <Button fx:id="JoinEvent3" layoutX="816.0" layoutY="22.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="JOIN" textFill="WHITE">
-                                 <font>
-                                    <Font name="Segoe UI Black" size="20.0" />
-                                 </font>
-                              </Button>
-                              <HBox layoutX="14.0" layoutY="-6.0" prefHeight="87.0" prefWidth="789.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="182.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <VBox prefHeight="87.0" prefWidth="512.0">
-                                       <children>
-                                          <Label prefHeight="32.0" prefWidth="519.0" text="Event3">
-                                             <font>
-                                                <Font name="Segoe UI Black" size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event3Description" wrappingWidth="108.63671875">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="12.0" />
-                                             </font>
-                                          </Text>
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="CENTER" prefHeight="87.0" prefWidth="282.0">
-                                       <children>
-                                          <HBox alignment="CENTER" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: ff5757; -fx-background-radius: 20px;" text="VENUE" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event3Venue" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="38.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #4fc8ab; -fx-background-radius: 20px;" text="DATE" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event3Date" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="54.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #ffd230; -fx-background-radius: 20px;" text="TIME" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event3Time" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane layoutX="73.0" layoutY="391.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
-                           <children>
-                              <Button fx:id="JoinEvent4" layoutX="816.0" layoutY="22.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="JOIN" textFill="WHITE">
-                                 <font>
-                                    <Font name="Segoe UI Black" size="20.0" />
-                                 </font>
-                              </Button>
-                              <HBox layoutX="14.0" layoutY="-6.0" prefHeight="87.0" prefWidth="789.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="182.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <VBox prefHeight="87.0" prefWidth="512.0">
-                                       <children>
-                                          <Label prefHeight="32.0" prefWidth="519.0" text="Event4">
-                                             <font>
-                                                <Font name="Segoe UI Black" size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event4Description" wrappingWidth="108.63671875">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="12.0" />
-                                             </font>
-                                          </Text>
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="CENTER" prefHeight="87.0" prefWidth="282.0">
-                                       <children>
-                                          <HBox alignment="CENTER" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: ff5757; -fx-background-radius: 20px;" text="VENUE" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event4Venue" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="38.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #4fc8ab; -fx-background-radius: 20px;" text="DATE" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event4Date" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="54.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #ffd230; -fx-background-radius: 20px;" text="TIME" textAlignment="CENTER" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Segoe UI Black" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Event4Time" wrappingWidth="150.0">
-                                                   <font>
-                                                      <Font name="Segoe UI Semibold" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EVENT">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <Button fx:id="CreateEventPage" alignment="CENTER_RIGHT" layoutX="1039.0" layoutY="14.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW EVENT  ">
-                     <font>
-                        <Font name="Arial Black" size="13.0" />
-                     </font>
-                  </Button>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1051.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/FilterIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="CreateQuizPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Title">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Description">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Theme">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Content">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <TextArea fx:id="QuizTitleField" layoutX="291.0" layoutY="57.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextArea fx:id="QuizDescriptionField" layoutX="291.0" layoutY="143.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextArea fx:id="QuizContentField" layoutX="291.0" layoutY="351.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <Button fx:id="DoneCreateQuiz" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI Black" size="20.0" />
-                           </font>
-                        </Button>
-                        <ChoiceBox fx:id="QuizThemeChoiceBox" layoutX="291.0" layoutY="279.0" prefHeight="43.0" prefWidth="203.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                        </ChoiceBox>
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE QUIZ">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="QuizPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <ScrollPane fx:id="QuizScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
-                                 <children>
-                                    <VBox fx:id="QuizVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                          </content>
-                        </ScrollPane>
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZ">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <Button fx:id="CreateQuizPage" alignment="CENTER_RIGHT" layoutX="1048.0" layoutY="12.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="137.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW QUIZ  ">
-                     <font>
-                        <Font name="Arial Black" size="13.0" />
-                     </font>
-                  </Button>
-                  
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/FilterIcon.png" />
-                     </image>
-                  </ImageView>
-                  <ChoiceBox fx:id="FilterChoiceBox" layoutX="870.0" layoutY="13.0" prefHeight="35.0" prefWidth="167.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Arial Black&quot;; -fx-font-size: 13px;" stylesheets="@StudentStyle.css">
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <padding>
-                        <Insets left="30.0" />
-                     </padding>
-                  </ChoiceBox>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="878.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/FilterIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
             <AnchorPane fx:id="BookingPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
@@ -821,78 +391,6 @@
                      </children>
                   </AnchorPane>
                   <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BOOKING">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="DiscussionPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <ScrollPane fx:id="DiscussionScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
-                                 <children>
-                                    <VBox fx:id="DiscussionVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </ScrollPane>
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DISCUSSION">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <Button fx:id="CreateDiscussionPage" alignment="CENTER_RIGHT" layoutX="1012.0" layoutY="12.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="173.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW DISCUSSION">
-                     <font>
-                        <Font name="Arial Black" size="13.0" />
-                     </font>
-                  </Button>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1020.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="901.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/FilterIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="CreateDiscussionPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Discussion Title">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Discussion Content" wrappingWidth="195.69140625">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <TextArea fx:id="DiscussionTitleField" layoutX="291.0" layoutY="57.0" prefHeight="49.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextArea fx:id="DiscussionContentField" layoutX="291.0" layoutY="121.0" prefHeight="294.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <Button fx:id="DoneCreateDiscussion" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI Black" size="20.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE DISCUSSION">
                      <font>
                         <Font name="Segoe UI Black" size="36.0" />
                      </font>
@@ -1206,6 +704,329 @@
                   </Button>
                </children>
             </AnchorPane>
+            <AnchorPane fx:id="EventPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <Text layoutX="72.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Live Event">
+                           <font>
+                              <Font name="Segoe UI Black" size="30.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="72.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Upcoming Event">
+                           <font>
+                              <Font name="Segoe UI Black" size="30.0" />
+                           </font>
+                        </Text>
+                        <AnchorPane layoutX="72.0" layoutY="54.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
+                           <children>
+                              <Button fx:id="JoinEvent1" layoutX="816.0" layoutY="22.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="JOIN" textFill="WHITE">
+                                 <font>
+                                    <Font name="Segoe UI Black" size="20.0" />
+                                 </font>
+                              </Button>
+                              <HBox layoutX="14.0" layoutY="-6.0" prefHeight="87.0" prefWidth="789.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="182.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox prefHeight="87.0" prefWidth="512.0">
+                                       <children>
+                                          <Label fx:id="Event1Title" prefHeight="32.0" prefWidth="519.0" text="Event1">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Text fx:id="Event1Description" strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Description" wrappingWidth="108.63671875">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="12.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="87.0" prefWidth="282.0">
+                                       <children>
+                                          <HBox alignment="CENTER" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: ff5757; -fx-background-radius: 20px;" text="VENUE" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event1Venue" strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Venue" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="38.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #4fc8ab; -fx-background-radius: 20px;" text="DATE" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event1Date" strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Date" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="54.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #ffd230; -fx-background-radius: 20px;" text="TIME" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event1Time" strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Time" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children></HBox>
+                           </children></AnchorPane>
+                        <AnchorPane layoutX="72.0" layoutY="188.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
+                           <children>
+                              <Button fx:id="JoinEvent2" layoutX="816.0" layoutY="22.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="JOIN" textFill="WHITE">
+                                 <font>
+                                    <Font name="Segoe UI Black" size="20.0" />
+                                 </font>
+                              </Button>
+                              <HBox layoutX="14.0" layoutY="-6.0" prefHeight="87.0" prefWidth="789.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="182.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox prefHeight="87.0" prefWidth="512.0">
+                                       <children>
+                                          <Label fx:id="Event2Title" prefHeight="32.0" prefWidth="519.0" text="Event2">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Text fx:id="Event2Description" strokeType="OUTSIDE" strokeWidth="0.0" text="Event2Description" wrappingWidth="108.63671875">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="12.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="87.0" prefWidth="282.0">
+                                       <children>
+                                          <HBox alignment="CENTER" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: ff5757; -fx-background-radius: 20px;" text="VENUE" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event2Venue" strokeType="OUTSIDE" strokeWidth="0.0" text="Event2Venue" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="38.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #4fc8ab; -fx-background-radius: 20px;" text="DATE" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event2Date" strokeType="OUTSIDE" strokeWidth="0.0" text="Event2Date" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="54.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #ffd230; -fx-background-radius: 20px;" text="TIME" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event2Time" strokeType="OUTSIDE" strokeWidth="0.0" text="Event2Time" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="73.0" layoutY="289.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
+                           <children>
+                              <Button fx:id="JoinEvent3" layoutX="816.0" layoutY="22.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="JOIN" textFill="WHITE">
+                                 <font>
+                                    <Font name="Segoe UI Black" size="20.0" />
+                                 </font>
+                              </Button>
+                              <HBox layoutX="14.0" layoutY="-6.0" prefHeight="87.0" prefWidth="789.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="182.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox prefHeight="87.0" prefWidth="512.0">
+                                       <children>
+                                          <Label fx:id="Event3Title" prefHeight="32.0" prefWidth="519.0" text="Event3">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Text fx:id="Event3Description" strokeType="OUTSIDE" strokeWidth="0.0" text="Event3Description" wrappingWidth="108.63671875">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="12.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="87.0" prefWidth="282.0">
+                                       <children>
+                                          <HBox alignment="CENTER" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: ff5757; -fx-background-radius: 20px;" text="VENUE" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event3Venue" strokeType="OUTSIDE" strokeWidth="0.0" text="Event3Venue" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="38.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #4fc8ab; -fx-background-radius: 20px;" text="DATE" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event3Date" strokeType="OUTSIDE" strokeWidth="0.0" text="Event3Date" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="54.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #ffd230; -fx-background-radius: 20px;" text="TIME" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event3Time" strokeType="OUTSIDE" strokeWidth="0.0" text="Event3Time" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="73.0" layoutY="391.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
+                           <children>
+                              <Button fx:id="JoinEvent4" layoutX="816.0" layoutY="22.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="JOIN" textFill="WHITE">
+                                 <font>
+                                    <Font name="Segoe UI Black" size="20.0" />
+                                 </font>
+                              </Button>
+                              <HBox layoutX="14.0" layoutY="-6.0" prefHeight="87.0" prefWidth="789.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="182.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox prefHeight="87.0" prefWidth="512.0">
+                                       <children>
+                                          <Label fx:id="Event4Title" prefHeight="32.0" prefWidth="519.0" text="Event4">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Text fx:id="Event4Description" strokeType="OUTSIDE" strokeWidth="0.0" text="Event4Description" wrappingWidth="108.63671875">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="12.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="87.0" prefWidth="282.0">
+                                       <children>
+                                          <HBox alignment="CENTER" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: ff5757; -fx-background-radius: 20px;" text="VENUE" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event4Venue" strokeType="OUTSIDE" strokeWidth="0.0" text="Event4Venue" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="38.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #4fc8ab; -fx-background-radius: 20px;" text="DATE" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event4Date" strokeType="OUTSIDE" strokeWidth="0.0" text="Event4Date" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="54.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #ffd230; -fx-background-radius: 20px;" text="TIME" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Segoe UI Black" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Text fx:id="Event4Time" strokeType="OUTSIDE" strokeWidth="0.0" text="Event4Time" wrappingWidth="150.0">
+                                                   <font>
+                                                      <Font name="Segoe UI Semibold" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EVENT">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="CreateEventPage" alignment="CENTER_RIGHT" layoutX="1039.0" layoutY="14.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW EVENT  ">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </Button>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1051.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
             <AnchorPane fx:id="CreateEventPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
@@ -1248,6 +1069,171 @@
                      </children>
                   </AnchorPane>
                   <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE EVENT">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="QuizPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <ScrollPane fx:id="QuizScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
+                                 <children>
+                                    <VBox fx:id="QuizVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZ">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="CreateQuizPage" alignment="CENTER_RIGHT" layoutX="1048.0" layoutY="13.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="137.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW QUIZ  ">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </Button>
+                  
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+                  <VBox fx:id="FilterVBox" alignment="CENTER" layoutX="867.0" layoutY="14.0" prefHeight="35.0" prefWidth="173.0">
+                     <children>
+                        <Button fx:id="FilterButton" alignment="CENTER" mnemonicParsing="false" prefHeight="35.0" prefWidth="173.0" style="-fx-background-color: rgba(255, 255, 255, 0.7); -fx-background-radius: 20px; -fx-alignment: center-right;" text="FILTER           ▼" textFill="WHITE">
+                           <font>
+                              <Font name="Arial Black" size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="879.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/FilterIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="CreateQuizPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Title">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Description">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Theme">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Content">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <TextArea fx:id="QuizDescriptionField" layoutX="291.0" layoutY="143.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <Button fx:id="DoneCreateQuiz" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="20.0" />
+                           </font>
+                        </Button>
+                        <ChoiceBox fx:id="QuizThemeChoiceBox" layoutX="291.0" layoutY="279.0" prefHeight="43.0" prefWidth="203.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </ChoiceBox>
+                        <TextField fx:id="QuizTitleField" layoutX="291.0" layoutY="64.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextField fx:id="QuizContentField" layoutX="291.0" layoutY="357.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE QUIZ">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="DiscussionPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <ScrollPane fx:id="DiscussionScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
+                                 <children>
+                                    <VBox fx:id="DiscussionVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DISCUSSION">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="CreateDiscussionPage" alignment="CENTER_RIGHT" layoutX="1012.0" layoutY="12.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="173.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW DISCUSSION">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </Button>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1020.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="CreateDiscussionPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Discussion Title">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Discussion Content" wrappingWidth="195.69140625">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <TextArea fx:id="DiscussionContentField" layoutX="291.0" layoutY="121.0" prefHeight="294.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <Button fx:id="DoneCreateDiscussion" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="20.0" />
+                           </font>
+                        </Button>
+                        <TextField fx:id="DiscussionTitleField" layoutX="291.0" layoutY="64.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE DISCUSSION">
                      <font>
                         <Font name="Segoe UI Black" size="36.0" />
                      </font>

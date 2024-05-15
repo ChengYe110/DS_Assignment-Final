@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,12 +27,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -62,26 +67,29 @@ public class StudentController implements Initializable {
             FriendRequestPage, ExitFriendRequestPage, ExitViewFriendProfilePage, CreateDiscussionPage, DoneCreateDiscussion,
             AddParentButton, AddParentPage, ExitAddParentPane, ChangeUsernameAndEmailButton, ChangePasswordButton,
             SaveChangeUsernameAndEmailButton, SaveChangePasswordButton, EditProfilePage, ExitEditProfilePage,
-            PointDisplay;
+            PointDisplay, JoinEvent1, JoinEvent2, JoinEvent3, JoinEvent4, FilterButton;
     @FXML
-    private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox, DiscussionVBox;
+    private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox, DiscussionVBox, FilterVBox;
     @FXML
     private AnchorPane MenuPane, TopPane, HomePagePane, LeaderboardPane, QuizPane, CreateQuizPane, EventPane,
             CreateEventPane, BookingPane, StudentProfilePane, FriendListPane, FriendRequestPane, ViewFriendProfilePage,
             DiscussionPane, CreateDiscussionPane, AddParentPane, ChangeUsernameAndEmailPane, ChangePasswordPane, EditProfilePane;
     @FXML
-    private Text UsernameMenuPane, UsernameProfilePage, NumOfFriend, Suggested1, Suggested2, Suggested3, Suggested4, Suggested5, Distance1, Distance2, Distance3,
-            Distance4, Distance5;
+    private Text UsernameMenuPane, UsernameProfilePage, NumOfFriend, Suggested1, Suggested2, Suggested3, Suggested4, Suggested5,
+            Distance1, Distance2, Distance3, Distance4, Distance5, Event1Description, Event2Description, Event3Description,
+            Event4Description, Event1Venue, Event2Venue, Event3Venue, Event4Venue, Event1Date, Event2Date, Event3Date, Event4Date,
+            Event1Time, Event2Time, Event3Time, Event4Time;
     @FXML
-    private TextArea QuizTitleField, QuizDescriptionField, QuizContentField, EventDescriptionField, DestinationIDField;
+    private TextArea QuizDescriptionField, EventDescriptionField, DestinationIDField, DiscussionContentField;
     @FXML
-    private Label UsernameLabel, EmailLabel, LocationLabel;
+    private Label UsernameLabel, EmailLabel, LocationLabel, Event1Title, Event2Title, Event3Title, Event4Title;
     @FXML
-    private TextField NewUsername, NewEmail, ParentUsernameField, EventTitleField, EventVenueField;
+    private TextField NewUsername, NewEmail, ParentUsernameField, EventTitleField, EventVenueField, QuizTitleField, QuizContentField,
+            DiscussionTitleField;
     @FXML
     private PasswordField OldPassword1, OldPassword2, NewPassword, ConfirmPassword;
     @FXML
-    private ChoiceBox<String> FilterChoiceBox, QuizThemeChoiceBox, AvailableTimeSlotChoiceBox, EventTimeChoiceBox;
+    private ChoiceBox<String> QuizThemeChoiceBox, AvailableTimeSlotChoiceBox, EventTimeChoiceBox;
     @FXML
     private DatePicker EventDatePicker;
     @FXML
@@ -138,9 +146,6 @@ public class StudentController implements Initializable {
                 }
             });
 
-            FilterChoiceBox.setItems(theme);
-            FilterChoiceBox.setValue("FILTER");
-            QuizThemeChoiceBox.setItems(theme);
             EventTimeChoiceBox.setItems(time);
 
             ButtonEffect(FriendListPage);
@@ -156,7 +161,6 @@ public class StudentController implements Initializable {
                 //ViewFriendProfilePage.setVisible(false);
                 EditProfilePane.setVisible(false);
             });
-
             EditProfilePage.setOnAction(event -> {
                 EditProfilePane.setVisible(true);
                 EditProfilePane.toFront();
@@ -196,7 +200,6 @@ public class StudentController implements Initializable {
                     showReminderDialog("Please fill in all information!!!");
                 }
             });
-
             AddParentPage.setOnAction(event -> {
                 AddParentPane.setVisible(true);
                 AddParentPane.toFront();
@@ -211,33 +214,29 @@ public class StudentController implements Initializable {
             ExitAddParentPane.setOnAction(event -> {
                 AddParentPane.setVisible(false);
             });
-
             FriendListScrollPane.setContent(FriendListVBox);
             FriendListPage.setOnAction(event -> {
                 FriendListPane.setVisible(true);
                 FriendListPane.toFront();
             });
-
             ButtonEffect(ExitFriendListPage);
             ExitFriendListPage.setOnAction(event -> {
                 FriendListPane.setVisible(false);
             });
-
             FriendRequestScrollPane.setContent(FriendRequestVBox);
             FriendRequestPage.setOnAction(event -> {
                 FriendRequestPane.setVisible(true);
                 FriendRequestPane.toFront();
             });
-
             ButtonEffect(ExitFriendRequestPage);
             ExitFriendRequestPage.setOnAction(event -> {
                 FriendRequestPane.setVisible(false);
             });
-
 //            ButtonEffect(ExitViewFriendProfilePage);
 //            ExitViewFriendProfilePage.setOnAction(event -> {
 //                ViewFriendProfilePage.setVisible(false);
 //            });
+
             DiscussionScrollPane.setContent(DiscussionVBox);
             DiscussionPage.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
@@ -246,7 +245,6 @@ public class StudentController implements Initializable {
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(DiscussionPane);
             });
-
             CreateDiscussionPage.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
@@ -254,16 +252,22 @@ public class StudentController implements Initializable {
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateDiscussionPane);
             });
-
             DoneCreateDiscussion.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
-                stackPane.getChildren().clear();
-                stackPane.getChildren().add(DiscussionPane);
+                String discussionTitle = DiscussionTitleField.getText();
+                String discussionContent = DiscussionContentField.getText();
+                if (discussionTitle.isBlank() || discussionContent.isBlank()) {
+                    showReminderDialog("Please fill in all information!!!");
+                } else {
+                    stackPane.getChildren().clear();
+                    stackPane.getChildren().add(DiscussionPane);
+                }
             });
 
             QuizScrollPane.setContent(QuizVBox);
+            createFilterDropdown(theme);
             QuizPage.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
@@ -271,12 +275,7 @@ public class StudentController implements Initializable {
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(QuizPane);
             });
-            FilterChoiceBox.setOnAction(event -> {
-                String selectedTheme = FilterChoiceBox.getValue();
-                if (selectedTheme != null && !selectedTheme.isEmpty()) {
-                    filterTheme(selectedTheme); // Call your method to sort QuizVBox based on the selected theme
-                }
-            });
+            QuizThemeChoiceBox.setItems(theme);
             CreateQuizPage.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
@@ -288,8 +287,16 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
-                stackPane.getChildren().clear();
-                stackPane.getChildren().add(QuizPane);
+                String quizTitle = QuizTitleField.getText();
+                String quizDescription = QuizDescriptionField.getText();
+                String quizTheme = QuizThemeChoiceBox.getValue();
+                String quizContent = QuizContentField.getText();
+                if (quizTitle.isBlank() || quizDescription.isBlank() || quizTheme.isBlank() || quizContent.isBlank()) {
+                    showReminderDialog("Please fill in all information!!!");
+                } else {
+                    stackPane.getChildren().clear();
+                    stackPane.getChildren().add(QuizPane);
+                }
             });
 
             EventPage.setOnAction(event -> {
@@ -305,6 +312,38 @@ public class StudentController implements Initializable {
                 }
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateEventPane);
+            });
+            JoinEvent1.setOnAction(event -> {
+                String title = Event1Title.getText();
+                String description = Event1Description.getText();
+                String venue = Event1Venue.getText();
+                String date = Event1Title.getText();
+                String time = Event1Time.getText();
+                //check clashing
+            });
+            JoinEvent2.setOnAction(event -> {
+                String title = Event2Title.getText();
+                String description = Event2Description.getText();
+                String venue = Event2Venue.getText();
+                String date = Event2Title.getText();
+                String time = Event2Time.getText();
+                //check clashing
+            });
+            JoinEvent3.setOnAction(event -> {
+                String title = Event3Title.getText();
+                String description = Event3Description.getText();
+                String venue = Event3Venue.getText();
+                String date = Event3Title.getText();
+                String time = Event3Time.getText();
+                //check clashing
+            });
+            JoinEvent4.setOnAction(event -> {
+                String title = Event4Title.getText();
+                String description = Event4Description.getText();
+                String venue = Event4Venue.getText();
+                String date = Event4Title.getText();
+                String time = Event4Time.getText();
+                //check clashing
             });
             DoneCreateEvent.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
@@ -364,21 +403,24 @@ public class StudentController implements Initializable {
         addFriendRequest("Johnny Dep");
         addFriendRequest("Johnny Dep");
         addFriendRequest("Johnny Dep");
-        addNewQuiz("MockTestQuestion", "ENGINEERING", "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "MATHEMATIC", "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "ENGINEERING", "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "ENGINEERING", "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "TECHNOLOGY", "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "TECHNOLOGY", "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewDiscussion("HiTesting", "STUDENT", "jack", "yoyooyooyoyhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
-        addNewDiscussion("HiTesting", "PARENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
-        addNewDiscussion("HiTesting", "EDUCATOR", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
-        addNewDiscussion("HiTesting", "STUDENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
-        addNewDiscussion("HiTesting", "PARENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
-        addNewDiscussion("HiTesting", "STUDENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
-        addNewDiscussion("HiTesting", "EDUCATOR", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
-        addNewDiscussion("HiTesting", "STUDENT", "jack", "yoyooyooyoyoyoyyyyyyyyyooyoyooyoyoyoyoyooyoyoyoooyoyoyoyoyyoooooyyoyoyoyyyyyoyoyoyoyoyoyoyoyoyoyoyoyoyoy");
+        addNewQuiz("MockTestQuestion", "ENGINEERING", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
+        addNewQuiz("MockTestQuestion", "MATHEMATIC", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
+        addNewQuiz("MockTestQuestion", "SCIENCE", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
+        addNewQuiz("MockTestQuestion", "ENGINEERING", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
+        addNewQuiz("MockTestQuestion", "SCIENCE", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
+        addNewQuiz("MockTestQuestion", "TECHNOLOGY", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
+        addNewDiscussion("HiTesting", "STUDENT", "jack", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+        addNewDiscussion("OKOK", "PARENT", "lily", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+        addNewDiscussion("BangBangBang", "EDUCATOR", "janice", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+        addNewDiscussion("EatShit", "STUDENT", "leo", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+        addNewDiscussion("TomyamNice", "PARENT", "david", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+        addNewDiscussion("HiTesting", "STUDENT", "jason", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+        addNewDiscussion("YeahGoSleep", "EDUCATOR", "anson", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+        addNewDiscussion("SOS", "STUDENT", "lydia", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         setUpProfilePage("Harry");
+        Node quizNode = QuizVBox.getChildren().get(0); // Get the first quiz HBox
+        String themeText = getThemeText(quizNode); // Call the method
+        System.out.println("Theme: " + themeText);
     }
 
     public void switchHomePage() {
@@ -459,10 +501,6 @@ public class StudentController implements Initializable {
         });
     }
 
-    public void getFilterChoice(ActionEvent event) {
-        String theme = FilterChoiceBox.getValue();
-    }
-
     // Method to add a friend to the friendlist
     private void addFriendList(String friendName) {
         Button friendButton = new Button(friendName);
@@ -520,7 +558,6 @@ public class StudentController implements Initializable {
         FriendRequestVBox.getChildren().add(FriendRequestHBox);
     }
 
-    // Method to add an HBox containing a VBox with three texts and one button to the main VBox
     private void addNewQuiz(String title, String theme, String description, String content) {
         // Create the HBox
         HBox hBox = new HBox();
@@ -534,13 +571,31 @@ public class StudentController implements Initializable {
 
         // Add three text elements to the VBox
         Text titleText = new Text(title);
-        Text themeText = new Text("Theme: " + theme);
+
+        HBox temp = new HBox();
+        temp.setSpacing(5);
+        temp.setAlignment(Pos.TOP_LEFT);
+        Text t = new Text("Theme: ");
+        t.setStyle("-fx-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
+        Button themeButton = new Button(theme);
+        String setColour = "";
+        if (theme.equals("SCIENCE")) {
+            setColour = "-fx-background-color: #c3dbc2;";
+        } else if (theme.equals("TECHNOLOGY")) {
+            setColour = "-fx-background-color: #a7d1df;";
+        } else if (theme.equals("ENGINEERING")) {
+            setColour = "-fx-background-color: #e4cfb4;";
+        } else if (theme.equals("MATHEMATIC")) {
+            setColour = "-fx-background-color: #f0c9dc;";
+        }
+        themeButton.setStyle(setColour + "-fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 12px; -fx-background-radius: 20px;");
+        temp.getChildren().addAll(t, themeButton);
+
         Text descriptionText = new Text(description);
         descriptionText.setWrappingWidth(800);
         titleText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 30px; ");
-        themeText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
-        descriptionText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
-        vBox.getChildren().addAll(titleText, themeText, descriptionText);
+        descriptionText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 14px; ");
+        vBox.getChildren().addAll(titleText, temp, descriptionText);
 
         // Create a button
         Button button = new Button("ATTEMPT QUIZ");
@@ -559,50 +614,55 @@ public class StudentController implements Initializable {
         hBox.getChildren().addAll(vBox, button);
 
         // Add the HBox to the main VBox
-        QuizVBox.getChildren().add(hBox);
+        QuizVBox.getChildren().add(0, hBox);
     }
 
-    public void filterTheme(String theme) {
-        // Get the children of the main VBox
-        List<Node> children = new ArrayList<>(QuizVBox.getChildren());
+    public void createFilterDropdown(ObservableList<String> themes) {
+        FilterVBox.setAlignment(Pos.CENTER);
 
-        // Sort the children based on specificTheme
-        children.sort((node1, node2) -> {
-            String theme1 = getThemeText(node1);
-            String theme2 = getThemeText(node2);
+        // Create checkboxes for each theme
+        for (String theme : themes) {
+            CheckBox checkBox = new CheckBox(theme);
+            checkBox.setStyle("-fx-background-color: white;-fx-font-family: \"Arial Black\";-fx-font-size: 14px;-fx-background-color: rgba(255, 255, 255, 0.7);");
+            checkBox.setVisible(false); // Initially hide checkboxes
+            checkBox.setMinWidth(150);
+            FilterVBox.getChildren().add(checkBox);
+        }
 
-            // Compare theme1 and theme2
-            if (theme1.equals(theme) && !theme2.equals(theme)) {
-                return -1; // specificTheme should be on top
-            } else if (!theme1.equals(theme) && theme2.equals(theme)) {
-                return 1; // specificTheme should be on top
-            } else {
-                return 0; // No change in order
+        // Add click event handler to toggle checkboxes visibility
+        FilterButton.setOnMouseClicked(event -> {
+            ObservableList<Node> children = FilterVBox.getChildren();
+            for (int i = 1; i < children.size(); i++) {
+                Node node = children.get(i);
+                node.setVisible(!node.isVisible());
             }
         });
+        // Add listener to each checkbox to trigger filterTheme method
+        for (Node node : FilterVBox.getChildren()) {
+            if (node instanceof CheckBox) {
+                CheckBox checkBox = (CheckBox) node;
+                checkBox.setOnAction(event -> filterTheme());
+            }
+        }
 
-        QuizVBox.getChildren().clear();
-
-        // Update the layout to reflect the new order
-        QuizVBox.getChildren().setAll(children);
     }
 
     private String getThemeText(Node node) {
         if (node instanceof HBox) {
             HBox hbox = (HBox) node;
             ObservableList<Node> children = hbox.getChildren();
-            if (children.size() >= 1) {
-                Node vboxNode = children.get(0);
-                if (vboxNode instanceof VBox) {
-                    VBox vbox = (VBox) vboxNode;
+            for (Node child : children) {
+                if (child instanceof VBox) {
+                    VBox vbox = (VBox) child;
                     ObservableList<Node> vboxChildren = vbox.getChildren();
-                    if (vboxChildren.size() >= 2) {
-                        Node themeText = vboxChildren.get(1); // Assuming theme text is at index 1
-                        if (themeText instanceof Text) {
-                            String fullText = ((Text) themeText).getText();
-                            // Remove the "Theme: " prefix
-                            if (fullText.startsWith("Theme: ")) {
-                                return fullText.substring(7); // Remove "Theme: "
+                    for (Node vboxChild : vboxChildren) {
+                        if (vboxChild instanceof HBox) {
+                            HBox tempHBox = (HBox) vboxChild;
+                            ObservableList<Node> tempHBoxChildren = tempHBox.getChildren();
+                            for (Node tempChild : tempHBoxChildren) {
+                                if (tempChild instanceof Button) {
+                                    return ((Button) tempChild).getText();
+                                }
                             }
                         }
                     }
@@ -612,10 +672,63 @@ public class StudentController implements Initializable {
         return "";
     }
 
+public void filterTheme() {
+    // Get the children of the main VBox
+    ObservableList<Node> children = QuizVBox.getChildren();
+
+    // Check if any checkbox is selected
+    boolean anyCheckboxSelected = false;
+    for (Node filterChild : FilterVBox.getChildren()) {
+        if (filterChild instanceof CheckBox) {
+            CheckBox checkBox = (CheckBox) filterChild;
+            if (checkBox.isSelected()) {
+                anyCheckboxSelected = true;
+                break;
+            }
+        }
+    }
+
+    // Iterate over the children
+    for (Node child : children) {
+        if (child instanceof HBox) {
+            HBox hbox = (HBox) child;
+            boolean showQuiz = true; // Default to true, display the quiz
+
+            // Get the theme of the current quiz
+            String theme = getThemeText(child);
+
+            // If any checkbox is selected, proceed with filtering
+            if (anyCheckboxSelected) {
+                // If the theme is not empty
+                if (!theme.isEmpty()) {
+                    // Check if any checkbox with the corresponding theme is selected
+                    for (Node filterChild : FilterVBox.getChildren()) {
+                        if (filterChild instanceof CheckBox) {
+                            CheckBox checkBox = (CheckBox) filterChild;
+                            if (checkBox.isSelected() && checkBox.getText().equals(theme)) {
+                                showQuiz = true;
+                                break;
+                            } else {
+                                showQuiz = false;
+                            }
+                        }
+                    }
+                } else {
+                    showQuiz = false; // If the theme is empty, don't show the quiz
+                }
+            }
+
+            // Set visibility of the quiz based on showQuiz flag
+            hbox.setVisible(showQuiz);
+            hbox.setManaged(showQuiz);
+        }
+    }
+}
+
     private void addNewDiscussion(String title, String role, String username, String content) {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
-        hBox.setSpacing(3);
+        hBox.setSpacing(10);
 
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.TOP_LEFT);
@@ -646,7 +759,7 @@ public class StudentController implements Initializable {
         contentText.setWrappingWidth(900);
         titleText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 30px; ");
         usernameButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; -fx-padding: 0; ");
-        contentText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
+        contentText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 14px; ");
         vBox.getChildren().addAll(titleText, temp, contentText);
 
         // Create a heart shape using SVGPath
@@ -671,7 +784,7 @@ public class StudentController implements Initializable {
         hBox.getChildren().addAll(vBox, loveButton);
 
         // Add the HBox to the main VBox
-        DiscussionVBox.getChildren().add(hBox);
+        DiscussionVBox.getChildren().add(0, hBox);
     }
 
     private void setUsername(String username) {
