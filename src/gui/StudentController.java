@@ -158,7 +158,7 @@ public class StudentController implements Initializable {
                 FriendListPane.setVisible(false);
                 FriendRequestPane.setVisible(false);
                 AddParentPane.setVisible(false);
-                ViewFriendProfilePage.setVisible(false);
+                //ViewFriendProfilePage.setVisible(false);
                 EditProfilePane.setVisible(false);
             });
             EditProfilePage.setOnAction(event -> {

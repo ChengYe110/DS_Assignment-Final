@@ -55,7 +55,7 @@ public class UserRepository {
         Connection connection = dbConnect.linkDatabase();
 
         try {
-            String selectQuery = "SELECT * FROM " +sessionManager.getCurrentUser().getRole() + " WHERE Email = ?";
+            String selectQuery = "SELECT * FROM user WHERE Email = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
                 preparedStatement.setString(1, email);
 
@@ -108,7 +108,7 @@ public class UserRepository {
 
     public boolean isUsernameTaken(String newUsername) {
         try (Connection conn = dbConnect.linkDatabase()) {
-            String selectQuery = "SELECT Username FROM " +sessionManager.getCurrentUser().getRole() + " WHERE Username = ?";
+            String selectQuery = "SELECT Username FROM user WHERE Username = ?";
             try (PreparedStatement preparedStatement = conn.prepareStatement(selectQuery)) {
                 preparedStatement.setString(1, newUsername);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -153,7 +153,7 @@ public class UserRepository {
 
     public boolean isEmailTaken(String newEmail) {
         try (Connection conn = dbConnect.linkDatabase()) {
-            String selectQuery = "SELECT Email FROM " +sessionManager.getCurrentUser().getRole() + " WHERE Email = ?";
+            String selectQuery = "SELECT Email FROM user WHERE Email = ?";
             try (PreparedStatement preparedStatement = conn.prepareStatement(selectQuery)) {
                 preparedStatement.setString(1, newEmail);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {

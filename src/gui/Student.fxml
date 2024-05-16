@@ -772,6 +772,59 @@
                   </ImageView>
                </children>
             </AnchorPane>
+
+            <AnchorPane fx:id="CreateQuizPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Title">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Description">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Theme">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Content">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <TextArea fx:id="QuizDescriptionField" layoutX="291.0" layoutY="143.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <Button fx:id="DoneCreateQuiz" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="20.0" />
+                           </font>
+                        </Button>
+                        <ChoiceBox fx:id="QuizThemeChoiceBox" layoutX="291.0" layoutY="279.0" prefHeight="43.0" prefWidth="203.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </ChoiceBox>
+                        <TextField fx:id="QuizTitleField" layoutX="291.0" layoutY="64.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextField fx:id="QuizContentField" layoutX="291.0" layoutY="357.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE QUIZ">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
             <AnchorPane fx:id="DiscussionPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
