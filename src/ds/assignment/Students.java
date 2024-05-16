@@ -179,6 +179,30 @@ public class Students extends User{
 
         return parentUsernameList;
     }
+    
+    public boolean isDuplicateParent(String username, String newParent) {
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            Statement statement = connectDB.createStatement();
+            String connectQuery = "SELECT * FROM student WHERE Username = '" + username + "'";
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+
+            if (queryOutput.next()) {
+                String currentParents = queryOutput.getString("Username");
+                if (currentParents != null && currentParents.contains(newParent)) {
+                    return true; // Parent already in the list
+                }
+            }
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+
+        return false; // Parent not in the list or error occurred
+    }
 
     
     //get the friend list of a student
@@ -235,7 +259,7 @@ public class Students extends User{
     
     //add a friend to a student's friend list
     public void addFriend(String username, String newFriend) {
-        if (isDuplicate(username, newFriend)) {
+        if (isDuplicateFriend(username, newFriend)) {
             System.out.println("Friend already in the list.");
             return;
         }
@@ -266,7 +290,7 @@ public class Students extends User{
         }
     }
     
-    public boolean isDuplicate(String username, String newFriend) {
+    public boolean isDuplicateFriend(String username, String newFriend) {
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
