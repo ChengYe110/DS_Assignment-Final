@@ -4,9 +4,13 @@
  */
 package gui;
 
+import ds.assignment.DatabaseConnection;
 import java.awt.Desktop;
 import java.net.URI;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -892,7 +896,7 @@ public void filterTheme() {
         EmailLabel.setText(email);
         LocationLabel.setText(location);
         NumOfFriend.setText(totalNumOfFriend);
-
+        
         List<String> friendNames = Arrays.asList("Friend 1", "Friend 2", "Friend 3"); // Retrieve friend data from the database, assuming it returns a list of friend names
         // Add each friend to the friend list
         for (String friendName : friendNames) {
@@ -920,5 +924,99 @@ public void filterTheme() {
         alert.showAndWait()
                 .filter(response -> response == ButtonType.OK);
     }
+    //private TextField NewUsername, NewEmail, ParentUsernameField, EventTitleField, EventVenueField, QuizTitleField, QuizContentField, DiscussionTitleField;
+    //private PasswordField OldPassword1, OldPassword2, NewPassword, ConfirmPassword;
+    public void editProfile_Username_Email(String oldPassword) {
+        try {
+            // Connect to database
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
 
+            // Get new username and email from text fields
+            String oldPassword1 = OldPassword1.getText();
+            String newUsernameChange = NewUsername.getText();
+            String newEmailChange = NewEmail.getText();
+            String currentUsername = ""; // Store the current username
+            String currentEmail = ""; // Store the current email
+
+            // Check if old password matches the one in the database
+            String checkQuery = "SELECT Username, Email FROM student WHERE Password = ?";
+            PreparedStatement checkStatement = connectDB.prepareStatement(checkQuery);
+            checkStatement.setString(1, oldPassword1);
+            ResultSet resultSet = checkStatement.executeQuery();
+
+            if (resultSet.next()) {
+                currentUsername = resultSet.getString("Username");
+                currentEmail = resultSet.getString("Email");
+            } else {
+                System.out.println("Old password does not match.");
+                showReminderDialog("Old password does not match.");
+                checkStatement.close();
+                connectDB.close();
+                return;
+            }
+            checkStatement.close();
+
+            // Check the conditions and update accordingly
+            if (!currentUsername.equals(newUsernameChange) && currentEmail.equals(newEmailChange)) { 
+                // if only username changes
+                String updateQuery = "UPDATE student SET Username = ? WHERE Password = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+                updateStatement.setString(1, newUsernameChange);
+                updateStatement.setString(2, oldPassword);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+                System.out.println("Username updated successfully.");
+                showReminderDialog("Username updated successfully.");
+            }else if (currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
+                // if only email changes
+                String updateQuery = "UPDATE student SET Email = ? WHERE Password = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+                updateStatement.setString(1, newEmailChange);
+                updateStatement.setString(2, oldPassword);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+                System.out.println("Email updated successfully.");
+                showReminderDialog("Email updated successfully.");
+            } else if (!currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
+                String updateQuery = "UPDATE student SET Username = ?, Email = ? WHERE Password = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+                updateStatement.setString(1, newUsernameChange);
+                updateStatement.setString(2, newEmailChange);
+                updateStatement.setString(3, oldPassword);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+                System.out.println("Username and Email updated successfully.");
+                showReminderDialog("Username and Email updated successfully.");
+            } else {
+                System.out.println("No changes detected.");
+            }
+
+            // Close the connection
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+
+    
+    public void editProfile_Password(){
+        try{
+            // Connect to database
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            
+            //change username/email
+            String oldPassword1 = OldPassword1.getText();
+            String newUsernameChange = NewUsername.getText();
+            String newEmailChange = NewEmail.getText();
+            
+            //change password
+            String oldPassword2 = OldPassword2.getText();
+            
+        }catch(Exception e){
+    
+        }
+    }
 }
