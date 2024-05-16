@@ -13,14 +13,14 @@ public interface BookingDestination {
 
     public String bookingDestination(String chooseTour);//to book the tour, need readfile, checkCollision, calculate distance
     
-    public void readFile(String filename);//read the coordinates inside the txt file
+    public void readFile();//read the coordinates inside the txt file
     
-    public double distance();//calculate the distance between all coordinates
+    public double calcDistance();//calculate the distance between all coordinates
     
-    public boolean checkCollision();//booking date inside the parentheses
+    public boolean checkCollision(String date);//booking date inside the parentheses
     
     public String viewEvent();///method to how the upcoming event
     
-    public String displayBookingMade();//display the booking made
+    public void displayBooking();//display the booking made
     
 }
