@@ -803,7 +803,10 @@ public void filterTheme() {
         //associate data with column
         NoColumn.setCellValueFactory(new PropertyValueFactory<Parent, Integer>("no"));
         ParentColumn.setCellValueFactory(new PropertyValueFactory<Parent, String>("username"));
-
+        
+        //modified
+        student.getParentUsernameList();
+        
 //        // Replace the connection URL, username, and password with your database credentials
 //        String url = "jdbc:mysql://localhost:3306/your_database";
 //        String username = "your_username";
@@ -892,20 +895,23 @@ public void filterTheme() {
     private Students student;
     
     private void setUpProfilePage(String username) {
-        String email = "email"; //get email 
-        String location = "location"; //get location 
-        String totalNumOfFriend = "10"; //get total num of friend 
+//        String email = "email"; //get email 
+//        String location = "location"; //get location 
+//        String totalNumOfFriend = "10"; //get total num of friend 
         
-        //
+        //modified
         student.displayStudentInfo();
-        
+        String totalNumOfFriend = String.valueOf(student.getFriendList(username).size());
+
         UsernameProfilePage.setText(student.getUsername());
         UsernameLabel.setText(student.getUsername());
         EmailLabel.setText(student.getEmail(username));
         LocationLabel.setText(student.getLocation());
         NumOfFriend.setText(totalNumOfFriend);
         
-        List<String> friendNames = Arrays.asList("Friend 1", "Friend 2", "Friend 3"); // Retrieve friend data from the database, assuming it returns a list of friend names
+        //modified
+        ArrayList<String> friendNames = student.getFriendList(username);
+        //List<String> friendNames = Arrays.asList("Friend 1", "Friend 2", "Friend 3"); // Retrieve friend data from the database, assuming it returns a list of friend names
         // Add each friend to the friend list
         for (String friendName : friendNames) {
             addFriendList(friendName);
@@ -914,8 +920,10 @@ public void filterTheme() {
         setUpParentTable(username);
         setUpEventTable(username);
         setUpBookedStudyTourTable(username);
-
-        int point = 20; //retrive from database
+        
+        //modified
+        int point = student.getPoints();
+        //int point = 20; //retrive from database
         PointDisplay.setText(String.valueOf(point) + " POINTS");
     }
 

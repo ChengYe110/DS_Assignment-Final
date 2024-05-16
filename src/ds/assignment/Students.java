@@ -104,7 +104,7 @@ public class Students extends User{
             e.printStackTrace();
         }
     }
-    
+    //uselesss
     public void displayFriend(){
         
         try{
@@ -129,7 +129,7 @@ public class Students extends User{
             e.printStackTrace();
         }
     }
-    
+    //useless
     public void displayParent(){
         
         try{
@@ -153,6 +153,33 @@ public class Students extends User{
             e.printStackTrace();
         }
     }
+    
+    public ArrayList<String> getParentUsernameList() {
+        ArrayList<String> parentUsernameList = new ArrayList<>();
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT parent.Username FROM parent "
+                    + "JOIN Student ON student.ParentsEmail = parent.Email";
+            PreparedStatement preparedStatement = connectDB.prepareStatement(connectQuery);
+            ResultSet queryOutput = preparedStatement.executeQuery();
+
+            while (queryOutput.next()) {
+                String parentUsername = queryOutput.getString("Username");
+                parentUsernameList.add(parentUsername);
+            }
+
+            preparedStatement.close();
+            connectDB.close();
+        } catch (SQLException e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+
+        return parentUsernameList;
+    }
+
     
     //get the friend list of a student
     public ArrayList<String> getFriendList(String username){
@@ -346,6 +373,34 @@ public class Students extends User{
             e.printStackTrace();
         }
     }
+    
+    //reject a friend request of a student
+    public void rejectFriendRequest(String username, String friendToReject) {
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT FriendRequest FROM student WHERE Username = '" + username + "'";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+
+            if (queryOutput.next()) {
+                String currentRequests = queryOutput.getString("FriendRequest");
+                String updatedRequests = currentRequests.replace(friendToReject + ",", "");
+
+                // Update the database with the new friend request list
+                String updateQuery = "UPDATE student SET FriendRequest = '" + updatedRequests + "' WHERE Username = '" + username + "'";
+                statement.executeUpdate(updateQuery);
+            }
+
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+
     
     public void sendFriendRequest(String senderUsername, String receiverUsername) {
         try {
