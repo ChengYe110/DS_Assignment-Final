@@ -1127,7 +1127,9 @@
                   </ImageView>
                </children>
             </AnchorPane>
+
             <AnchorPane fx:id="CreateQuizPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
                      <children>

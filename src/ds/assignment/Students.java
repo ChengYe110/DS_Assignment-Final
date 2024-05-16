@@ -6,17 +6,57 @@ package ds.assignment;
 //import javafx.fxml.FXML;
 //import javafx.scene.control.Label;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
  *
  * @author user
  */
-public class Students {
+public class Students extends User{
 //    @FXML
 //    private Label showUsernameLabel;
+    private int points;
+    
+    public Students (String email, String username, String password, String role){
+        super(email, username, password, role);
+        points=0;
+    }
+    
+    public void insertIntoDatabase() {
+        if (!InfoCheck()){
+        Connection connection = null;
+        try {
+            // Database connection details
+            connection=dbConnect.linkDatabase();
+            
+            String insertQuery = "INSERT INTO student (Username, Email, Password, Role, Points, Location) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, email);
+            preparedStatement.setString(3, hashPassword(password));
+            preparedStatement.setString(4, role);
+            preparedStatement.setInt(5, points);
+            preparedStatement.setString(6, location);
+            
+            preparedStatement.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dbConnect.endDatabase();
+        }
+    }   else
+            System.out.println("Username or password already exists. Please choose a different username or password.");
+            
+    }
+    
+    
+    
     
     public void displayInfo(){
         

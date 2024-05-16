@@ -20,10 +20,10 @@ public class LeaderBoardController implements Initializable {
 
     @FXML
     private Text UsernameText,Winner1,Winner10,Winner10pts,Winner1pts,Winner2,Winner2pts,Winner3,Winner3pts,Winner4,Winner4pts,Winner5,Winner5pts,Winner6,Winner6pts,Winner7,Winner7pts,Winner8,Winner8pts,Winner9,Winner9pts;
-
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
 //        StudentHomePageController homePageController = new StudentHomePageController();
 //        // Execute after the layout pass is complete
 //        Platform.runLater(() -> {
