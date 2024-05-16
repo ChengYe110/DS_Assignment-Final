@@ -33,8 +33,34 @@ public class Login {
         this.sessionManager = sessionManager;
     }
 
-    public boolean authenticateUser(String enteredEmail, String enteredPassword) {
-        String hashedPasswordFromDatabase = getHashedPasswordFromDatabase(enteredEmail);
+    public boolean ExistingUser(String enteredEmailUsername) {
+        DatabaseConnection dbConnect = new DatabaseConnection();
+        Connection connection = dbConnect.linkDatabase();
+        System.out.println("1halo");
+        try {
+            // Assuming 'Role' is the table name containing user details
+            String selectQuery = "SELECT * FROM user WHERE Username = ? OR Email = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                preparedStatement.setString(1, enteredEmailUsername);
+                preparedStatement.setString(2, enteredEmailUsername);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                return resultSet.next();
+                
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately in a real application.
+        } finally {
+            dbConnect.endDatabase();
+        }
+
+        return false; // User not found in the database
+    }
+
+    public boolean authenticateUser(String enteredEmailUsername, String enteredPassword) {
+        String hashedPasswordFromDatabase = getHashedPasswordFromDatabase(enteredEmailUsername);
 
         if (hashedPasswordFromDatabase != null) {
             // Use BCrypt to check if the entered password matches the hashed password from the database
@@ -44,7 +70,7 @@ public class Login {
         return false; // Email not found in the database
     }
 
-    public static String getHashedPasswordFromDatabase(String email) {
+    public static String getHashedPasswordFromDatabase(String email_username) {
         String hashedPassword = null;
         Connection connection = null;
         DatabaseConnection dbConnect = new DatabaseConnection();
@@ -53,9 +79,10 @@ public class Login {
             connection = dbConnect.linkDatabase();
 
             // SQL query to retrieve the hashed password based on email
-            String selectQuery = "SELECT Password FROM " + SessionManager.currentUser.getRole() + " WHERE Email = ?";
+            String selectQuery = "SELECT Password FROM user WHERE Email = ? OR Username = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
-                preparedStatement.setString(1, email);
+                preparedStatement.setString(1, email_username);
+                preparedStatement.setString(2, email_username);
 
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {

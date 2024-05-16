@@ -19,11 +19,11 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author USER
  */
 public class User {
-    private String email;
-    private String username;
-    private String password;
-    private String location;
-    private String role;
+    protected String email;
+    protected String username;
+    protected String password;
+    protected String location;
+    protected String role;
 
     // Constructor
     public User(String email, String username, String password, String role) {
@@ -41,7 +41,7 @@ public class User {
     // Method to insert user data into the database
     
     //public abstract void insertIntoDatabase();
-//    public void insertIntoStudentDatabase() {
+//    public void insertIntoDatabase() {
 //        if (!InfoCheck()){
 //        Connection connection = null;
 //        try {
@@ -69,7 +69,7 @@ public class User {
 //    }
     
     // Method to hash a password
-    private String hashPassword(String plainTextPassword) {
+    protected String hashPassword(String plainTextPassword) {
         return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
     }
     
@@ -81,7 +81,7 @@ public class User {
         return String.format("%.2f,%.2f", x,y);  // You can customize the registration date logic
     }
 
-    private boolean InfoCheck() {
+    protected boolean InfoCheck() {
         Connection conn = null;
         try {
             // Database connection details
