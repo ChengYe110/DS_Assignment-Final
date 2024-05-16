@@ -7,8 +7,10 @@ package gui;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -29,8 +31,10 @@ public class Main extends Application {
             // Disable window resizing
             primaryStage.setResizable(false);
             primaryStage.show();
-
-        }catch(IOException e){
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            primaryStage.setX((screenBounds.getWidth() - primaryStage.getWidth()) / 2);
+            primaryStage.setY((screenBounds.getHeight() - primaryStage.getHeight()) / 2);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
