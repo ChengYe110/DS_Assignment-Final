@@ -67,7 +67,7 @@ public class StudentController implements Initializable {
             FriendRequestPage, ExitFriendRequestPage, ExitViewFriendProfilePage, CreateDiscussionPage, DoneCreateDiscussion,
             AddParentButton, AddParentPage, ExitAddParentPane, ChangeUsernameAndEmailButton, ChangePasswordButton,
             SaveChangeUsernameAndEmailButton, SaveChangePasswordButton, EditProfilePage, ExitEditProfilePage,
-            PointDisplay, JoinEvent1, JoinEvent2, JoinEvent3, JoinEvent4, FilterButton;
+            PointDisplay, JoinEvent1, JoinEvent2, JoinEvent3, JoinEvent4, FilterButton,LogOutButton;
     @FXML
     private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox, DiscussionVBox, FilterVBox;
     @FXML
@@ -158,7 +158,7 @@ public class StudentController implements Initializable {
                 FriendListPane.setVisible(false);
                 FriendRequestPane.setVisible(false);
                 AddParentPane.setVisible(false);
-                //ViewFriendProfilePage.setVisible(false);
+                ViewFriendProfilePage.setVisible(false);
                 EditProfilePane.setVisible(false);
             });
             EditProfilePage.setOnAction(event -> {
@@ -418,9 +418,6 @@ public class StudentController implements Initializable {
         addNewDiscussion("YeahGoSleep", "EDUCATOR", "anson", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         addNewDiscussion("SOS", "STUDENT", "lydia", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         setUpProfilePage("Harry");
-        Node quizNode = QuizVBox.getChildren().get(0); // Get the first quiz HBox
-        String themeText = getThemeText(quizNode); // Call the method
-        System.out.println("Theme: " + themeText);
     }
 
     public void switchHomePage() {
