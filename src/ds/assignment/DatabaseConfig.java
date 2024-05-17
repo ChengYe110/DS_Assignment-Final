@@ -10,9 +10,9 @@ package ds.assignment;
  * @author USER
  */
 public class DatabaseConfig {
-    public static final String URL = "jdbc:mysql://localhost:3006/datastructure";
+    public static final String URL = "jdbc:mysql://localhost:3306/datastructure";
     public static final String USERNAME = "root";
-    public static final String PASSWORD = "Mp2023@350#"; //hello
+    public static final String PASSWORD = "5e69f45e8b"; //hello
 
     // Line for testing
 }

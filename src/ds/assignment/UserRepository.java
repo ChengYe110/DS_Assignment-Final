@@ -50,8 +50,8 @@ public class UserRepository {
 
         return null; // Username not found in the database
     }
-
-    public User getUserByEmail(String email) {
+    
+        public User getUserByEmail(String email) {
         Connection connection = dbConnect.linkDatabase();
 
         try {
@@ -64,6 +64,37 @@ public class UserRepository {
                 if (resultSet.next()) {
                     // Extract user details from the result set and create a User object
                     String username = resultSet.getString("Username");
+                    String password = resultSet.getString("Password"); // Note: You may want to hash it
+                    String role = resultSet.getString("Role");
+                    // Add other fields as needed
+
+                    User user = new User(email, username, password, role);
+                    return user;
+                }
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately in a real application.
+        } finally {
+            dbConnect.endDatabase();
+        }
+
+        return null; // User not found in the database
+    }
+
+    public User getUserByUsername(String username) {
+        Connection connection = dbConnect.linkDatabase();
+
+        try {
+            String selectQuery = "SELECT * FROM user WHERE Username = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                preparedStatement.setString(1, username);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    // Extract user details from the result set and create a User object
+                    String email = resultSet.getString("Email");
                     String password = resultSet.getString("Password"); // Note: You may want to hash it
                     String role = resultSet.getString("Role");
                     // Add other fields as needed

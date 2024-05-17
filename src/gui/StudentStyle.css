@@ -33,6 +33,19 @@
     -fx-effect: null;
 }
 
+.arrow{
+    -fx-background-image:url('../png/Arrow.png');
+    -fx-background-size: cover;
+    /* Disable button effects */
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-background: transparent;
+    -fx-padding: 0;
+    -fx-text-fill: inherit;
+    -fx-effect: null;
+}
+
 .friendList{
     -fx-background-image:url('../png/SearchIconGrey.png');
     -fx-background-size: cover;
