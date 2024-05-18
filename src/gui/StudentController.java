@@ -13,6 +13,9 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +66,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import ds.assignment.Students;
 
 /**
  * FXML Controller class
@@ -770,9 +774,13 @@ public class StudentController implements Initializable {
         ObservableList<ParentColumn> parentList = FXCollections.observableArrayList(new ParentColumn(1, "Father"), new ParentColumn(2, "Mother"));
 
         //associate data with column
-        NoColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, Integer>("no"));
-        ParentColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, String>("username"));
 
+        NoColumn.setCellValueFactory(new PropertyValueFactory<Parent, Integer>("no"));
+        ParentColumn.setCellValueFactory(new PropertyValueFactory<Parent, String>("username"));
+        
+        //modified
+        student.getParentUsernameList();
+        
 //        // Replace the connection URL, username, and password with your database credentials
 //        String url = "jdbc:mysql://localhost:3306/your_database";
 //        String username = "your_username";
@@ -795,7 +803,7 @@ public class StudentController implements Initializable {
 //        }
         ParentTable.setItems(parentList);
     }
-
+    
     private void setUpEventTable(String username) {
         ObservableList<EventColumn> eventList = FXCollections.observableArrayList(new EventColumn("01/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("02/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("03/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("04/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("05/01/2024", "Happy New Year", "Alor Setar", "9am-11am"));
 
@@ -857,18 +865,27 @@ public class StudentController implements Initializable {
 //        }
         BookedStudyTourTable.setItems(bookedStudyTourList);
     }
-
+    
+    private Students student;
+    
     private void setUpProfilePage(String username) {
-        String email = "email"; //get email 
-        String location = "location"; //get location 
-        String totalNumOfFriend = "10"; //get total num of friend 
-        UsernameProfilePage.setText(username);
-        UsernameLabel.setText(username);
-        EmailLabel.setText(email);
-        LocationLabel.setText(location);
-        NumOfFriend.setText(totalNumOfFriend);
+//        String email = "email"; //get email 
+//        String location = "location"; //get location 
+//        String totalNumOfFriend = "10"; //get total num of friend 
+        
+        //modified
+        student.displayStudentInfo();
+        String totalNumOfFriend = String.valueOf(student.getFriendList(username).size());
 
-        List<String> friendNames = Arrays.asList("Friend 1", "Friend 2", "Friend 3"); // Retrieve friend data from the database, assuming it returns a list of friend names
+        UsernameProfilePage.setText(student.getUsername());
+        UsernameLabel.setText(student.getUsername());
+        EmailLabel.setText(student.getEmail(username));
+        LocationLabel.setText(student.getLocation());
+        NumOfFriend.setText(totalNumOfFriend);
+        
+        //modified
+        ArrayList<String> friendNames = student.getFriendList(username);
+        //List<String> friendNames = Arrays.asList("Friend 1", "Friend 2", "Friend 3"); // Retrieve friend data from the database, assuming it returns a list of friend names
         // Add each friend to the friend list
         for (String friendName : friendNames) {
             addFriendList(friendName);
@@ -877,8 +894,10 @@ public class StudentController implements Initializable {
         setUpParentTable(username);
         setUpEventTable(username);
         setUpBookedStudyTourTable(username);
-
-        int point = 20; //retrive from database
+        
+        //modified
+        int point = student.getPoints();
+        //int point = 20; //retrive from database
         PointDisplay.setText(String.valueOf(point) + " POINTS");
     }
 
@@ -894,6 +913,146 @@ public class StudentController implements Initializable {
         // Show the alert and wait for the user's response
         alert.showAndWait()
                 .filter(response -> response == ButtonType.OK);
+    }
+    
+    public void editProfile_Username_Email(String username) {
+        try {
+            // Connect to database
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+
+            // Get new username and email from text fields
+            String oldPassword1 = OldPassword1.getText();
+            String newUsernameChange = NewUsername.getText();
+            String newEmailChange = NewEmail.getText();
+            String currentUsername = ""; // Store the current username
+            String currentEmail = ""; // Store the current email
+
+            // Check if old password matches the one in the database
+            String checkQuery = "SELECT Username, Email FROM student WHERE Password = ?";
+            PreparedStatement checkStatement = connectDB.prepareStatement(checkQuery);
+            checkStatement.setString(1, oldPassword1);
+            ResultSet resultSet = checkStatement.executeQuery();
+
+            if (resultSet.next()) {
+                currentUsername = resultSet.getString("Username");
+                currentEmail = resultSet.getString("Email");
+            } else {
+                System.out.println("Old password does not match.");
+                showReminderDialog("Old password does not match.");
+                OldPassword1.setText("");
+                NewUsername.setText("");
+                NewEmail.setText("");
+                checkStatement.close();
+                connectDB.close();
+                return;
+            }
+            checkStatement.close();
+
+            // Check the conditions and update
+            if (!currentUsername.equals(newUsernameChange) && currentEmail.equals(newEmailChange)) { 
+                // if only username changes
+                String updateQuery = "UPDATE student SET Username = ? WHERE Password = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+                updateStatement.setString(1, newUsernameChange);
+                updateStatement.setString(2, oldPassword1);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+                System.out.println("Username updated successfully.");
+                showReminderDialog("Username updated successfully.");
+            }else if (currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
+                // if only email changes
+                String updateQuery = "UPDATE student SET Email = ? WHERE Password = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+                updateStatement.setString(1, newEmailChange);
+                updateStatement.setString(2, oldPassword1);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+                System.out.println("Email updated successfully.");
+                showReminderDialog("Email updated successfully.");
+            } else if (!currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
+                // if both username and email changes
+                String updateQuery = "UPDATE student SET Username = ?, Email = ? WHERE Password = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+                updateStatement.setString(1, newUsernameChange);
+                updateStatement.setString(2, newEmailChange);
+                updateStatement.setString(3, oldPassword1);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+                System.out.println("Username and Email updated successfully.");
+                showReminderDialog("Username and Email updated successfully.");
+            } else {
+                System.out.println("No changes.");
+                showReminderDialog("No changes.");
+            }
+
+            // Close connection
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+
+    public void editProfile_Password(String username) {
+        try {
+            // Connect to database
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+
+            // Get old password, new password, and confirmation password from text fields
+            String oldPassword2 = OldPassword2.getText();
+            String newPassword = NewPassword.getText();
+            String confirmPassword = ConfirmPassword.getText();
+
+            // Verify old password
+            String checkQuery = "SELECT Password FROM student WHERE Username = ?";
+            PreparedStatement checkStatement = connectDB.prepareStatement(checkQuery);
+            checkStatement.setString(1, username);
+            ResultSet resultSet = checkStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String currentPassword = resultSet.getString("Password");
+                if (!currentPassword.equals(oldPassword2)) {
+                    System.out.println("Old password does not match.");
+                    showReminderDialog("Old password does not match.");
+                    checkStatement.close();
+                    connectDB.close();
+                    return;
+                }
+            } else {
+                System.out.println("Username not found.");
+                checkStatement.close();
+                connectDB.close();
+                return;
+            }
+            checkStatement.close();
+
+            // Check if new password and confirm password match
+            if (!newPassword.equals(confirmPassword)) {
+                System.out.println("New password and confirmation password do not match. Please enter again. ");
+                showReminderDialog("New password and confirmation password do not match. Please enter again. ");
+                connectDB.close();
+                return;
+            }
+            
+            // Update password in the database
+            String updateQuery = "UPDATE student SET Password = ? WHERE Username = ?";
+            PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+            updateStatement.setString(1, newPassword);
+            updateStatement.setString(2, username);
+            updateStatement.executeUpdate();
+
+            updateStatement.close();
+            connectDB.close();
+
+            System.out.println("Password updated successfully.");
+            showReminderDialog("Password updated successfully.");
+
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
     }
 
     public HBox createEventHBox(String eventTitle, String eventDescription, String eventVenue, String eventDate, String eventTime) {
