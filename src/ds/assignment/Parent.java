@@ -30,7 +30,9 @@ import java.util.Map;
 
 public class Parent extends User implements BookingDestination{
     private String children;
-    
+    Map<LocalDate,String> bookingDate = new HashMap<>();//for date
+    List<String> destination = new ArrayList<>();//for calculate distance
+    List<double[]> coordinates = new ArrayList<>();//for calculate distance
     //linked list?(priority age-from oldest to youngest)
     
     
@@ -42,8 +44,7 @@ public class Parent extends User implements BookingDestination{
     @Override
     public void readFile() {
         String line;        
-        List<String> destination = new ArrayList<>();
-        List<double[]> coordinates = new ArrayList<>();
+        
         try{
             BufferedReader br = new BufferedReader(new FileReader("BookingDestination.txt"));     
             while((line = br.readLine()) != null){
@@ -82,8 +83,6 @@ public class Parent extends User implements BookingDestination{
     public boolean checkCollision() {
         //return true when have collision
         int year = LocalDate.now().getYear();
-        
-        Map<LocalDate,String> bookingDate = new HashMap<>();
         
         LocalDate date = LocalDate.of(year, 1, 1);
         date = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));
