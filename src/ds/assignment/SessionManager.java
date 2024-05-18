@@ -47,9 +47,12 @@ public class SessionManager {
         boolean isAuthenticated = login.authenticateUser(enteredEmail, enteredPassword);
 
         if (isAuthenticated) {
-            currentUser = userRepository.getUserByEmail(enteredEmail);
-            System.out.println(currentUser);
-
+            if (!enteredEmail.matches("^(.+)@(gmail\\.com|hotmail\\.com|yahoo\\.com|siswa\\.um\\.edu\\.my)$")) {
+                currentUser = userRepository.getUserByUsername(enteredEmail);
+            } else {
+                currentUser = userRepository.getUserByEmail(enteredEmail);
+                System.out.println(currentUser);
+            }
         }
 
         return isAuthenticated;
@@ -212,13 +215,13 @@ public class SessionManager {
             dbConnect.endDatabase();
         }
     }
-    
-    public String getTopUsername(int i){
+
+    public String getTopUsername(int i) {
         printTopUsers();
         return topUsernames.get(i);
     }
-    
-    public String getTopPoints(int i){
+
+    public String getTopPoints(int i) {
         printTopUsers();
         return String.valueOf(topPoints.get(i));
     }

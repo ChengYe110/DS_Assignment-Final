@@ -5,6 +5,10 @@
 package gui;
 
 import ds.assignment.DatabaseConnection;
+import ds.assignment.Login;
+import ds.assignment.Points;
+import ds.assignment.SessionManager;
+import ds.assignment.UserRepository;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -58,11 +62,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-
 import ds.assignment.Students;
 
 /**
@@ -80,7 +83,7 @@ public class StudentController implements Initializable {
             FriendRequestPage, ExitFriendRequestPage, ExitViewFriendProfilePage, CreateDiscussionPage, DoneCreateDiscussion,
             AddParentButton, AddParentPage, ExitAddParentPane, ChangeUsernameAndEmailButton, ChangePasswordButton,
             SaveChangeUsernameAndEmailButton, SaveChangePasswordButton, EditProfilePage, ExitEditProfilePage,
-            PointDisplay, JoinEvent1, JoinEvent2, JoinEvent3, JoinEvent4, FilterButton, LogOutButton;
+            PointDisplay, FilterButton, LogOutButton, NextButton, PreviousButton;
     @FXML
     private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox, DiscussionVBox, FilterVBox;
     @FXML
@@ -106,7 +109,7 @@ public class StudentController implements Initializable {
     @FXML
     private DatePicker EventDatePicker;
     @FXML
-    private HBox MENU;
+    private HBox MENU, LiveEventHBox, EventHBox1, EventHBox2, EventHBox3;
     private Button selectedButton = null;
     private ObservableList<String> theme = FXCollections.observableArrayList("SCIENCE", "TECHNOLOGY", "ENGINEERING", "MATHEMATIC");
     private ObservableList<String> time = FXCollections.observableArrayList("8 am - 10 am", "10 am - 12 pm", "12 pm - 2 pm", "2 pm - 4 pm", "4 pm - 6 pm", "6 pm - 8 pm");
@@ -128,6 +131,13 @@ public class StudentController implements Initializable {
     private ScrollPane FriendListScrollPane, FriendRequestScrollPane, QuizScrollPane, DiscussionScrollPane;
 
     private TranslateTransition slideOutTransition, slideInTransition;
+    private int currentIndex;
+
+    DatabaseConnection dbConnect = new DatabaseConnection();
+    UserRepository userRepository = new UserRepository(dbConnect);
+    Login login = new Login();  // Create a single instance of Login
+    SessionManager sessionManager = new SessionManager(userRepository, login);  // Pass the Login instance to SessionManage
+    Points pointsFromDataBase = new Points();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -325,38 +335,20 @@ public class StudentController implements Initializable {
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateEventPane);
             });
-            JoinEvent1.setOnAction(event -> {
-                String title = Event1Title.getText();
-                String description = Event1Description.getText();
-                String venue = Event1Venue.getText();
-                String date = Event1Title.getText();
-                String time = Event1Time.getText();
-                //check clashing
-            });
-            JoinEvent2.setOnAction(event -> {
-                String title = Event2Title.getText();
-                String description = Event2Description.getText();
-                String venue = Event2Venue.getText();
-                String date = Event2Title.getText();
-                String time = Event2Time.getText();
-                //check clashing
-            });
-            JoinEvent3.setOnAction(event -> {
-                String title = Event3Title.getText();
-                String description = Event3Description.getText();
-                String venue = Event3Venue.getText();
-                String date = Event3Title.getText();
-                String time = Event3Time.getText();
-                //check clashing
-            });
-            JoinEvent4.setOnAction(event -> {
-                String title = Event4Title.getText();
-                String description = Event4Description.getText();
-                String venue = Event4Venue.getText();
-                String date = Event4Title.getText();
-                String time = Event4Time.getText();
-                //check clashing
-            });
+            currentIndex = 0;
+            ButtonEffect(PreviousButton);
+            ButtonEffect(NextButton);
+            ArrayList<EventHBoxElement> eventList = new ArrayList<>(Arrays.asList(
+                    new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"),
+                    new EventHBoxElement("Event2", "Description2", "Venue2", "Date2", "Time2"),
+                    new EventHBoxElement("Event3", "Description3", "Venue3", "Date3", "Time3")
+            ));
+            reloadLiveEventHBox(eventList);
+            PreviousButton.setOnAction(e -> showPreviousEvent(eventList));
+            NextButton.setOnAction(e -> showNextEvent(eventList));
+            addEventHBoxToParent(EventHBox1, new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"));
+            addEventHBoxToParent(EventHBox2, new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"));
+            addEventHBoxToParent(EventHBox3, new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"));
             DoneCreateEvent.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
@@ -396,6 +388,7 @@ public class StudentController implements Initializable {
         });
 
         //testing
+        setUsername(sessionManager.getCurrentUser().getUsername());
         addFriendList("Cindy");
         addFriendList("Cindy");
         addFriendList("Cindy");
@@ -448,45 +441,6 @@ public class StudentController implements Initializable {
         stackPane.getChildren().add(LeaderboardPane);
     }
 
-//    public void switchEventPage() {
-//        if (MenuPane.getTranslateX() == 0) {
-//            slideInTransition.play();
-//        }
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(EventPane);
-//    }
-//
-//    public void switchCreateEventPage() {
-//        if (MenuPane.getTranslateX() == 0) {
-//            slideInTransition.play();
-//        }
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(CreateEventPane);
-//    }
-//
-//    public void switchQuizPage() {
-//        if (MenuPane.getTranslateX() == 0) {
-//            slideInTransition.play();
-//        }
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(QuizPane);
-//    }
-//
-//    public void switchCreateQuizPage() {
-//        if (MenuPane.getTranslateX() == 0) {
-//            slideInTransition.play();
-//        }
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(CreateQuizPane);
-//    }
-//    
-//    public void switchStudentProfilePage() {
-//        if (MenuPane.getTranslateX() == 0) {
-//            slideInTransition.play();
-//        }
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(StudentProfilePane);
-//    }
     // Button effect method
     public void ButtonEffect(Button button) {
         // Create a scale transition
@@ -526,8 +480,7 @@ public class StudentController implements Initializable {
             Parent root = loader.load();
 
             FriendProfileController controller = loader.getController();
-            
-            
+
             // Create a new stage for the second view
             Stage stage = new Stage();
             stage.initStyle(StageStyle.TRANSPARENT);
@@ -1099,6 +1052,112 @@ public class StudentController implements Initializable {
         } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
+        }
+    }
+
+    public HBox createEventHBox(String eventTitle, String eventDescription, String eventVenue, String eventDate, String eventTime) {
+        // Create the main HBox
+        HBox hbox = new HBox();
+        hbox.setPrefHeight(87.0);
+        hbox.setPrefWidth(985.0);
+        hbox.setStyle("-fx-background-color: white;");
+        hbox.setAlignment(javafx.geometry.Pos.CENTER);
+
+        // Create the first VBox for title and description
+        VBox vbox1 = new VBox();
+        vbox1.setPrefHeight(87.0);
+        vbox1.setPrefWidth(512.0);
+
+        Label title = new Label(eventTitle);
+        title.setPrefHeight(32.0);
+        title.setPrefWidth(519.0);
+        title.setFont(new Font("Segoe UI Black", 24.0));
+
+        Text description = new Text(eventDescription);
+        description.setWrappingWidth(108.63671875);
+        description.setFont(new Font("Segoe UI Semibold", 12.0));
+
+        vbox1.getChildren().addAll(title, description);
+
+        // Create the second VBox for venue, date, and time
+        VBox vbox2 = new VBox();
+        vbox2.setAlignment(javafx.geometry.Pos.CENTER);
+        vbox2.setPrefHeight(87.0);
+        vbox2.setPrefWidth(282.0);
+
+        HBox venueHBox = createLabelWithTextHBox("VENUE", "#ff5757", eventVenue);
+        HBox dateHBox = createLabelWithTextHBox("DATE", "#4fc8ab", eventDate);
+        HBox timeHBox = createLabelWithTextHBox("TIME", "#ffd230", eventTime);
+
+        vbox2.getChildren().addAll(venueHBox, dateHBox, timeHBox);
+
+        // Create the Join button
+        Button joinButton = new Button("JOIN");
+        joinButton.setPrefHeight(43.0);
+        joinButton.setPrefWidth(137.0);
+        joinButton.setStyle("-fx-background-radius: 25px;");
+        joinButton.getStyleClass().add("colorGradientButton");
+        joinButton.setTextFill(javafx.scene.paint.Color.WHITE);
+        joinButton.setFont(new Font("Segoe UI Black", 20.0));
+
+        // Add all children to the main HBox
+        hbox.getChildren().addAll(vbox1, vbox2, joinButton);
+
+        return hbox;
+    }
+
+    private HBox createLabelWithTextHBox(String labelText, String bgColor, String textValue) {
+        HBox hbox = new HBox();
+        hbox.setAlignment(javafx.geometry.Pos.CENTER);
+        hbox.setPrefHeight(32.0);
+        hbox.setPrefWidth(260.0);
+        hbox.setSpacing(10.0);
+
+        Label label = new Label(labelText);
+        label.setAlignment(javafx.geometry.Pos.CENTER);
+        label.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
+        label.setPrefHeight(23.0);
+        label.setPrefWidth(87.0);
+        label.setStyle("-fx-background-color: " + bgColor + "; -fx-background-radius: 20px;");
+        label.setTextFill(javafx.scene.paint.Color.WHITE);
+        label.setFont(new Font("Segoe UI Black", 16.0));
+
+        Text text = new Text(textValue);
+        text.setWrappingWidth(150.0);
+        text.setFont(new Font("Segoe UI Semibold", 14.0));
+
+        hbox.getChildren().addAll(label, text);
+
+        return hbox;
+    }
+
+    public void addEventHBoxToParent(HBox parent, EventHBoxElement e) {
+        HBox eventHBox = createEventHBox(e.getEventTitle(), e.getEventDescription(), e.getEventVenue(), e.getEventDate(), e.getEventTime());
+        parent.getChildren().add(eventHBox);
+    }
+
+    private void reloadLiveEventHBox(ArrayList<EventHBoxElement> list) {
+        LiveEventHBox.getChildren().clear(); // Clear previous content
+        if (!list.isEmpty()) {
+            // Add current event to parentHBox
+            addEventHBoxToParent(LiveEventHBox, list.get(currentIndex));
+            // Update button visibility based on currentIndex
+            PreviousButton.setVisible(currentIndex > 0);
+            NextButton.setVisible(currentIndex < list.size() - 1);
+        }
+    }
+
+    private void showPreviousEvent(ArrayList<EventHBoxElement> list) {
+        if (currentIndex > 0) {
+            currentIndex--;
+            reloadLiveEventHBox(list);
+        }
+    }
+
+    private void showNextEvent(ArrayList<EventHBoxElement> list) {
+        if (currentIndex < list.size() - 1) {
+            currentIndex++;
+            reloadLiveEventHBox(list);
         }
     }
 
