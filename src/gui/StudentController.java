@@ -79,8 +79,7 @@ public class StudentController implements Initializable {
             FriendRequestPage, ExitFriendRequestPage, ExitViewFriendProfilePage, CreateDiscussionPage, DoneCreateDiscussion,
             AddParentButton, AddParentPage, ExitAddParentPane, ChangeUsernameAndEmailButton, ChangePasswordButton,
             SaveChangeUsernameAndEmailButton, SaveChangePasswordButton, EditProfilePage, ExitEditProfilePage,
-            PointDisplay, JoinEvent1, JoinEvent2, JoinEvent3, JoinEvent4, FilterButton, LogOutButton, NextButton,
-            PreviousButton;
+            PointDisplay, FilterButton, LogOutButton, NextButton, PreviousButton;
     @FXML
     private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox, DiscussionVBox, FilterVBox;
     @FXML
@@ -106,7 +105,7 @@ public class StudentController implements Initializable {
     @FXML
     private DatePicker EventDatePicker;
     @FXML
-    private HBox MENU, LiveEventHBox;
+    private HBox MENU, LiveEventHBox, EventHBox1, EventHBox2, EventHBox3;
     private Button selectedButton = null;
     private ObservableList<String> theme = FXCollections.observableArrayList("SCIENCE", "TECHNOLOGY", "ENGINEERING", "MATHEMATIC");
     private ObservableList<String> time = FXCollections.observableArrayList("8 am - 10 am", "10 am - 12 pm", "12 pm - 2 pm", "2 pm - 4 pm", "4 pm - 6 pm", "6 pm - 8 pm");
@@ -332,14 +331,6 @@ public class StudentController implements Initializable {
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateEventPane);
             });
-//            JoinEvent1.setOnAction(event -> {
-//                String title = Event1Title.getText();
-//                String description = Event1Description.getText();
-//                String venue = Event1Venue.getText();
-//                String date = Event1Title.getText();
-//                String time = Event1Time.getText();
-//                //check clashing
-//            });
             currentIndex = 0;
             ButtonEffect(PreviousButton);
             ButtonEffect(NextButton);
@@ -351,30 +342,9 @@ public class StudentController implements Initializable {
             reloadLiveEventHBox(eventList);
             PreviousButton.setOnAction(e -> showPreviousEvent(eventList));
             NextButton.setOnAction(e -> showNextEvent(eventList));
-            JoinEvent2.setOnAction(event -> {
-                String title = Event2Title.getText();
-                String description = Event2Description.getText();
-                String venue = Event2Venue.getText();
-                String date = Event2Title.getText();
-                String time = Event2Time.getText();
-                //check clashing
-            });
-            JoinEvent3.setOnAction(event -> {
-                String title = Event3Title.getText();
-                String description = Event3Description.getText();
-                String venue = Event3Venue.getText();
-                String date = Event3Title.getText();
-                String time = Event3Time.getText();
-                //check clashing
-            });
-            JoinEvent4.setOnAction(event -> {
-                String title = Event4Title.getText();
-                String description = Event4Description.getText();
-                String venue = Event4Venue.getText();
-                String date = Event4Title.getText();
-                String time = Event4Time.getText();
-                //check clashing
-            });
+            addEventHBoxToParent(EventHBox1, new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"));
+            addEventHBoxToParent(EventHBox2, new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"));
+            addEventHBoxToParent(EventHBox3, new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"));
             DoneCreateEvent.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
@@ -1017,6 +987,7 @@ public class StudentController implements Initializable {
             NextButton.setVisible(currentIndex < list.size() - 1);
         }
     }
+
     private void showPreviousEvent(ArrayList<EventHBoxElement> list) {
         if (currentIndex > 0) {
             currentIndex--;
