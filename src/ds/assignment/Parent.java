@@ -11,6 +11,7 @@ import ds.assignment.Parent;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.io.FileReader;
@@ -18,14 +19,18 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import java.util.Date;
 import java.time.LocalDate;
+import java.time.DayOfWeek;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Parent extends User implements BookingDestination{
     private String children;
+    
     //linked list?(priority age-from oldest to youngest)
     
     
@@ -74,8 +79,59 @@ public class Parent extends User implements BookingDestination{
     }
 
     @Override
-    public boolean checkCollision(String date) {
-//        if(this.)
+    public boolean checkCollision() {
+        //return true when have collision
+        int year = LocalDate.now().getYear();
+        
+        Map<LocalDate,String> bookingDate = new HashMap<>();
+        
+        LocalDate date = LocalDate.of(year, 1, 1);
+        date = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));
+        while(date.getYear() == year){
+            if(date.getDayOfWeek() == DayOfWeek.MONDAY){
+                bookingDate.put(date, "Petrosains Science Discovery Centre");
+            }else if(date.getDayOfWeek() == DayOfWeek.TUESDAY){
+                bookingDate.put(date, "Tech Dome Penang");
+            }else if(date.getDayOfWeek() == DayOfWeek.WEDNESDAY){
+                bookingDate.put(date, "Agro Technology Park in MARDI");
+            }else if(date.getDayOfWeek() == DayOfWeek.THURSDAY){
+                bookingDate.put(date, "National Science Centre");
+            }else if(date.getDayOfWeek() == DayOfWeek.FRIDAY){
+                bookingDate.put(date, "Marine Aquarium and Museum");;
+            }else if(date.getDayOfWeek() == DayOfWeek.SATURDAY){
+                bookingDate.put(date, "Biomedical Museum");
+                bookingDate.put(date, "Telegraph Museum");
+            }else if(date.getDayOfWeek() == DayOfWeek.SUNDAY){
+                bookingDate.put(date, "TPenang Science Cluster");
+                bookingDate.put(date, "Pusat Sains & Kreativiti Terengganu");
+            }else{
+                System.out.println("No such day");
+            }          
+            date = date.plusDays(1);
+        }
+        
+        try{
+            //get the event date from database, then compare with the date of bookingTour, if equal(return false)
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection connectDB = dbConnection.linkDatabase();
+            String connectQuery = "SELECT Date FROM event";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+            
+            while(queryOutput.next()){
+                LocalDate eventDate = LocalDate.parse(queryOutput.getString("Date"));
+                if(bookingDate.containsKey(eventDate)){
+                    return true;
+                }
+            }
+            
+            connectDB.close();
+            statement.close();
+            queryOutput.close();
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -97,7 +153,9 @@ public class Parent extends User implements BookingDestination{
                 if(booking.isEmpty()){
                     booking = "";
                 }
-                String newChild = booking + chooseTour + ",";       
+                String newChild = booking + chooseTour + ",";
+                PreparedStatement stmt = connectDB.prepareStatement("INSERT INTO PastBooking(chooseTour) FROM parent");
+                PreparedStatement stmt2 = connectDB.prepareStatement("INSERT INTO RegisteredBooking(chooseTour) FROM student");
             }
             }catch(Exception e){
                 e.printStackTrace();
@@ -109,6 +167,7 @@ public class Parent extends User implements BookingDestination{
     @Override
     public String viewEvent() {
         try{
+            //check the upcoming 3 event
             DatabaseConnection dbConnection = new DatabaseConnection(); 
             Connection connectDB = dbConnection.linkDatabase();
             String connectQuery = "SELECT Booking FROM oarents";
@@ -143,7 +202,7 @@ public class Parent extends User implements BookingDestination{
                 if(booking.isEmpty()){
                     booking = "";
                 }
-                String newChild = booking + chooseTour + ",";
+                String newChild = booking + ",";
                 }
             
             
@@ -161,7 +220,7 @@ public class Parent extends User implements BookingDestination{
         try{
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection connectDB = dbConnection.linkDatabase();
-            String connectQuery = "SELECT Username, Email, Role, Location, Booking FROM parents";;
+            String connectQuery = "SELECT Username, Email, Role, Location, Booking FROM parent";;
             Statement statement = connectDB.createStatement();
             ResultSet queryOutput = statement.executeQuery(connectQuery);
             
@@ -186,7 +245,7 @@ public class Parent extends User implements BookingDestination{
         try{
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection connectDB = dbConnection.linkDatabase();
-            String connectQuery = "SELECT Children FROM parents";
+            String connectQuery = "SELECT Children FROM parent";
             Statement statement = connectDB.createStatement();
             ResultSet queryOutput = statement.executeQuery(connectQuery);
             

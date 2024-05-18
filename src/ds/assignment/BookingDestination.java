@@ -17,7 +17,7 @@ public interface BookingDestination {
     
     public double calcDistance();//calculate the distance between all coordinates
     
-    public boolean checkCollision(String date);//booking date inside the parentheses
+    public boolean checkCollision();//booking date inside the parentheses
     
     public String viewEvent();///method to how the upcoming event
     
