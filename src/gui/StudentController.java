@@ -4,9 +4,14 @@
  */
 package gui;
 
+import ds.assignment.DatabaseConnection;
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +28,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -49,8 +53,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+
+import ds.assignment.Students;
 
 /**
  * FXML Controller class
@@ -67,7 +80,7 @@ public class StudentController implements Initializable {
             FriendRequestPage, ExitFriendRequestPage, ExitViewFriendProfilePage, CreateDiscussionPage, DoneCreateDiscussion,
             AddParentButton, AddParentPage, ExitAddParentPane, ChangeUsernameAndEmailButton, ChangePasswordButton,
             SaveChangeUsernameAndEmailButton, SaveChangePasswordButton, EditProfilePage, ExitEditProfilePage,
-            PointDisplay, JoinEvent1, JoinEvent2, JoinEvent3, JoinEvent4, FilterButton;
+            PointDisplay, JoinEvent1, JoinEvent2, JoinEvent3, JoinEvent4, FilterButton, LogOutButton;
     @FXML
     private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox, DiscussionVBox, FilterVBox;
     @FXML
@@ -98,26 +111,23 @@ public class StudentController implements Initializable {
     private ObservableList<String> theme = FXCollections.observableArrayList("SCIENCE", "TECHNOLOGY", "ENGINEERING", "MATHEMATIC");
     private ObservableList<String> time = FXCollections.observableArrayList("8 am - 10 am", "10 am - 12 pm", "12 pm - 2 pm", "2 pm - 4 pm", "4 pm - 6 pm", "6 pm - 8 pm");
     @FXML
-    private TableView<Parent> ParentTable;
+    private TableView<ParentColumn> ParentTable;
     @FXML
-    private TableColumn<Parent, Integer> NoColumn;
+    private TableColumn<ParentColumn, Integer> NoColumn;
     @FXML
-    private TableColumn<Parent, String> ParentColumn;
+    private TableColumn<ParentColumn, String> ParentColumn;
     @FXML
-    private TableView<Event> EventTable;
+    private TableView<EventColumn> EventTable;
     @FXML
-    private TableColumn<Event, String> DateColumn, TitleColumn, VenueColumn, TimeColumn;
+    private TableColumn<EventColumn, String> DateColumn, TitleColumn, VenueColumn, TimeColumn;
     @FXML
-    private TableView<BookedStudyTour> BookedStudyTourTable;
+    private TableView<BookedStudyTourColumn> BookedStudyTourTable;
     @FXML
-    private TableColumn<BookedStudyTour, String> BookedDateColumn, BookedVenueColumn;
+    private TableColumn<BookedStudyTourColumn, String> BookedDateColumn, BookedVenueColumn;
     @FXML
     private ScrollPane FriendListScrollPane, FriendRequestScrollPane, QuizScrollPane, DiscussionScrollPane;
 
     private TranslateTransition slideOutTransition, slideInTransition;
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -166,6 +176,8 @@ public class StudentController implements Initializable {
                 EditProfilePane.toFront();
                 ExtraStackPane.getChildren().clear();
                 ExtraStackPane.getChildren().add(ChangeUsernameAndEmailPane);
+                NewUsername.setText(""); //get username from database
+                NewEmail.setText(""); //get email from database        
             });
             ButtonEffect(ChangeUsernameAndEmailButton);
             ChangeUsernameAndEmailButton.setOnAction(event -> {
@@ -418,9 +430,6 @@ public class StudentController implements Initializable {
         addNewDiscussion("YeahGoSleep", "EDUCATOR", "anson", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         addNewDiscussion("SOS", "STUDENT", "lydia", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         setUpProfilePage("Harry");
-        Node quizNode = QuizVBox.getChildren().get(0); // Get the first quiz HBox
-        String themeText = getThemeText(quizNode); // Call the method
-        System.out.println("Theme: " + themeText);
     }
 
     public void switchHomePage() {
@@ -512,8 +521,25 @@ public class StudentController implements Initializable {
 
     // Method to open the friend's profile page
     private void openProfilePage(String friendName) {
-        // open the profile page using the provided name
-        //need to add "add friend" button
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
+            Parent root = loader.load();
+
+            FriendProfileController controller = loader.getController();
+            
+            
+            // Create a new stage for the second view
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
+            stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Method to add an HBox with three buttons to the VBox
@@ -672,58 +698,58 @@ public class StudentController implements Initializable {
         return "";
     }
 
-public void filterTheme() {
-    // Get the children of the main VBox
-    ObservableList<Node> children = QuizVBox.getChildren();
+    public void filterTheme() {
+        // Get the children of the main VBox
+        ObservableList<Node> children = QuizVBox.getChildren();
 
-    // Check if any checkbox is selected
-    boolean anyCheckboxSelected = false;
-    for (Node filterChild : FilterVBox.getChildren()) {
-        if (filterChild instanceof CheckBox) {
-            CheckBox checkBox = (CheckBox) filterChild;
-            if (checkBox.isSelected()) {
-                anyCheckboxSelected = true;
-                break;
-            }
-        }
-    }
-
-    // Iterate over the children
-    for (Node child : children) {
-        if (child instanceof HBox) {
-            HBox hbox = (HBox) child;
-            boolean showQuiz = true; // Default to true, display the quiz
-
-            // Get the theme of the current quiz
-            String theme = getThemeText(child);
-
-            // If any checkbox is selected, proceed with filtering
-            if (anyCheckboxSelected) {
-                // If the theme is not empty
-                if (!theme.isEmpty()) {
-                    // Check if any checkbox with the corresponding theme is selected
-                    for (Node filterChild : FilterVBox.getChildren()) {
-                        if (filterChild instanceof CheckBox) {
-                            CheckBox checkBox = (CheckBox) filterChild;
-                            if (checkBox.isSelected() && checkBox.getText().equals(theme)) {
-                                showQuiz = true;
-                                break;
-                            } else {
-                                showQuiz = false;
-                            }
-                        }
-                    }
-                } else {
-                    showQuiz = false; // If the theme is empty, don't show the quiz
+        // Check if any checkbox is selected
+        boolean anyCheckboxSelected = false;
+        for (Node filterChild : FilterVBox.getChildren()) {
+            if (filterChild instanceof CheckBox) {
+                CheckBox checkBox = (CheckBox) filterChild;
+                if (checkBox.isSelected()) {
+                    anyCheckboxSelected = true;
+                    break;
                 }
             }
+        }
 
-            // Set visibility of the quiz based on showQuiz flag
-            hbox.setVisible(showQuiz);
-            hbox.setManaged(showQuiz);
+        // Iterate over the children
+        for (Node child : children) {
+            if (child instanceof HBox) {
+                HBox hbox = (HBox) child;
+                boolean showQuiz = true; // Default to true, display the quiz
+
+                // Get the theme of the current quiz
+                String theme = getThemeText(child);
+
+                // If any checkbox is selected, proceed with filtering
+                if (anyCheckboxSelected) {
+                    // If the theme is not empty
+                    if (!theme.isEmpty()) {
+                        // Check if any checkbox with the corresponding theme is selected
+                        for (Node filterChild : FilterVBox.getChildren()) {
+                            if (filterChild instanceof CheckBox) {
+                                CheckBox checkBox = (CheckBox) filterChild;
+                                if (checkBox.isSelected() && checkBox.getText().equals(theme)) {
+                                    showQuiz = true;
+                                    break;
+                                } else {
+                                    showQuiz = false;
+                                }
+                            }
+                        }
+                    } else {
+                        showQuiz = false; // If the theme is empty, don't show the quiz
+                    }
+                }
+
+                // Set visibility of the quiz based on showQuiz flag
+                hbox.setVisible(showQuiz);
+                hbox.setManaged(showQuiz);
+            }
         }
     }
-}
 
     private void addNewDiscussion(String title, String role, String username, String content) {
         HBox hBox = new HBox();
@@ -792,12 +818,16 @@ public void filterTheme() {
     }
 
     private void setUpParentTable(String username) {
-        ObservableList<Parent> parentList = FXCollections.observableArrayList(new Parent(1, "Father"), new Parent(2, "Mother"));
+        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList(new ParentColumn(1, "Father"), new ParentColumn(2, "Mother"));
 
         //associate data with column
+
         NoColumn.setCellValueFactory(new PropertyValueFactory<Parent, Integer>("no"));
         ParentColumn.setCellValueFactory(new PropertyValueFactory<Parent, String>("username"));
-
+        
+        //modified
+        student.getParentUsernameList();
+        
 //        // Replace the connection URL, username, and password with your database credentials
 //        String url = "jdbc:mysql://localhost:3306/your_database";
 //        String username = "your_username";
@@ -820,15 +850,15 @@ public void filterTheme() {
 //        }
         ParentTable.setItems(parentList);
     }
-
+    
     private void setUpEventTable(String username) {
-        ObservableList<Event> eventList = FXCollections.observableArrayList(new Event("01/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("02/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("03/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("04/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("05/01/2024", "Happy New Year", "Alor Setar", "9am-11am"));
+        ObservableList<EventColumn> eventList = FXCollections.observableArrayList(new EventColumn("01/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("02/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("03/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("04/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("05/01/2024", "Happy New Year", "Alor Setar", "9am-11am"));
 
         //associate data with column
-        DateColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("date"));
-        TitleColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("title"));
-        VenueColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("venue"));
-        TimeColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("time"));
+        DateColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("date"));
+        TitleColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("title"));
+        VenueColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("venue"));
+        TimeColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("time"));
 
 //        // Replace the connection URL, username, and password with your database credentials
 //        String url = "jdbc:mysql://localhost:3306/your_database";
@@ -854,11 +884,11 @@ public void filterTheme() {
     }
 
     private void setUpBookedStudyTourTable(String username) {
-        ObservableList<BookedStudyTour> bookedStudyTourList = FXCollections.observableArrayList(new BookedStudyTour("01/01/2024", "Alor Setar"), new BookedStudyTour("02/01/2024", "Alor Setar"), new BookedStudyTour("03/01/2024", "Alor Setar"), new BookedStudyTour("04/01/2024", "Alor Setar"), new BookedStudyTour("05/01/2024", "Alor Setar"));
+        ObservableList<BookedStudyTourColumn> bookedStudyTourList = FXCollections.observableArrayList(new BookedStudyTourColumn("01/01/2024", "Alor Setar"), new BookedStudyTourColumn("02/01/2024", "Alor Setar"), new BookedStudyTourColumn("03/01/2024", "Alor Setar"), new BookedStudyTourColumn("04/01/2024", "Alor Setar"), new BookedStudyTourColumn("05/01/2024", "Alor Setar"));
 
         //associate data with column
-        BookedDateColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTour, String>("date"));
-        BookedVenueColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTour, String>("venue"));
+        BookedDateColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("date"));
+        BookedVenueColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("venue"));
 
 //        // Replace the connection URL, username, and password with your database credentials
 //        String url = "jdbc:mysql://localhost:3306/your_database";
@@ -882,18 +912,27 @@ public void filterTheme() {
 //        }
         BookedStudyTourTable.setItems(bookedStudyTourList);
     }
-
+    
+    private Students student;
+    
     private void setUpProfilePage(String username) {
-        String email = "email"; //get email 
-        String location = "location"; //get location 
-        String totalNumOfFriend = "10"; //get total num of friend 
-        UsernameProfilePage.setText(username);
-        UsernameLabel.setText(username);
-        EmailLabel.setText(email);
-        LocationLabel.setText(location);
-        NumOfFriend.setText(totalNumOfFriend);
+//        String email = "email"; //get email 
+//        String location = "location"; //get location 
+//        String totalNumOfFriend = "10"; //get total num of friend 
+        
+        //modified
+        student.displayStudentInfo();
+        String totalNumOfFriend = String.valueOf(student.getFriendList(username).size());
 
-        List<String> friendNames = Arrays.asList("Friend 1", "Friend 2", "Friend 3"); // Retrieve friend data from the database, assuming it returns a list of friend names
+        UsernameProfilePage.setText(student.getUsername());
+        UsernameLabel.setText(student.getUsername());
+        EmailLabel.setText(student.getEmail(username));
+        LocationLabel.setText(student.getLocation());
+        NumOfFriend.setText(totalNumOfFriend);
+        
+        //modified
+        ArrayList<String> friendNames = student.getFriendList(username);
+        //List<String> friendNames = Arrays.asList("Friend 1", "Friend 2", "Friend 3"); // Retrieve friend data from the database, assuming it returns a list of friend names
         // Add each friend to the friend list
         for (String friendName : friendNames) {
             addFriendList(friendName);
@@ -902,8 +941,10 @@ public void filterTheme() {
         setUpParentTable(username);
         setUpEventTable(username);
         setUpBookedStudyTourTable(username);
-
-        int point = 20; //retrive from database
+        
+        //modified
+        int point = student.getPoints();
+        //int point = 20; //retrive from database
         PointDisplay.setText(String.valueOf(point) + " POINTS");
     }
 
@@ -919,6 +960,146 @@ public void filterTheme() {
         // Show the alert and wait for the user's response
         alert.showAndWait()
                 .filter(response -> response == ButtonType.OK);
+    }
+    
+    public void editProfile_Username_Email(String username) {
+        try {
+            // Connect to database
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+
+            // Get new username and email from text fields
+            String oldPassword1 = OldPassword1.getText();
+            String newUsernameChange = NewUsername.getText();
+            String newEmailChange = NewEmail.getText();
+            String currentUsername = ""; // Store the current username
+            String currentEmail = ""; // Store the current email
+
+            // Check if old password matches the one in the database
+            String checkQuery = "SELECT Username, Email FROM student WHERE Password = ?";
+            PreparedStatement checkStatement = connectDB.prepareStatement(checkQuery);
+            checkStatement.setString(1, oldPassword1);
+            ResultSet resultSet = checkStatement.executeQuery();
+
+            if (resultSet.next()) {
+                currentUsername = resultSet.getString("Username");
+                currentEmail = resultSet.getString("Email");
+            } else {
+                System.out.println("Old password does not match.");
+                showReminderDialog("Old password does not match.");
+                OldPassword1.setText("");
+                NewUsername.setText("");
+                NewEmail.setText("");
+                checkStatement.close();
+                connectDB.close();
+                return;
+            }
+            checkStatement.close();
+
+            // Check the conditions and update
+            if (!currentUsername.equals(newUsernameChange) && currentEmail.equals(newEmailChange)) { 
+                // if only username changes
+                String updateQuery = "UPDATE student SET Username = ? WHERE Password = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+                updateStatement.setString(1, newUsernameChange);
+                updateStatement.setString(2, oldPassword1);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+                System.out.println("Username updated successfully.");
+                showReminderDialog("Username updated successfully.");
+            }else if (currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
+                // if only email changes
+                String updateQuery = "UPDATE student SET Email = ? WHERE Password = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+                updateStatement.setString(1, newEmailChange);
+                updateStatement.setString(2, oldPassword1);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+                System.out.println("Email updated successfully.");
+                showReminderDialog("Email updated successfully.");
+            } else if (!currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
+                // if both username and email changes
+                String updateQuery = "UPDATE student SET Username = ?, Email = ? WHERE Password = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+                updateStatement.setString(1, newUsernameChange);
+                updateStatement.setString(2, newEmailChange);
+                updateStatement.setString(3, oldPassword1);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+                System.out.println("Username and Email updated successfully.");
+                showReminderDialog("Username and Email updated successfully.");
+            } else {
+                System.out.println("No changes.");
+                showReminderDialog("No changes.");
+            }
+
+            // Close connection
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+
+    public void editProfile_Password(String username) {
+        try {
+            // Connect to database
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+
+            // Get old password, new password, and confirmation password from text fields
+            String oldPassword2 = OldPassword2.getText();
+            String newPassword = NewPassword.getText();
+            String confirmPassword = ConfirmPassword.getText();
+
+            // Verify old password
+            String checkQuery = "SELECT Password FROM student WHERE Username = ?";
+            PreparedStatement checkStatement = connectDB.prepareStatement(checkQuery);
+            checkStatement.setString(1, username);
+            ResultSet resultSet = checkStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String currentPassword = resultSet.getString("Password");
+                if (!currentPassword.equals(oldPassword2)) {
+                    System.out.println("Old password does not match.");
+                    showReminderDialog("Old password does not match.");
+                    checkStatement.close();
+                    connectDB.close();
+                    return;
+                }
+            } else {
+                System.out.println("Username not found.");
+                checkStatement.close();
+                connectDB.close();
+                return;
+            }
+            checkStatement.close();
+
+            // Check if new password and confirm password match
+            if (!newPassword.equals(confirmPassword)) {
+                System.out.println("New password and confirmation password do not match. Please enter again. ");
+                showReminderDialog("New password and confirmation password do not match. Please enter again. ");
+                connectDB.close();
+                return;
+            }
+            
+            // Update password in the database
+            String updateQuery = "UPDATE student SET Password = ? WHERE Username = ?";
+            PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+            updateStatement.setString(1, newPassword);
+            updateStatement.setString(2, username);
+            updateStatement.executeUpdate();
+
+            updateStatement.close();
+            connectDB.close();
+
+            System.out.println("Password updated successfully.");
+            showReminderDialog("Password updated successfully.");
+
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
     }
 
 }
