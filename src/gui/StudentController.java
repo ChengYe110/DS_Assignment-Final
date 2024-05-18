@@ -6,6 +6,7 @@ package gui;
 
 import ds.assignment.DatabaseConnection;
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
@@ -27,7 +28,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -53,8 +53,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
 
 import ds.assignment.Students;
 
@@ -73,7 +80,7 @@ public class StudentController implements Initializable {
             FriendRequestPage, ExitFriendRequestPage, ExitViewFriendProfilePage, CreateDiscussionPage, DoneCreateDiscussion,
             AddParentButton, AddParentPage, ExitAddParentPane, ChangeUsernameAndEmailButton, ChangePasswordButton,
             SaveChangeUsernameAndEmailButton, SaveChangePasswordButton, EditProfilePage, ExitEditProfilePage,
-            PointDisplay, JoinEvent1, JoinEvent2, JoinEvent3, JoinEvent4, FilterButton;
+            PointDisplay, JoinEvent1, JoinEvent2, JoinEvent3, JoinEvent4, FilterButton, LogOutButton;
     @FXML
     private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox, DiscussionVBox, FilterVBox;
     @FXML
@@ -104,26 +111,23 @@ public class StudentController implements Initializable {
     private ObservableList<String> theme = FXCollections.observableArrayList("SCIENCE", "TECHNOLOGY", "ENGINEERING", "MATHEMATIC");
     private ObservableList<String> time = FXCollections.observableArrayList("8 am - 10 am", "10 am - 12 pm", "12 pm - 2 pm", "2 pm - 4 pm", "4 pm - 6 pm", "6 pm - 8 pm");
     @FXML
-    private TableView<Parent> ParentTable;
+    private TableView<ParentColumn> ParentTable;
     @FXML
-    private TableColumn<Parent, Integer> NoColumn;
+    private TableColumn<ParentColumn, Integer> NoColumn;
     @FXML
-    private TableColumn<Parent, String> ParentColumn;
+    private TableColumn<ParentColumn, String> ParentColumn;
     @FXML
-    private TableView<Event> EventTable;
+    private TableView<EventColumn> EventTable;
     @FXML
-    private TableColumn<Event, String> DateColumn, TitleColumn, VenueColumn, TimeColumn;
+    private TableColumn<EventColumn, String> DateColumn, TitleColumn, VenueColumn, TimeColumn;
     @FXML
-    private TableView<BookedStudyTour> BookedStudyTourTable;
+    private TableView<BookedStudyTourColumn> BookedStudyTourTable;
     @FXML
-    private TableColumn<BookedStudyTour, String> BookedDateColumn, BookedVenueColumn;
+    private TableColumn<BookedStudyTourColumn, String> BookedDateColumn, BookedVenueColumn;
     @FXML
     private ScrollPane FriendListScrollPane, FriendRequestScrollPane, QuizScrollPane, DiscussionScrollPane;
 
     private TranslateTransition slideOutTransition, slideInTransition;
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -172,6 +176,8 @@ public class StudentController implements Initializable {
                 EditProfilePane.toFront();
                 ExtraStackPane.getChildren().clear();
                 ExtraStackPane.getChildren().add(ChangeUsernameAndEmailPane);
+                NewUsername.setText(""); //get username from database
+                NewEmail.setText(""); //get email from database        
             });
             ButtonEffect(ChangeUsernameAndEmailButton);
             ChangeUsernameAndEmailButton.setOnAction(event -> {
@@ -424,9 +430,6 @@ public class StudentController implements Initializable {
         addNewDiscussion("YeahGoSleep", "EDUCATOR", "anson", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         addNewDiscussion("SOS", "STUDENT", "lydia", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         setUpProfilePage("Harry");
-        Node quizNode = QuizVBox.getChildren().get(0); // Get the first quiz HBox
-        String themeText = getThemeText(quizNode); // Call the method
-        System.out.println("Theme: " + themeText);
     }
 
     public void switchHomePage() {
@@ -518,8 +521,25 @@ public class StudentController implements Initializable {
 
     // Method to open the friend's profile page
     private void openProfilePage(String friendName) {
-        // open the profile page using the provided name
-        //need to add "add friend" button
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
+            Parent root = loader.load();
+
+            FriendProfileController controller = loader.getController();
+            
+            
+            // Create a new stage for the second view
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
+            stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Method to add an HBox with three buttons to the VBox
@@ -678,58 +698,58 @@ public class StudentController implements Initializable {
         return "";
     }
 
-public void filterTheme() {
-    // Get the children of the main VBox
-    ObservableList<Node> children = QuizVBox.getChildren();
+    public void filterTheme() {
+        // Get the children of the main VBox
+        ObservableList<Node> children = QuizVBox.getChildren();
 
-    // Check if any checkbox is selected
-    boolean anyCheckboxSelected = false;
-    for (Node filterChild : FilterVBox.getChildren()) {
-        if (filterChild instanceof CheckBox) {
-            CheckBox checkBox = (CheckBox) filterChild;
-            if (checkBox.isSelected()) {
-                anyCheckboxSelected = true;
-                break;
-            }
-        }
-    }
-
-    // Iterate over the children
-    for (Node child : children) {
-        if (child instanceof HBox) {
-            HBox hbox = (HBox) child;
-            boolean showQuiz = true; // Default to true, display the quiz
-
-            // Get the theme of the current quiz
-            String theme = getThemeText(child);
-
-            // If any checkbox is selected, proceed with filtering
-            if (anyCheckboxSelected) {
-                // If the theme is not empty
-                if (!theme.isEmpty()) {
-                    // Check if any checkbox with the corresponding theme is selected
-                    for (Node filterChild : FilterVBox.getChildren()) {
-                        if (filterChild instanceof CheckBox) {
-                            CheckBox checkBox = (CheckBox) filterChild;
-                            if (checkBox.isSelected() && checkBox.getText().equals(theme)) {
-                                showQuiz = true;
-                                break;
-                            } else {
-                                showQuiz = false;
-                            }
-                        }
-                    }
-                } else {
-                    showQuiz = false; // If the theme is empty, don't show the quiz
+        // Check if any checkbox is selected
+        boolean anyCheckboxSelected = false;
+        for (Node filterChild : FilterVBox.getChildren()) {
+            if (filterChild instanceof CheckBox) {
+                CheckBox checkBox = (CheckBox) filterChild;
+                if (checkBox.isSelected()) {
+                    anyCheckboxSelected = true;
+                    break;
                 }
             }
+        }
 
-            // Set visibility of the quiz based on showQuiz flag
-            hbox.setVisible(showQuiz);
-            hbox.setManaged(showQuiz);
+        // Iterate over the children
+        for (Node child : children) {
+            if (child instanceof HBox) {
+                HBox hbox = (HBox) child;
+                boolean showQuiz = true; // Default to true, display the quiz
+
+                // Get the theme of the current quiz
+                String theme = getThemeText(child);
+
+                // If any checkbox is selected, proceed with filtering
+                if (anyCheckboxSelected) {
+                    // If the theme is not empty
+                    if (!theme.isEmpty()) {
+                        // Check if any checkbox with the corresponding theme is selected
+                        for (Node filterChild : FilterVBox.getChildren()) {
+                            if (filterChild instanceof CheckBox) {
+                                CheckBox checkBox = (CheckBox) filterChild;
+                                if (checkBox.isSelected() && checkBox.getText().equals(theme)) {
+                                    showQuiz = true;
+                                    break;
+                                } else {
+                                    showQuiz = false;
+                                }
+                            }
+                        }
+                    } else {
+                        showQuiz = false; // If the theme is empty, don't show the quiz
+                    }
+                }
+
+                // Set visibility of the quiz based on showQuiz flag
+                hbox.setVisible(showQuiz);
+                hbox.setManaged(showQuiz);
+            }
         }
     }
-}
 
     private void addNewDiscussion(String title, String role, String username, String content) {
         HBox hBox = new HBox();
@@ -798,9 +818,10 @@ public void filterTheme() {
     }
 
     private void setUpParentTable(String username) {
-        ObservableList<Parent> parentList = FXCollections.observableArrayList(new Parent(1, "Father"), new Parent(2, "Mother"));
+        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList(new ParentColumn(1, "Father"), new ParentColumn(2, "Mother"));
 
         //associate data with column
+
         NoColumn.setCellValueFactory(new PropertyValueFactory<Parent, Integer>("no"));
         ParentColumn.setCellValueFactory(new PropertyValueFactory<Parent, String>("username"));
         
@@ -831,13 +852,13 @@ public void filterTheme() {
     }
     
     private void setUpEventTable(String username) {
-        ObservableList<Event> eventList = FXCollections.observableArrayList(new Event("01/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("02/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("03/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("04/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("05/01/2024", "Happy New Year", "Alor Setar", "9am-11am"));
+        ObservableList<EventColumn> eventList = FXCollections.observableArrayList(new EventColumn("01/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("02/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("03/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("04/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("05/01/2024", "Happy New Year", "Alor Setar", "9am-11am"));
 
         //associate data with column
-        DateColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("date"));
-        TitleColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("title"));
-        VenueColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("venue"));
-        TimeColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("time"));
+        DateColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("date"));
+        TitleColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("title"));
+        VenueColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("venue"));
+        TimeColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("time"));
 
 //        // Replace the connection URL, username, and password with your database credentials
 //        String url = "jdbc:mysql://localhost:3306/your_database";
@@ -863,11 +884,11 @@ public void filterTheme() {
     }
 
     private void setUpBookedStudyTourTable(String username) {
-        ObservableList<BookedStudyTour> bookedStudyTourList = FXCollections.observableArrayList(new BookedStudyTour("01/01/2024", "Alor Setar"), new BookedStudyTour("02/01/2024", "Alor Setar"), new BookedStudyTour("03/01/2024", "Alor Setar"), new BookedStudyTour("04/01/2024", "Alor Setar"), new BookedStudyTour("05/01/2024", "Alor Setar"));
+        ObservableList<BookedStudyTourColumn> bookedStudyTourList = FXCollections.observableArrayList(new BookedStudyTourColumn("01/01/2024", "Alor Setar"), new BookedStudyTourColumn("02/01/2024", "Alor Setar"), new BookedStudyTourColumn("03/01/2024", "Alor Setar"), new BookedStudyTourColumn("04/01/2024", "Alor Setar"), new BookedStudyTourColumn("05/01/2024", "Alor Setar"));
 
         //associate data with column
-        BookedDateColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTour, String>("date"));
-        BookedVenueColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTour, String>("venue"));
+        BookedDateColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("date"));
+        BookedVenueColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("venue"));
 
 //        // Replace the connection URL, username, and password with your database credentials
 //        String url = "jdbc:mysql://localhost:3306/your_database";

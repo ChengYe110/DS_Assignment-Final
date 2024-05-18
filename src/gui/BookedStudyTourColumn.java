@@ -8,10 +8,10 @@ package gui;
  *
  * @author enjye
  */
-public class BookedStudyTour {
+public class BookedStudyTourColumn {
     private String date,venue;
 
-    public BookedStudyTour(String date, String venue) {
+    public BookedStudyTourColumn(String date, String venue) {
         this.date = date;
         this.venue = venue;
     }

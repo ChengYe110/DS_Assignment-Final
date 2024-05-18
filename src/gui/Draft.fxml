@@ -145,14 +145,14 @@
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="MenuPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;">
+      <AnchorPane fx:id="MenuPane" layoutX="30.0" layoutY="30.0" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;">
          <children>
             <ImageView fitHeight="222.0" fitWidth="203.0" layoutX="37.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../png/StudentProfile.png" />
                </image>
             </ImageView>
-            <VBox fx:id="DrawerPane" alignment="CENTER" layoutX="91.0" layoutY="334.0" prefHeight="222.0" prefWidth="167.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <VBox fx:id="DrawerPane" alignment="CENTER" layoutY="310.0" prefHeight="222.0" prefWidth="167.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
                   <HBox alignment="CENTER" styleClass="selected" stylesheets="@StudentStyle.css">
                      <children>
@@ -221,6 +221,11 @@
                </font>
             </Text>
             <Button layoutX="75.0" layoutY="251.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" style="-fx-background-color: ff3131; -fx-background-radius: 20px;" text="STUDENT" textFill="#fffcfc">
+               <font>
+                  <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+               </font>
+            </Button>
+            <Button fx:id="LogOutButton" layoutX="62.0" layoutY="539.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="153.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="LOG OUT" textFill="#fffcfc">
                <font>
                   <Font name="Berlin Sans FB Demi Bold" size="20.0" />
                </font>
