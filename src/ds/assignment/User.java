@@ -4,8 +4,10 @@
  */
 package ds.assignment;
 
+import Educator.Event;
 import ds.assignment.DatabaseConnection;
 import ds.assignment.UserRepository;
+import gui.EventHBoxElement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,6 +15,12 @@ import java.util.Random;
 import java.sql.PreparedStatement;
 import java.util.Date;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import org.mindrot.jbcrypt.BCrypt;
 /**
  *
@@ -169,7 +177,185 @@ public class User {
         return this.role;
     }
     
-}
+//    public static ArrayList<LocalDate> getEventDateList(){
+//        ArrayList<LocalDate> eventDateList = new ArrayList<>();
+//        try {
+//            DatabaseConnection connectNow = new DatabaseConnection();
+//            Connection connectDB = connectNow.linkDatabase();
+//            String query = "SELECT Date FROM event";
+//            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                LocalDate date = resultSet.getDate("Date").toLocalDate();
+//                eventDateList.add(date);
+//            }
+//            Collections.sort(eventDateList);
+//            
+//            resultSet.close();
+//            preparedStatement.close();
+//            connectDB.close();
+//        } catch (Exception e) {
+//            System.out.println("SQL query failed.");
+//            e.printStackTrace();
+//        } 
+//
+//        return eventDateList;
+//    }
+    
+//    public static ArrayList<LocalDate> getUpcomingEventDateList(){
+//        ArrayList<LocalDate> eventDateList = getEventDateList();
+//        LocalDate currentDate = LocalDate.now();
+//        
+//        // filter out the pass event date 
+//        ArrayList<LocalDate> upcomingDateList = getEventDateList();
+//        
+//        try {
+//            DatabaseConnection connectNow = new DatabaseConnection();
+//            Connection connectDB = connectNow.linkDatabase();
+//            String query = "SELECT Date FROM event";
+//            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                LocalDate date = resultSet.getDate("Date").toLocalDate();
+//                eventDateList.add(date);
+//            }
+//            resultSet.close();
+//            preparedStatement.close();
+//            connectDB.close();
+//        } catch (Exception e) {
+//            System.out.println("SQL query failed.");
+//            e.printStackTrace();
+//        } 
+//
+//        return eventDateList;
+//    }
+    
+//    public static ArrayList<EventHBoxElement> getEventList(){
+//        ArrayList<EventHBoxElement> eventList = new ArrayList<>();
+//        
+//        try {
+//            DatabaseConnection connectNow = new DatabaseConnection();
+//            Connection connectDB = connectNow.linkDatabase();
+//            String query = "SELECT Title, Description, Venue, Date, Time FROM event";
+//            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                String title = resultSet.getString("Title");
+//                String description = resultSet.getString("Description");
+//                String venue = resultSet.getString("Venue");
+//                LocalDate date = resultSet.getDate("Date").toLocalDate();
+//                LocalTime time = resultSet.getTime("Time").toLocalTime();
+//
+//                EventHBoxElement event = new EventHBoxElement(title, description, venue, date, time);
+//                eventList.add(event);
+//            }
+//            resultSet.close();
+//            preparedStatement.close();
+//            connectDB.close();
+//        } catch (Exception e) {
+//            System.out.println("SQL query failed.");
+//            e.printStackTrace();
+//        } 
+//
+//        return eventList;
+//    }
+    
+    public static ArrayList<EventHBoxElement> getEventList() {
+        ArrayList<EventHBoxElement> eventList = new ArrayList<>();
 
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String query = "SELECT Title, Description, Venue, Date, Time FROM event";
+            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String title = resultSet.getString("Title");
+                String description = resultSet.getString("Description");
+                String venue = resultSet.getString("Venue");
+                String date = resultSet.getString("Date");
+                String time = resultSet.getString("Time");
+
+                EventHBoxElement event = new EventHBoxElement(title, description, venue, date, time);
+                eventList.add(event);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+
+        return eventList;
+    }
+    
+    public static ArrayList<EventHBoxElement> getLatestEventList() {
+        ArrayList<EventHBoxElement> eventList = getEventList(); // get the event list
+        LocalDate currentDate = LocalDate.now();  // get the current date
+        System.out.println("Today's date: " + currentDate);
+
+        // Filter the events to get only upcoming events
+        ArrayList<EventHBoxElement> upcomingEventList = new ArrayList<>();
+        for (EventHBoxElement event : eventList) {
+            if (!event.getEventDate().isBefore(currentDate)) {
+                upcomingEventList.add(event);
+            }
+        }
+
+        // Sort the upcoming events by date and time
+        Collections.sort(upcomingEventList, new Comparator<EventHBoxElement>() {
+            @Override
+            public int compare(EventHBoxElement event1, EventHBoxElement event2) {
+                if (!event1.getEventDate().equals(event2.getEventDate())) {
+                    return event1.getEventDate().compareTo(event2.getEventDate());
+                } else {
+                    return event1.getEventTime().compareTo(event2.getEventTime());
+                }
+            }
+        });
+
+        // Get the closest three upcoming events
+        ArrayList<EventHBoxElement> closestThreeUpcomingEvents = new ArrayList<>();
+        for (int i = 0; i < Math.min(3, upcomingEventList.size()); i++) {
+            closestThreeUpcomingEvents.add(upcomingEventList.get(i));
+        }
+
+        // Display the closest events
+        System.out.println("Closest upcoming events to " + currentDate + " are:");
+        for (EventHBoxElement event : closestThreeUpcomingEvents) {
+            long daysUntilEvent = ChronoUnit.DAYS.between(currentDate, event.getEventDate());
+            System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTimeS() + " (in " + daysUntilEvent + " days)");
+        }
+        return closestThreeUpcomingEvents;
+    }
+    
+    public static ArrayList<EventHBoxElement> getLiveEventList() {
+        ArrayList<EventHBoxElement> eventList = getEventList(); // get the event list
+        LocalDate currentDate = LocalDate.now();  // get the current date
+        System.out.println("Today's date: " + currentDate);
+
+        // get live events 
+        ArrayList<EventHBoxElement> liveEventList = new ArrayList<>();
+        for (EventHBoxElement event : eventList) {
+            if (event.getEventDate().isEqual(currentDate)) {
+                liveEventList.add(event);
+            }
+        }
+
+        // Display the live events
+        System.out.println("Events happening today, " + currentDate + " are:");
+        for (EventHBoxElement event : liveEventList) {
+            System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTimeS());
+        }
+
+        return liveEventList;
+    }
+    
+}
 
 

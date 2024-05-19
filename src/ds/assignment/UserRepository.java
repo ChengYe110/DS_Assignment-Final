@@ -81,6 +81,37 @@ public class UserRepository {
 
         return null; // User not found in the database
     }
+    
+    public User getUserByUsername(String username) {
+        Connection connection = dbConnect.linkDatabase();
+
+        try {
+            String selectQuery = "SELECT * FROM user WHERE Username = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                preparedStatement.setString(1, username);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    // Extract user details from the result set and create a User object
+                    String email = resultSet.getString("Email");
+                    String password = resultSet.getString("Password"); // Note: You may want to hash it
+                    String role = resultSet.getString("Role");
+                    // Add other fields as needed
+
+                    User user = new User(email, username, password, role);
+                    return user;
+                }
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately in a real application.
+        } finally {
+            dbConnect.endDatabase();
+        }
+
+        return null; // User not found in the database
+    }
 
     public void updatePoints(String username, int newPoints) {
         Connection connection = dbConnect.linkDatabase();
@@ -184,7 +215,7 @@ public class UserRepository {
 
     public void updatePasswordInDatabase(String username, String newPassword) {
         Connection connection = dbConnect.linkDatabase();
-
+        
         try {
             String updateQuery = "UPDATE " +sessionManager.getCurrentUser().getRole() + " SET Password = ? WHERE Username = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {

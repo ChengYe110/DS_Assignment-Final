@@ -25,7 +25,6 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Student.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
-
             // Set the Scene to the Stage and show the Stage
             primaryStage.setScene(scene);
             // Disable window resizing

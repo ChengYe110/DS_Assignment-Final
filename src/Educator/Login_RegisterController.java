@@ -208,7 +208,7 @@ public class Login_RegisterController implements Initializable {
                         root = loader.load();
 
                         StudentController HPController = loader.getController();
-
+                        
                         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                         scene = new Scene(root);
                         stage.setScene(scene);

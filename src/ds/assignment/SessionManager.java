@@ -47,14 +47,19 @@ public class SessionManager {
         boolean isAuthenticated = login.authenticateUser(enteredEmail, enteredPassword);
 
         if (isAuthenticated) {
-            currentUser = userRepository.getUserByEmail(enteredEmail);
-            System.out.println(currentUser);
-
+            if (!enteredEmail.matches("^(.+)@(gmail\\.com|hotmail\\.com|yahoo\\.com|siswa\\.um\\.edu\\.my)$")) {
+                currentUser = userRepository.getUserByUsername(enteredEmail);
+                
+            } else {
+                currentUser = userRepository.getUserByEmail(enteredEmail);
+                System.out.println(currentUser);
+                System.out.println("email");
+            }
         }
 
         return isAuthenticated;
     }
-
+    
     public void setPoints(int newPoints) {
         if (currentUser != null) {
             // Update points for the current user
