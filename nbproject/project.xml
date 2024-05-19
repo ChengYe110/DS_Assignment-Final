@@ -1,15 +1,9 @@
-<<<<<<< HEAD
-<<<<<<< OURS
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.java.j2seproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
-<<<<<<< OURS
-            <name>DSAssignment</name>
-=======
-            <name>DS-Assignment-FInal</name>
->>>>>>> THEIRS
+            <name>DS-Assignment-Final</name>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>
@@ -19,25 +13,3 @@
         </data>
     </configuration>
 </project>
-=======
-=======
->>>>>>> 028ac6c5ae2991f33f1f0159f5d41439473dc754
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://www.netbeans.org/ns/project/1">
-    <type>org.netbeans.modules.java.j2seproject</type>
-    <configuration>
-        <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
-            <name>DS-Assignment-FInal</name>
-            <source-roots>
-                <root id="src.dir"/>
-            </source-roots>
-            <test-roots>
-                <root id="test.src.dir"/>
-            </test-roots>
-        </data>
-    </configuration>
-</project>
-<<<<<<< HEAD
->>>>>>> THEIRS
-=======
->>>>>>> 028ac6c5ae2991f33f1f0159f5d41439473dc754
