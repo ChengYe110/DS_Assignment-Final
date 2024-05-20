@@ -31,8 +31,7 @@ import java.util.Map;
 public class Parent extends User implements BookingDestination{
     private String children;
     Map<LocalDate,String> bookingDate = new HashMap<>();//for date
-    List<String> destination = new ArrayList<>();//for calculate distance
-    List<double[]> coordinates = new ArrayList<>();//for calculate distance
+    List<Destination> destination = new ArrayList<>();//for calculate distance
     //linked list?(priority age-from oldest to youngest)
     
     
@@ -48,17 +47,22 @@ public class Parent extends User implements BookingDestination{
         try{
             BufferedReader br = new BufferedReader(new FileReader("BookingDestination.txt"));     
             while((line = br.readLine()) != null){
+                String locationName = line.trim();
+                if((line = br.readLine()) != null){
                 String[] parts = line.trim().split(",");
-                if(parts.length == 2){
-                    double XValue = Double.parseDouble(parts[0].trim());
-                    double YValue = Double.parseDouble(parts[1].trim());
-                    coordinates.add(new double[] {XValue,YValue});              
-                }else if(parts.length == 1){
-                    destination.add(parts[0].trim());
+                    if(parts.length == 2){
+                        double XValue = Double.parseDouble(parts[0].trim());
+                        double YValue = Double.parseDouble(parts[1].trim());
+                        destination.add(new Destination(locationName,XValue,YValue));
+                    }else{
+                        System.out.println("problem inside");
+                    }
                 }else{
-                    System.out.println("Problem");
+                    System.out.println("problem outside");
                 }
+                
             }
+            System.out.println(destination.toString());
             br.close();
         
         }catch(FileNotFoundException e){
@@ -75,8 +79,29 @@ public class Parent extends User implements BookingDestination{
         invoke readfile method, then take the matched destination name and calculate distance
         or maybe this method no need and direct calculate distance at the readfile method*/
 //        return euclideanDiatance(this.coordinateX, this.coordinateY);
+
         readFile();
-        return 0;
+        try{
+            DatabaseConnection dbConnection = new DatabaseConnection(); 
+            Connection connectDB = dbConnection.linkDatabase();
+            String connectQuery = "SELECT Location FROM parents";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+                
+            if(queryOutput.next()){
+                String location = queryOutput.getString("Location");
+                String[] locationToCalc = location.split(",");
+                double x = Double.parseDouble(locationToCalc[0]);
+                double y = Double.parseDouble(locationToCalc[0]);
+                
+                return euclideanDistance(x,y,destination.,coordinates);
+            }
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return -1;
     }
 
     @Override
@@ -85,7 +110,7 @@ public class Parent extends User implements BookingDestination{
         int year = LocalDate.now().getYear();
         
         LocalDate date = LocalDate.of(year, 1, 1);
-        date = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));
+        
         while(date.getYear() == year){
             if(date.getDayOfWeek() == DayOfWeek.MONDAY){
                 bookingDate.put(date, "Petrosains Science Discovery Centre");
@@ -110,9 +135,10 @@ public class Parent extends User implements BookingDestination{
         }
         
         try{
-            //get the event date from database, then compare with the date of bookingTour, if equal(return false)
+            //get the event date from database, then compare with the date of bookingTour, if equal then return true
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection connectDB = dbConnection.linkDatabase();
+            
             String connectQuery = "SELECT Date FROM event";
             Statement statement = connectDB.createStatement();
             ResultSet queryOutput = statement.executeQuery(connectQuery);
@@ -120,6 +146,9 @@ public class Parent extends User implements BookingDestination{
             while(queryOutput.next()){
                 LocalDate eventDate = LocalDate.parse(queryOutput.getString("Date"));
                 if(bookingDate.containsKey(eventDate)){
+                    connectDB.close();
+                    statement.close();
+                    queryOutput.close();
                     return true;
                 }
             }
@@ -201,9 +230,7 @@ public class Parent extends User implements BookingDestination{
                 if(booking.isEmpty()){
                     booking = "";
                 }
-                String newChild = booking + ",";
-                }
-            
+            }
             
             connectDB.close();
             statement.close();
@@ -263,12 +290,12 @@ public class Parent extends User implements BookingDestination{
         
     }
     
-    public static double euclideanDistance(double x1, double y1, double x2, double y2){
+    private static double euclideanDistance(double x1, double y1, double x2, double y2){
         //to calculate distance
         return Math.sqrt((Math.pow((x2-x1), 2)) + Math.pow((y2-y1), 2));
     }
 
-    public static void updateDate(){
+    private static void updateDate(){
         //method to get current date and plus (1-7) to get the next week's date and assign as the booking touur date
         LocalDate current = LocalDate.now();
         LocalDate eventDate = current.plus(7,ChronoUnit.DAYS);
