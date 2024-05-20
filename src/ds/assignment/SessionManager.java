@@ -48,9 +48,9 @@ public class SessionManager {
 
         if (isAuthenticated) {
             if (!enteredEmail.matches("^(.+)@(gmail\\.com|hotmail\\.com|yahoo\\.com|siswa\\.um\\.edu\\.my)$")) {
-                currentUser = userRepository.getUserByUsername(enteredEmail);
+                this.currentUser = userRepository.getUserByUsername(enteredEmail);
             } else {
-                currentUser = userRepository.getUserByEmail(enteredEmail);
+                this.currentUser = userRepository.getUserByEmail(enteredEmail);
                 System.out.println(currentUser);
             }
         }
@@ -120,7 +120,7 @@ public class SessionManager {
                 // Check if the new email is already taken
                 if (!userRepository.isEmailTaken(newEmail.trim().toLowerCase())) {
                     // Update email for the current user
-                    userRepository.updateEmailInDatabase(currentUser.getUsername(), newEmail);
+                    userRepository.updateEmailInDatabase(currentUser.getUsername(), newEmail,enteredPassword);
                     currentUser.setEmail(newEmail); // Update the email field in the User object
                 } else {
                     System.out.println("Email already exists. Please choose a different email.");

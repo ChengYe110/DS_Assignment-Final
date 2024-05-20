@@ -7,6 +7,7 @@ package gui;
 import ds.assignment.DatabaseConnection;
 import ds.assignment.Login;
 import ds.assignment.Points;
+import ds.assignment.Quiz;
 import ds.assignment.SessionManager;
 import ds.assignment.UserRepository;
 import java.awt.Desktop;
@@ -67,6 +68,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ds.assignment.Students;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  * FXML Controller class
@@ -141,7 +145,6 @@ public class StudentController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         // Execute after the layout pass is complete
         Platform.runLater(() -> {
             // Initially hide the MenuPane off the screen
@@ -180,19 +183,24 @@ public class StudentController implements Initializable {
                 AddParentPane.setVisible(false);
                 //ViewFriendProfilePage.setVisible(false);
                 EditProfilePane.setVisible(false);
+                setUpProfilePage(sessionManager.getCurrentUser().getUsername());
             });
             EditProfilePage.setOnAction(event -> {
                 EditProfilePane.setVisible(true);
                 EditProfilePane.toFront();
                 ExtraStackPane.getChildren().clear();
                 ExtraStackPane.getChildren().add(ChangeUsernameAndEmailPane);
-                NewUsername.setText(""); //get username from database
-                NewEmail.setText(""); //get email from database        
+                NewUsername.setText(sessionManager.getCurrentUser().getUsername()); //get username from database
+                NewEmail.setText(userRepository.getEmailByUsername(sessionManager.getCurrentUser().getUsername())); //get email from database   
+                ChangeUsernameAndEmailButton.setStyle("-fx-background-color: white;");
+                ChangePasswordButton.setStyle("-fx-background-color: transparent;");
             });
             ButtonEffect(ChangeUsernameAndEmailButton);
             ChangeUsernameAndEmailButton.setOnAction(event -> {
                 ExtraStackPane.getChildren().clear();
                 ExtraStackPane.getChildren().add(ChangeUsernameAndEmailPane);
+                NewUsername.setText(sessionManager.getCurrentUser().getUsername()); //get username from database
+                NewEmail.setText(userRepository.getEmailByUsername(sessionManager.getCurrentUser().getUsername())); //get email from database
                 ChangeUsernameAndEmailButton.setStyle("-fx-background-color: white;");
                 ChangePasswordButton.setStyle("-fx-background-color: transparent;");
             });
@@ -211,7 +219,9 @@ public class StudentController implements Initializable {
                 String newUsername = NewUsername.getText();
                 String newEmail = NewEmail.getText();
                 if (oldPassword.isBlank() || newUsername.isBlank() || newEmail.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    editProfile_Username_Email(sessionManager.getCurrentUser().getUsername());
                 }
             });
             SaveChangePasswordButton.setOnAction(event -> {
@@ -219,7 +229,9 @@ public class StudentController implements Initializable {
                 String newPassword = NewPassword.getText();
                 String confirmPassword = ConfirmPassword.getText();
                 if (oldPassword.isBlank() || newPassword.isBlank() || confirmPassword.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    editProfile_Password(sessionManager.getCurrentUser().getUsername());
                 }
             });
             AddParentPage.setOnAction(event -> {
@@ -229,7 +241,10 @@ public class StudentController implements Initializable {
             AddParentButton.setOnAction(event -> {
                 String parentUsername = ParentUsernameField.getText();
                 if (parentUsername.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    Students.addParent(sessionManager.getCurrentUser().getUsername(), parentUsername);
+                    setUpParentTable(sessionManager.getCurrentUser().getUsername());
                 }
                 AddParentPane.setVisible(false);
             });
@@ -240,6 +255,7 @@ public class StudentController implements Initializable {
             FriendListPage.setOnAction(event -> {
                 FriendListPane.setVisible(true);
                 FriendListPane.toFront();
+                showFriendList(sessionManager.getCurrentUser().getUsername());
             });
             ButtonEffect(ExitFriendListPage);
             ExitFriendListPage.setOnAction(event -> {
@@ -249,6 +265,7 @@ public class StudentController implements Initializable {
             FriendRequestPage.setOnAction(event -> {
                 FriendRequestPane.setVisible(true);
                 FriendRequestPane.toFront();
+                showFriendRequests(sessionManager.getCurrentUser().getUsername());
             });
             ButtonEffect(ExitFriendRequestPage);
             ExitFriendRequestPage.setOnAction(event -> {
@@ -281,7 +298,7 @@ public class StudentController implements Initializable {
                 String discussionTitle = DiscussionTitleField.getText();
                 String discussionContent = DiscussionContentField.getText();
                 if (discussionTitle.isBlank() || discussionContent.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     stackPane.getChildren().clear();
                     stackPane.getChildren().add(DiscussionPane);
@@ -294,6 +311,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                refreshQuiz();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(QuizPane);
             });
@@ -302,6 +320,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                clearCreateQuiz();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateQuizPane);
             });
@@ -309,16 +328,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
-                String quizTitle = QuizTitleField.getText();
-                String quizDescription = QuizDescriptionField.getText();
-                String quizTheme = QuizThemeChoiceBox.getValue();
-                String quizContent = QuizContentField.getText();
-                if (quizTitle.isBlank() || quizDescription.isBlank() || quizTheme.isBlank() || quizContent.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
-                } else {
-                    stackPane.getChildren().clear();
-                    stackPane.getChildren().add(QuizPane);
-                }
+                createQuiz();
             });
 
             EventPage.setOnAction(event -> {
@@ -359,7 +369,7 @@ public class StudentController implements Initializable {
                 String eventDate = EventDatePicker.getValue() != null ? EventDatePicker.getValue().toString() : "";
                 String eventTime = EventTimeChoiceBox.getValue();
                 if (eventTitle.isBlank() || eventDescription.isBlank() || eventVenue.isBlank() || eventDate.isBlank() || eventTime.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     stackPane.getChildren().clear();
                     stackPane.getChildren().add(EventPane);
@@ -386,34 +396,26 @@ public class StudentController implements Initializable {
             selectedButton = (Button) MENU.getChildren().get(0);
             selectedButton.setId("selected");
         });
+        LogOutButton.setOnAction(event -> {
+            try {
+                // Load the login page FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Educator/Login_Register.fxml"));
+                Parent loginRoot = loader.load();
+
+                // Get the current stage
+                Stage stage = (Stage) LogOutButton.getScene().getWindow();
+
+                // Set the scene with the login layout
+                Scene scene = new Scene(loginRoot);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
         //testing
         setUsername(sessionManager.getCurrentUser().getUsername());
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Jack");
-        addFriendList("Leo");
-        addFriendRequest("Jane");
-        addFriendRequest("Jane");
-        addFriendRequest("Jane");
-        addFriendRequest("Jane");
-        addFriendRequest("Jane");
-        addFriendRequest("Johnny Dep");
-        addFriendRequest("Johnny Dep");
-        addFriendRequest("Johnny Dep");
-        addFriendRequest("Johnny Dep");
-        addFriendRequest("Johnny Dep");
-        addNewQuiz("MockTestQuestion", "ENGINEERING", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "MATHEMATIC", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "SCIENCE", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "ENGINEERING", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "SCIENCE", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "TECHNOLOGY", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
         addNewDiscussion("HiTesting", "STUDENT", "jack", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         addNewDiscussion("OKOK", "PARENT", "lily", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         addNewDiscussion("BangBangBang", "EDUCATOR", "janice", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
@@ -422,7 +424,11 @@ public class StudentController implements Initializable {
         addNewDiscussion("HiTesting", "STUDENT", "jason", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         addNewDiscussion("YeahGoSleep", "EDUCATOR", "anson", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         addNewDiscussion("SOS", "STUDENT", "lydia", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        setUpProfilePage("Harry");
+        Students s = new Students("email", "name", "password", "student");
+        Students.sendFriendRequest("s", "c");
+        Students.sendFriendRequest("1", "c");
+        Students.sendFriendRequest("2", "c");
+        Students.sendFriendRequest("3", "c");
     }
 
     public void switchHomePage() {
@@ -517,7 +523,7 @@ public class StudentController implements Initializable {
         name.setOnAction(event -> openProfilePage(friendName));
 
         confirm.setOnAction(event -> {
-            addFriendList(friendName);
+            Students.acceptFriendRequest(sessionManager.getCurrentUser().getUsername(),friendName);
             // Retrieve the parent HBox of the confirm button
             HBox parentHBox = (HBox) confirm.getParent();
             // Remove the parent HBox from the FriendRequestVBox
@@ -525,6 +531,7 @@ public class StudentController implements Initializable {
         });
 
         delete.setOnAction(event -> {
+            Students.rejectFriendRequest(sessionManager.getCurrentUser().getUsername(),friendName);
             // Retrieve the parent HBox of the confirm button
             HBox parentHBox = (HBox) confirm.getParent();
             // Remove the parent HBox from the FriendRequestVBox
@@ -771,41 +778,25 @@ public class StudentController implements Initializable {
     }
 
     private void setUpParentTable(String username) {
-        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList(new ParentColumn(1, "Father"), new ParentColumn(2, "Mother"));
+        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList();
 
         //associate data with column
+        NoColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, Integer>("no"));
+        ParentColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, String>("username"));
 
-        NoColumn.setCellValueFactory(new PropertyValueFactory<Parent, Integer>("no"));
-        ParentColumn.setCellValueFactory(new PropertyValueFactory<Parent, String>("username"));
-        
         //modified
-        student.getParentUsernameList();
-        
-//        // Replace the connection URL, username, and password with your database credentials
-//        String url = "jdbc:mysql://localhost:3306/your_database";
-//        String username = "your_username";
-//        String password = "your_password";
-//
-//        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-//            // Fetch data from the database
-//            String query = "SELECT no, parent FROM your_table";
-//            PreparedStatement statement = connection.prepareStatement(query);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            // Add fetched data to the TableView
-//            while (resultSet.next()) {
-//                int no = resultSet.getInt("no");
-//                String parent = resultSet.getString("parent");
-//                parentList.add(new Parent(no, parent));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        ArrayList<String> arrayList = new ArrayList<>(Students.getParentList());
+        ArrayList<ParentColumn> temp = new ArrayList<>();
+        for (int i = 1; i <= arrayList.size(); i++) {
+            temp.add(new ParentColumn(i, arrayList.get(i)));
+        }
+
         ParentTable.setItems(parentList);
     }
-    
+
     private void setUpEventTable(String username) {
-        ObservableList<EventColumn> eventList = FXCollections.observableArrayList(new EventColumn("01/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("02/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("03/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("04/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new EventColumn("05/01/2024", "Happy New Year", "Alor Setar", "9am-11am"));
+        ArrayList<EventColumn> temp = Students.getStudentRegisteredEvents(username);
+        ObservableList<EventColumn> eventList = FXCollections.observableArrayList(temp);
 
         //associate data with column
         DateColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("date"));
@@ -813,79 +804,36 @@ public class StudentController implements Initializable {
         VenueColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("venue"));
         TimeColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("time"));
 
-//        // Replace the connection URL, username, and password with your database credentials
-//        String url = "jdbc:mysql://localhost:3306/your_database";
-//        String username = "your_username";
-//        String password = "your_password";
-//
-//        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-//            // Fetch data from the database
-//            String query = "SELECT no, parent FROM your_table";
-//            PreparedStatement statement = connection.prepareStatement(query);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            // Add fetched data to the TableView
-//            while (resultSet.next()) {
-//                int no = resultSet.getInt("no");
-//                String parent = resultSet.getString("parent");
-//                parentList.add(new Parent(no, parent));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
         EventTable.setItems(eventList);
     }
 
     private void setUpBookedStudyTourTable(String username) {
-        ObservableList<BookedStudyTourColumn> bookedStudyTourList = FXCollections.observableArrayList(new BookedStudyTourColumn("01/01/2024", "Alor Setar"), new BookedStudyTourColumn("02/01/2024", "Alor Setar"), new BookedStudyTourColumn("03/01/2024", "Alor Setar"), new BookedStudyTourColumn("04/01/2024", "Alor Setar"), new BookedStudyTourColumn("05/01/2024", "Alor Setar"));
+        ArrayList<BookedStudyTourColumn> temp = Students.getStudentBookedStudyTour(username);
+        ObservableList<BookedStudyTourColumn> bookedStudyTourList = FXCollections.observableArrayList(temp);
 
         //associate data with column
         BookedDateColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("date"));
         BookedVenueColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("venue"));
 
-//        // Replace the connection URL, username, and password with your database credentials
-//        String url = "jdbc:mysql://localhost:3306/your_database";
-//        String username = "your_username";
-//        String password = "your_password";
-//
-//        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-//            // Fetch data from the database
-//            String query = "SELECT no, parent FROM your_table";
-//            PreparedStatement statement = connection.prepareStatement(query);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            // Add fetched data to the TableView
-//            while (resultSet.next()) {
-//                int no = resultSet.getInt("no");
-//                String parent = resultSet.getString("parent");
-//                parentList.add(new Parent(no, parent));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
         BookedStudyTourTable.setItems(bookedStudyTourList);
     }
-    
-    private Students student;
-    
-    private void setUpProfilePage(String username) {
-//        String email = "email"; //get email 
-//        String location = "location"; //get location 
-//        String totalNumOfFriend = "10"; //get total num of friend 
-        
-        //modified
-        student.displayStudentInfo();
-        String totalNumOfFriend = String.valueOf(student.getFriendList(username).size());
 
-        UsernameProfilePage.setText(student.getUsername());
-        UsernameLabel.setText(student.getUsername());
-        EmailLabel.setText(student.getEmail(username));
-        LocationLabel.setText(student.getLocation());
+    private void setUpProfilePage(String username) {
+        String email = userRepository.getEmailByUsername(username);
+        System.out.println(email);
+        String location = userRepository.getLocation(username);
+        System.out.println(location);
+        String totalNumOfFriend = String.valueOf(Students.getTotalFriend(username));
+        System.out.println(totalNumOfFriend);
+
+        UsernameProfilePage.setText(username);
+        UsernameLabel.setText(username);
+        EmailLabel.setText(email);
+        LocationLabel.setText(location);
         NumOfFriend.setText(totalNumOfFriend);
-        
+
         //modified
-        ArrayList<String> friendNames = student.getFriendList(username);
-        //List<String> friendNames = Arrays.asList("Friend 1", "Friend 2", "Friend 3"); // Retrieve friend data from the database, assuming it returns a list of friend names
+        ArrayList<String> friendNames = Students.getFriendList(username);
         // Add each friend to the friend list
         for (String friendName : friendNames) {
             addFriendList(friendName);
@@ -894,14 +842,31 @@ public class StudentController implements Initializable {
         setUpParentTable(username);
         setUpEventTable(username);
         setUpBookedStudyTourTable(username);
-        
-        //modified
-        int point = student.getPoints();
-        //int point = 20; //retrive from database
+
+        int point = Students.getPoints();
         PointDisplay.setText(String.valueOf(point) + " POINTS");
     }
 
-    private static void showReminderDialog(String warningContent) {
+    public void showFriendList(String username) {
+        //ArrayList<String> friendList = student.getFriendList(username);
+        ArrayList<String> friendList = Students.getFriendList(sessionManager.getCurrentUser().getUsername());
+        for (String friend : friendList) {
+            addFriendList(friend);
+        }
+    }
+
+    public void showFriendRequests(String username) {
+        ArrayList<String> friendRequestList = Students.getFriendRequestList(username);
+        if (friendRequestList != null) {
+            for (String friendRequest : friendRequestList) {
+                addFriendRequest(friendRequest);
+            }
+        } else {
+            System.out.println("Friend request list is null.");
+        }
+    }
+
+    public static void showReminderDialog(String warningContent) {
         // Create a new alert dialog
         Alert alert = new Alert(Alert.AlertType.WARNING);
 
@@ -914,7 +879,7 @@ public class StudentController implements Initializable {
         alert.showAndWait()
                 .filter(response -> response == ButtonType.OK);
     }
-    
+
     public void editProfile_Username_Email(String username) {
         try {
             // Connect to database
@@ -925,67 +890,107 @@ public class StudentController implements Initializable {
             String oldPassword1 = OldPassword1.getText();
             String newUsernameChange = NewUsername.getText();
             String newEmailChange = NewEmail.getText();
-            String currentUsername = ""; // Store the current username
-            String currentEmail = ""; // Store the current email
-
-            // Check if old password matches the one in the database
-            String checkQuery = "SELECT Username, Email FROM student WHERE Password = ?";
-            PreparedStatement checkStatement = connectDB.prepareStatement(checkQuery);
-            checkStatement.setString(1, oldPassword1);
-            ResultSet resultSet = checkStatement.executeQuery();
-
-            if (resultSet.next()) {
-                currentUsername = resultSet.getString("Username");
-                currentEmail = resultSet.getString("Email");
-            } else {
-                System.out.println("Old password does not match.");
-                showReminderDialog("Old password does not match.");
-                OldPassword1.setText("");
-                NewUsername.setText("");
-                NewEmail.setText("");
-                checkStatement.close();
-                connectDB.close();
-                return;
-            }
-            checkStatement.close();
+            String currentUsername = sessionManager.getCurrentUser().getUsername(); // Store the current username
+            String currentEmail = userRepository.getEmailByUsername(currentUsername); // Store the current email
 
             // Check the conditions and update
-            if (!currentUsername.equals(newUsernameChange) && currentEmail.equals(newEmailChange)) { 
+            if (!currentUsername.equals(newUsernameChange) && currentEmail.equals(newEmailChange)) {
                 // if only username changes
-                String updateQuery = "UPDATE student SET Username = ? WHERE Password = ?";
-                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
-                updateStatement.setString(1, newUsernameChange);
-                updateStatement.setString(2, oldPassword1);
-                updateStatement.executeUpdate();
-                updateStatement.close();
-                System.out.println("Username updated successfully.");
-                showReminderDialog("Username updated successfully.");
-            }else if (currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
-                // if only email changes
-                String updateQuery = "UPDATE student SET Email = ? WHERE Password = ?";
-                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
-                updateStatement.setString(1, newEmailChange);
-                updateStatement.setString(2, oldPassword1);
-                updateStatement.executeUpdate();
-                updateStatement.close();
-                System.out.println("Email updated successfully.");
-                showReminderDialog("Email updated successfully.");
-            } else if (!currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
-                // if both username and email changes
-                String updateQuery = "UPDATE student SET Username = ?, Email = ? WHERE Password = ?";
-                PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
-                updateStatement.setString(1, newUsernameChange);
-                updateStatement.setString(2, newEmailChange);
-                updateStatement.setString(3, oldPassword1);
-                updateStatement.executeUpdate();
-                updateStatement.close();
-                System.out.println("Username and Email updated successfully.");
-                showReminderDialog("Username and Email updated successfully.");
-            } else {
-                System.out.println("No changes.");
-                showReminderDialog("No changes.");
-            }
+                try {
+                    // Assuming setUsername may throw an exception on failure
+                    if (login.isPasswordCorrectForUser(oldPassword1)) {
+                        // Check if a user is currently logged in
+                        if (sessionManager.getCurrentUser() != null) {
+                            if (userRepository.isUsernameTaken(newUsernameChange)) {
+                                NewUsername.setText(sessionManager.getCurrentUser().getUsername());
+                            }
+                            boolean updateSuccess = userRepository.updateUsernameInDatabase(currentEmail, newUsernameChange, oldPassword1);
+                            if (updateSuccess) {
+                                EditProfilePane.setVisible(false);
+                                OldPassword1.setText("");
+                                setUpProfilePage(sessionManager.getCurrentUser().getUsername());
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No logged-in user. Username not updated.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        OldPassword1.setText("");
+                        JOptionPane.showMessageDialog(null, "Incorrect password. Username not updated.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Failed to change username. Please check your inputs.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
 
+            } else if (currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
+                // if only email changes
+                String emailRegex = "^(.+)@(gmail\\.com|hotmail\\.com|yahoo\\.com|siswa\\.um\\.edu\\.my)$";
+                if (!newEmailChange.matches(emailRegex)) {
+                    JOptionPane.showMessageDialog(null, "Invalid email format. Please use a valid email address.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    try {
+                        // Assuming setUsername may throw an exception on failure
+                        if (login.isPasswordCorrectForUser(oldPassword1)) {
+                            // Check if a user is currently logged in
+                            if (sessionManager.getCurrentUser() != null) {
+                                if (!userRepository.isEmailTaken(newEmailChange)) {
+                                    // Update email for the current user
+                                    userRepository.updateEmailInDatabase(sessionManager.getCurrentUser().getUsername(), newEmailChange, oldPassword1);
+                                    JOptionPane.showMessageDialog(null, "Email changed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                                    setUpProfilePage(sessionManager.getCurrentUser().getUsername());
+                                    OldPassword1.setText("");
+                                    EditProfilePane.setVisible(false);
+                                } else {
+                                    NewEmail.setText(userRepository.getEmailByUsername(sessionManager.getCurrentUser().getUsername()));
+                                    JOptionPane.showMessageDialog(null, "Email already exists. Please choose a different email.", "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(null, "No logged-in user. Username not updated.", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } else {
+                            OldPassword1.setText("");
+                            JOptionPane.showMessageDialog(null, "Incorrect password. Username not updated.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, "Failed to change email. Please check your inputs.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } else if (!currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
+
+                if (login.isPasswordCorrectForUser(oldPassword1)) {
+                    if (!userRepository.isUsernameTaken(newUsernameChange) && !userRepository.isEmailTaken(newEmailChange)) {
+                        //username and email not taken
+                        if (userRepository.updateUsernameInDatabaseNew(currentEmail, newUsernameChange, oldPassword1) && userRepository.updateEmailInDatabaseNew(newUsernameChange, newEmailChange, oldPassword1)) {
+                            JOptionPane.showMessageDialog(null, "Username and Email has been updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } else if (userRepository.isUsernameTaken(newUsernameChange) && !userRepository.isEmailTaken(newEmailChange)) {
+                        //username taken only
+                        if (userRepository.updateEmailInDatabaseNew(newUsernameChange, newEmailChange, oldPassword1)) {
+                            JOptionPane.showMessageDialog(null, "Email updated succesfully! Username already exists. Please choose a different username.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } else if (!userRepository.isUsernameTaken(newUsernameChange) && (userRepository.isEmailTaken(newEmailChange))) {
+                        //email taken only
+                        if (userRepository.updateUsernameInDatabaseNew(newEmailChange, newUsernameChange, oldPassword1)) {
+                            JOptionPane.showMessageDialog(null, "Username updated succesfully! Email already exists. Please choose a different Email.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        //clear email or reset to the initial
+                        //set username with new one
+                    } else {
+                        //username and email  taken
+                        JOptionPane.showMessageDialog(null, "Both Username and Email already exists. Please choose a different Email and Username.", "Error", JOptionPane.ERROR_MESSAGE);
+                        //clear both or reset to the initial
+                    }
+                    NewUsername.setText(sessionManager.getCurrentUser().getUsername()); //get username from database
+                    NewEmail.setText(userRepository.getEmailByUsername(sessionManager.getCurrentUser().getUsername())); //get email from database        
+                    EditProfilePane.setVisible(false);
+                    OldPassword1.setText("");
+                    setUpProfilePage(sessionManager.getCurrentUser().getUsername());
+                } else {
+                    OldPassword1.setText("");
+                    JOptionPane.showMessageDialog(null, "Incorrect password. Username and Email not updated.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Please enter new Username or Email.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
             // Close connection
             connectDB.close();
         } catch (Exception e) {
@@ -995,63 +1000,33 @@ public class StudentController implements Initializable {
     }
 
     public void editProfile_Password(String username) {
-        try {
-            // Connect to database
-            DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.linkDatabase();
+        // Get old password, new password, and confirmation password from text fields
+        String oldPassword2 = OldPassword2.getText();
+        String newPassword = NewPassword.getText();
+        String confirmPassword = ConfirmPassword.getText();
 
-            // Get old password, new password, and confirmation password from text fields
-            String oldPassword2 = OldPassword2.getText();
-            String newPassword = NewPassword.getText();
-            String confirmPassword = ConfirmPassword.getText();
-
-            // Verify old password
-            String checkQuery = "SELECT Password FROM student WHERE Username = ?";
-            PreparedStatement checkStatement = connectDB.prepareStatement(checkQuery);
-            checkStatement.setString(1, username);
-            ResultSet resultSet = checkStatement.executeQuery();
-
-            if (resultSet.next()) {
-                String currentPassword = resultSet.getString("Password");
-                if (!currentPassword.equals(oldPassword2)) {
-                    System.out.println("Old password does not match.");
-                    showReminderDialog("Old password does not match.");
-                    checkStatement.close();
-                    connectDB.close();
-                    return;
-                }
+        if (login.isPasswordCorrectForUser(oldPassword2)) {
+            // Check if the new password and confirmation match
+            if (newPassword.equals(confirmPassword)) {
+                // Update the password for the current user
+                userRepository.updatePasswordInDatabase(sessionManager.getCurrentUser().getUsername(), newPassword);
+                sessionManager.getCurrentUser().setPassword(newPassword); // Update the password field in the User object
+                JOptionPane.showMessageDialog(null, "Password changed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                OldPassword2.setText("");
+                NewPassword.setText("");
+                ConfirmPassword.setText("");
+                EditProfilePane.setVisible(false);
             } else {
-                System.out.println("Username not found.");
-                checkStatement.close();
-                connectDB.close();
-                return;
+                OldPassword2.setText("");
+                NewPassword.setText("");
+                ConfirmPassword.setText("");
+                JOptionPane.showMessageDialog(null, "New password and confirmation do not match. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            checkStatement.close();
-
-            // Check if new password and confirm password match
-            if (!newPassword.equals(confirmPassword)) {
-                System.out.println("New password and confirmation password do not match. Please enter again. ");
-                showReminderDialog("New password and confirmation password do not match. Please enter again. ");
-                connectDB.close();
-                return;
-            }
-            
-            // Update password in the database
-            String updateQuery = "UPDATE student SET Password = ? WHERE Username = ?";
-            PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
-            updateStatement.setString(1, newPassword);
-            updateStatement.setString(2, username);
-            updateStatement.executeUpdate();
-
-            updateStatement.close();
-            connectDB.close();
-
-            System.out.println("Password updated successfully.");
-            showReminderDialog("Password updated successfully.");
-
-        } catch (Exception e) {
-            System.out.println("SQL query failed.");
-            e.printStackTrace();
+        } else {
+            OldPassword2.setText("");
+            NewPassword.setText("");
+            ConfirmPassword.setText("");
+            JOptionPane.showMessageDialog(null, "Incorrect old password. Password not changed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1159,6 +1134,39 @@ public class StudentController implements Initializable {
             currentIndex++;
             reloadLiveEventHBox(list);
         }
+    }
+
+    private void createQuiz() {
+        String title = QuizTitleField.getText();
+        String description = QuizDescriptionField.getText();
+        String theme = QuizThemeChoiceBox.getValue();
+        String content = QuizContentField.getText();
+
+        if (title.isBlank() || description.isBlank() || theme == null || content.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Quiz quiz = new Quiz(title, description, theme, content);
+            quiz.saveQuiz(sessionManager.getCurrentUser().getUsername());
+            refreshQuiz();
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(QuizPane);
+            clearCreateQuiz();
+        }
+    }
+
+    private void refreshQuiz() {
+        List<Quiz> quizList = Quiz.getQuizList();
+        QuizVBox.getChildren().clear();
+        for (Quiz quiz : quizList) {
+            addNewQuiz(quiz.getTitle(), quiz.getTheme(), quiz.getDescription(), quiz.getContent());
+        }
+    }
+
+    private void clearCreateQuiz() {
+        QuizTitleField.clear();
+        QuizDescriptionField.clear();
+        QuizThemeChoiceBox.setValue(null);
+        QuizContentField.clear();
     }
 
 }
