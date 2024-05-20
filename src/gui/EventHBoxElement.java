@@ -5,82 +5,41 @@
 package gui;
 
 import ds.assignment.DatabaseConnection;
+import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.sql.Date;
 
 /**
  *
  * @author enjye
  */
-// Enum to represent the event time slots
-enum EventTime {
-    MORNING_8_10("8 am - 10 am"),
-    MORNING_10_12("10 am - 12 pm"),
-    AFTERNOON_12_2("12 pm - 2 pm"),
-    AFTERNOON_2_4("2 pm - 4 pm"),
-    EVENING_4_6("4 pm - 6 pm"),
-    EVENING_6_8("6 pm - 8 pm");
-
-    private final String timeRange;
-
-    EventTime(String timeRange) {
-        this.timeRange = timeRange;
-    }
-
-    public String getTimeRange() {
-        return timeRange;
-    }
-
-    @Override
-    public String toString() {
-        return timeRange;
-    }
-
-    public static EventTime fromString(String text) {
-        for (EventTime eventTime : EventTime.values()) {
-            if (eventTime.timeRange.equalsIgnoreCase(text)) {
-                return eventTime;
-            }
-        }
-        throw new IllegalArgumentException("No constant with text " + text + " found");
-    }
-}
-
 public class EventHBoxElement {
 
-    private String eventTitle, eventDescription, eventVenue, eventDateS;
+    private String eventTitle, eventDescription, eventVenue, eventDateS, eventTime;
     private LocalDate eventDate;
-    private EventTime eventTime;
 
-    public EventHBoxElement(String eventTitle, String eventDescription, String eventVenue, String eventDate, String eventTime) {
+    public EventHBoxElement(String eventTitle, String eventDescription, String eventVenue, LocalDate eventDate, String eventTime) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
         this.eventVenue = eventVenue;
-
-        try {
-            this.eventDate = LocalDate.parse(eventDate, dateFormatter);
-        } catch (DateTimeParseException e) {
-            System.err.println("Invalid date format: " + eventDate);
-            this.eventDate = null; // or handle it in a different way
-        }
-
-        try {
-            this.eventTime = EventTime.fromString(eventTime);
-        } catch (IllegalArgumentException e) {
-            System.err.println("Invalid time slot: " + eventTime);
-            this.eventTime = null; // or handle it in a different way
-        }
-
-        this.eventDateS = eventDate;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = sdf.format(this.eventDate);
+        // Create a Timestamp object from the formatted date string
+        Timestamp currentTimestamp = Timestamp.valueOf(formattedDate); 
+        this.eventTime = eventTime;
+        this.eventDate = eventDate;
+        this.eventDateS = currentTimestamp.toString();
     }
 
     public String getEventTitle() {
@@ -123,12 +82,47 @@ public class EventHBoxElement {
         this.eventDate = eventDate;
     }
 
-//    public String getEventTime() {
-//        return eventTime.getTimeRange();
-//    }
+    public String getEventTime() {
+        return eventTime;
+    }
 
-    public void setEventTime(String eventTime) {
-        this.eventTime = EventTime.fromString(eventTime);
+    public void saveEvent(String educatorUsername) {
+        DatabaseConnection connectNow = new DatabaseConnection();
+        Connection connectDB = connectNow.linkDatabase();
+
+        try {
+
+            String query = "INSERT INTO event (Title, Description, Venue, Date, Time) VALUES (?,?,?,?,?)";
+            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+            preparedStatement.setString(1, this.eventTitle);
+            preparedStatement.setString(2, this.eventDescription);
+            preparedStatement.setString(3, this.eventVenue);
+
+            // Format the date and time to match DATETIME format in SQL
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formattedDate = sdf.format(this.eventDate);
+            // Create a Timestamp object from the formatted date string
+            Timestamp currentTimestamp = Timestamp.valueOf(formattedDate);
+            // Set parameters in the prepared statement
+            
+            Date a = Date.valueOf(eventDate);
+            preparedStatement.setDate(4, a);
+            preparedStatement.setString(5, this.eventTime);
+
+            preparedStatement.executeUpdate(); //delete after execute next
+            System.out.println("haha");
+
+//            if (preparedStatement.executeUpdate() == 0) {
+//                String query2 = "UPDATE educator SET NumQuiz=NumQuiz+1 WHERE Username=?";
+//                PreparedStatement preparedStatement2 = connectDB.prepareStatement(query2);
+//                preparedStatement2.setString(1, educatorUsername);
+//                preparedStatement2.executeUpdate();
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectNow.endDatabase();
+        }
     }
 
     public static ArrayList<LocalDate> getEventDateList() {

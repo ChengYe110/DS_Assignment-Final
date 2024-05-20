@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
 import java.sql.PreparedStatement;
-import java.util.Date;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -189,10 +189,11 @@ public class User {
                 String title = resultSet.getString("Title");
                 String description = resultSet.getString("Description");
                 String venue = resultSet.getString("Venue");
-                String date = resultSet.getString("Date");
+                Date date = resultSet.getDate("Date");
+                LocalDate localdate = date.toLocalDate();
                 String time = resultSet.getString("Time");
 
-                EventHBoxElement event = new EventHBoxElement(title, description, venue, date, time);
+                EventHBoxElement event = new EventHBoxElement(title, description, venue, localdate, time);
                 eventList.add(event);
             }
             resultSet.close();
@@ -220,16 +221,15 @@ public class User {
         }
 
         // Sort the upcoming events by date and time
-//        Collections.sort(upcomingEventList, new Comparator<EventHBoxElement>() {
-//            @Override
-//            public int compare(EventHBoxElement event1, EventHBoxElement event2) {
-//                if (!event1.getEventDate().equals(event2.getEventDate())) {
-//                    return event1.getEventDate().compareTo(event2.getEventDate());
-//                } else {
-//                    return event1.getEventTime().compareTo(event2.getEventTime());
-//                }
-//            }
-//        });
+        Collections.sort(upcomingEventList, new Comparator<EventHBoxElement>() {
+            @Override
+            public int compare(EventHBoxElement event1, EventHBoxElement event2) {
+                if (!event1.getEventDate().equals(event2.getEventDate())) {
+                    return event1.getEventDate().compareTo(event2.getEventDate());
+                } 
+                return -1;
+            }
+        });
 
         // Get the closest three upcoming events
         ArrayList<EventHBoxElement> closestThreeUpcomingEvents = new ArrayList<>();
@@ -239,10 +239,10 @@ public class User {
 
         // Display the closest events
         System.out.println("Closest upcoming events to " + currentDate + " are:");
-//        for (EventHBoxElement event : closestThreeUpcomingEvents) {
-//            long daysUntilEvent = ChronoUnit.DAYS.between(currentDate, event.getEventDate());
-//            System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTime() + " (in " + daysUntilEvent + " days)");
-//        }
+        for (EventHBoxElement event : closestThreeUpcomingEvents) {
+        long daysUntilEvent = ChronoUnit.DAYS.between(currentDate, event.getEventDate());
+            System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTime() + " (in " + daysUntilEvent + " days)");
+        }
         return closestThreeUpcomingEvents;
     }
     
@@ -260,10 +260,10 @@ public class User {
         }
 
         // Display the live events
-//        System.out.println("Events happening today, " + currentDate + " are:");
-//        for (EventHBoxElement event : liveEventList) {
-//            System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTime());
-//        }
+        System.out.println("Events happening today, " + currentDate + " are:");
+        for (EventHBoxElement event : liveEventList) {
+            System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTime());
+        }
 
         return liveEventList;
     }

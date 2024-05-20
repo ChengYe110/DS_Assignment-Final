@@ -69,8 +69,13 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ds.assignment.Students;
+import ds.assignment.User;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -344,6 +349,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                refreshEvent();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(EventPane);
             });
@@ -351,38 +357,32 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                clearCreateEvent();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateEventPane);
             });
             currentIndex = 0;
             ButtonEffect(PreviousButton);
             ButtonEffect(NextButton);
-            ArrayList<EventHBoxElement> eventList = new ArrayList<>(Arrays.asList(
-                    new EventHBoxElement("Event1", "Description1", "Venue1", "01-01-2024", "Time1"),
-                    new EventHBoxElement("Event2", "Description2", "Venue2", "01-01-2024", "Time2"),
-                    new EventHBoxElement("Event3", "Description3", "Venue3", "01-01-2024", "Time3")
-            ));
-            reloadLiveEventHBox(eventList);
-            PreviousButton.setOnAction(e -> showPreviousEvent(eventList));
-            NextButton.setOnAction(e -> showNextEvent(eventList));
-            addEventHBoxToParent(EventHBox1, new EventHBoxElement("Event1", "Description1", "Venue1", "01-01-2024", "Time1"));
-            addEventHBoxToParent(EventHBox2, new EventHBoxElement("Event1", "Description1", "Venue1", "01-01-2024", "Time1"));
-            addEventHBoxToParent(EventHBox3, new EventHBoxElement("Event1", "Description1", "Venue1", "01-01-2024", "Time1"));
+            
+            
             DoneCreateEvent.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
-                String eventTitle = EventTitleField.getText();
-                String eventDescription = EventDescriptionField.getText();
-                String eventVenue = EventVenueField.getText();
-                String eventDate = EventDatePicker.getValue() != null ? EventDatePicker.getValue().toString() : "";
-                String eventTime = EventTimeChoiceBox.getValue();
-                if (eventTitle.isBlank() || eventDescription.isBlank() || eventVenue.isBlank() || eventDate.isBlank() || eventTime.isBlank()) {
-                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    stackPane.getChildren().clear();
-                    stackPane.getChildren().add(EventPane);
-                }
+                createEvent();
+//                String eventTitle = EventTitleField.getText();
+//                String eventDescription = EventDescriptionField.getText();
+//                String eventVenue = EventVenueField.getText();
+//                String eventDate = EventDatePicker.getValue() != null ? EventDatePicker.getValue().toString() : "";
+//                String eventTime = EventTimeChoiceBox.getValue();
+//                if (eventTitle.isBlank() || eventDescription.isBlank() || eventVenue.isBlank() || eventDate.isBlank() || eventTime.isBlank()) {
+//                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+//                } else {
+//                    stackPane.getChildren().clear();
+//                    stackPane.getChildren().add(EventPane);
+//                    
+//                }
             });
 
             for (Node node : MENU.getChildren()) {
@@ -1169,8 +1169,8 @@ public class StudentController implements Initializable {
     }
 
     public void addEventHBoxToParent(HBox parent, EventHBoxElement e) {
-//        HBox eventHBox = createEventHBox(e.getEventTitle(), e.getEventDescription(), e.getEventVenue(), e.getEventDateS(), e.getEventTime());
-//        parent.getChildren().add(eventHBox);
+        HBox eventHBox = createEventHBox(e.getEventTitle(), e.getEventDescription(), e.getEventVenue(), e.getEventDateS(), e.getEventTime());
+        parent.getChildren().add(eventHBox);
     }
 
     private void reloadLiveEventHBox(ArrayList<EventHBoxElement> list) {
@@ -1178,6 +1178,8 @@ public class StudentController implements Initializable {
         if (!list.isEmpty()) {
             // Add current event to parentHBox
             addEventHBoxToParent(LiveEventHBox, list.get(currentIndex));
+            PreviousButton.setOnAction(e -> showPreviousEvent(list));
+            NextButton.setOnAction(e -> showNextEvent(list));
             // Update button visibility based on currentIndex
             PreviousButton.setVisible(currentIndex > 0);
             NextButton.setVisible(currentIndex < list.size() - 1);
@@ -1243,6 +1245,67 @@ public class StudentController implements Initializable {
         QuizContentField.clear();
     }
 
+    public static Date convertToDate(LocalDate localDate) {
+        // Convert LocalDate to Instant
+        Instant instant = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        // Convert Instant to Date
+        return Date.from(instant);
+    }
+
+    private void createEvent() {
+        String title = EventTitleField.getText();
+        String description = EventDescriptionField.getText();
+        String venue = EventVenueField.getText();
+        LocalDate dateA = EventDatePicker.getValue();
+        String time = EventTimeChoiceBox.getValue();
+
+        if (title.isBlank() || description.isBlank() || venue.isBlank() || dateA==null || time.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            EventHBoxElement eventHboxElement = new EventHBoxElement(title, description, venue, dateA, time);
+            eventHboxElement.saveEvent(sessionManager.getCurrentUser().getUsername());
+            refreshEvent();
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(EventPane);
+            clearCreateEvent();     
+        }
+    }
+
+    private void refreshEvent() {
+        ArrayList<EventHBoxElement> EventHBoxElementList = User.getLiveEventList();
+        LiveEventHBox.getChildren().clear();
+        reloadLiveEventHBox(EventHBoxElementList);
+        
+        ArrayList<EventHBoxElement> LatestEventList = User.getLatestEventList();
+        addEventHBoxToParent(EventHBox1,LatestEventList.get(0));
+        addEventHBoxToParent(EventHBox2,LatestEventList.get(1));
+        addEventHBoxToParent(EventHBox3,LatestEventList.get(2));
+        
+//        List<EventHBoxElement> notJoinEventList = new ArrayList<>();
+//        ArrayList<String> joinedEventList = EventHBoxElement.getJoinedEventList(sessionManager.getCurrentUser().getUsername());
+//        System.out.println(joinedEventList.size());
+//        for (EventHBoxElement2 eventHBoxElement2: EventHBoxElement2List) {
+//            System.out.println(joinedEventList.size());
+//            if (joinedEventList.contains(eventHBoxElement2.getID())) {
+//                System.out.println(eventHBoxElement2.getID());
+//                addNewQuiz(eventHBoxElement2, true);
+//            } else {
+//                notJoinEventList.add(eventHBoxElement2);
+//            }
+//        }
+//        for (EventHBoxElement2 eventHBoxElement2 : notJoinEventList) {
+//            addNewQuiz(eventHBoxElement2, false);
+//        }
+    }
+
+    private void clearCreateEvent() {
+        EventTitleField.clear();
+        EventDescriptionField.clear();
+        EventVenueField.clear();
+        EventDatePicker.setValue(null);
+        EventTimeChoiceBox.setValue("");
+    }
+    
     private void createDiscussion() {
         String title = DiscussionTitleField.getText();
         String content = DiscussionContentField.getText();
