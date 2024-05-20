@@ -170,11 +170,13 @@ public class Login_RegisterController implements Initializable {
             }
         });
 
+        DatabaseConnection dbConnect = new DatabaseConnection();
+        UserRepository userRepository = new UserRepository(dbConnect);
+        Login userLogin = new Login();  // Create a single instance of Login
+        SessionManager sessionManager = new SessionManager(userRepository, userLogin);
+        userLogin.setSessionManager(sessionManager);
+
         login.setOnAction(event -> {
-            DatabaseConnection dbConnect = new DatabaseConnection();
-            UserRepository userRepository = new UserRepository(dbConnect);
-            Login login2 = new Login();  // Create a single instance of Login
-            SessionManager sessionManager = new SessionManager(userRepository, login2);
 
             // Get the entered email and password
             String enteredEmailUsername = username_email_login.getText();
@@ -216,10 +218,8 @@ public class Login_RegisterController implements Initializable {
                         stage.show();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    
-                  
-                    }
 
+                    }
 
 //                    if (lastCheckinTimestamp == null || !isSameDay(new Timestamp(System.currentTimeMillis()), lastCheckinTimestamp)) {
 //                        sessionManager.saveTimestampToDatabase();
@@ -252,12 +252,6 @@ public class Login_RegisterController implements Initializable {
             String username = username_register.getText();
             String email = email_register.getText();
             String password = passwordHidden_register.getText();
-
-            DatabaseConnection dbConnect = new DatabaseConnection();
-            UserRepository userRepository = new UserRepository(dbConnect);
-            Login loginRegister = new Login();
-            SessionManager sessionManager = new SessionManager(userRepository, loginRegister);  // Pass the Login instance to SessionManager
-            loginRegister.setSessionManager(sessionManager);
 
             // Input validation
             if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {

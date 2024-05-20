@@ -8,11 +8,11 @@ package gui;
  *
  * @author enjye
  */
-public class Parent {
+public class ParentColumn {
     private String username;
     private Integer no;
     
-    Parent(Integer no,String username){
+    ParentColumn(Integer no,String username){
         this.username=username;
         this.no=no;
     }

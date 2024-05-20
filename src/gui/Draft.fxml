@@ -145,14 +145,83 @@
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="MenuPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;">
+      <HBox fx:id="LiveEventHBox" alignment="CENTER" layoutX="82.0" layoutY="64.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
+         <children>
+            <VBox prefHeight="87.0" prefWidth="512.0">
+               <children>
+                  <Label fx:id="Event1Title" prefHeight="32.0" prefWidth="519.0" text="Event1">
+                     <font>
+                        <Font name="Segoe UI Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Text fx:id="Event1Description" strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Description" wrappingWidth="108.63671875">
+                     <font>
+                        <Font name="Segoe UI Semibold" size="12.0" />
+                     </font>
+                  </Text>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="87.0" prefWidth="282.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: ff5757; -fx-background-radius: 20px;" text="VENUE" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="16.0" />
+                           </font>
+                        </Label>
+                        <Text fx:id="Event1Venue" strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Venue" wrappingWidth="150.0">
+                           <font>
+                              <Font name="Segoe UI Semibold" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="38.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #4fc8ab; -fx-background-radius: 20px;" text="DATE" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="16.0" />
+                           </font>
+                        </Label>
+                        <Text fx:id="Event1Date" strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Date" wrappingWidth="150.0">
+                           <font>
+                              <Font name="Segoe UI Semibold" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="54.0" prefHeight="32.0" prefWidth="260.0" spacing="10.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="87.0" style="-fx-background-color: #ffd230; -fx-background-radius: 20px;" text="TIME" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="16.0" />
+                           </font>
+                        </Label>
+                        <Text fx:id="Event1Time" strokeType="OUTSIDE" strokeWidth="0.0" text="Event1Time" wrappingWidth="150.0">
+                           <font>
+                              <Font name="Segoe UI Semibold" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <Button fx:id="JoinEvent1" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="JOIN" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI Black" size="20.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+      <AnchorPane fx:id="MenuPane" layoutX="50.0" layoutY="50.0" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;">
          <children>
             <ImageView fitHeight="222.0" fitWidth="203.0" layoutX="37.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../png/StudentProfile.png" />
                </image>
             </ImageView>
-            <VBox fx:id="DrawerPane" alignment="CENTER" layoutX="91.0" layoutY="334.0" prefHeight="222.0" prefWidth="167.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <VBox fx:id="DrawerPane" alignment="CENTER" layoutY="310.0" prefHeight="222.0" prefWidth="167.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
                   <HBox alignment="CENTER" styleClass="selected" stylesheets="@StudentStyle.css">
                      <children>
@@ -215,12 +284,17 @@
                   <Insets />
                </opaqueInsets>
             </VBox>
-            <Text fx:id="UsernameMenuPane" layoutX="71.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" wrappingWidth="134.13671875">
+            <Text fx:id="UsernameMenuPane" layoutX="4.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" wrappingWidth="269.0">
                <font>
                   <Font name="Bell MT Bold" size="30.0" />
                </font>
             </Text>
             <Button layoutX="75.0" layoutY="251.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" style="-fx-background-color: ff3131; -fx-background-radius: 20px;" text="STUDENT" textFill="#fffcfc">
+               <font>
+                  <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+               </font>
+            </Button>
+            <Button fx:id="LogOutButton" layoutX="62.0" layoutY="539.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="153.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="LOG OUT" textFill="#fffcfc">
                <font>
                   <Font name="Berlin Sans FB Demi Bold" size="20.0" />
                </font>

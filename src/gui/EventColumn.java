@@ -8,10 +8,10 @@ package gui;
  *
  * @author enjye
  */
-public class Event {
+public class EventColumn {
     public String date,title,venue,time;
 
-    public Event(String date, String title, String venue, String time) {
+    public EventColumn(String date, String title, String venue, String time) {
         this.date = date;
         this.title = title;
         this.venue = venue;

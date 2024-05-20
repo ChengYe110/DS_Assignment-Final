@@ -47,9 +47,12 @@ public class SessionManager {
         boolean isAuthenticated = login.authenticateUser(enteredEmail, enteredPassword);
 
         if (isAuthenticated) {
-            currentUser = userRepository.getUserByEmail(enteredEmail);
-            System.out.println(currentUser);
-
+            if (!enteredEmail.matches("^(.+)@(gmail\\.com|hotmail\\.com|yahoo\\.com|siswa\\.um\\.edu\\.my)$")) {
+                this.currentUser = userRepository.getUserByUsername(enteredEmail);
+            } else {
+                this.currentUser = userRepository.getUserByEmail(enteredEmail);
+                System.out.println(currentUser);
+            }
         }
 
         return isAuthenticated;
@@ -117,7 +120,7 @@ public class SessionManager {
                 // Check if the new email is already taken
                 if (!userRepository.isEmailTaken(newEmail.trim().toLowerCase())) {
                     // Update email for the current user
-                    userRepository.updateEmailInDatabase(currentUser.getUsername(), newEmail);
+                    userRepository.updateEmailInDatabase(currentUser.getUsername(), newEmail,enteredPassword);
                     currentUser.setEmail(newEmail); // Update the email field in the User object
                 } else {
                     System.out.println("Email already exists. Please choose a different email.");
@@ -212,13 +215,13 @@ public class SessionManager {
             dbConnect.endDatabase();
         }
     }
-    
-    public String getTopUsername(int i){
+
+    public String getTopUsername(int i) {
         printTopUsers();
         return topUsernames.get(i);
     }
-    
-    public String getTopPoints(int i){
+
+    public String getTopPoints(int i) {
         printTopUsers();
         return String.valueOf(topPoints.get(i));
     }

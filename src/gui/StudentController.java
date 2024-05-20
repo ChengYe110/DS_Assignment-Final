@@ -4,9 +4,20 @@
  */
 package gui;
 
+import ds.assignment.DatabaseConnection;
+import ds.assignment.Discussion;
+import ds.assignment.Login;
+import ds.assignment.Points;
+import ds.assignment.Quiz;
+import ds.assignment.SessionManager;
+import ds.assignment.UserRepository;
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +34,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -49,8 +59,21 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.text.Font;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import ds.assignment.Students;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  * FXML Controller class
@@ -67,7 +90,7 @@ public class StudentController implements Initializable {
             FriendRequestPage, ExitFriendRequestPage, ExitViewFriendProfilePage, CreateDiscussionPage, DoneCreateDiscussion,
             AddParentButton, AddParentPage, ExitAddParentPane, ChangeUsernameAndEmailButton, ChangePasswordButton,
             SaveChangeUsernameAndEmailButton, SaveChangePasswordButton, EditProfilePage, ExitEditProfilePage,
-            PointDisplay, JoinEvent1, JoinEvent2, JoinEvent3, JoinEvent4, FilterButton;
+            PointDisplay, FilterButton, LogOutButton, NextButton, PreviousButton;
     @FXML
     private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox, DiscussionVBox, FilterVBox;
     @FXML
@@ -93,35 +116,39 @@ public class StudentController implements Initializable {
     @FXML
     private DatePicker EventDatePicker;
     @FXML
-    private HBox MENU;
+    private HBox MENU, LiveEventHBox, EventHBox1, EventHBox2, EventHBox3;
     private Button selectedButton = null;
     private ObservableList<String> theme = FXCollections.observableArrayList("SCIENCE", "TECHNOLOGY", "ENGINEERING", "MATHEMATIC");
     private ObservableList<String> time = FXCollections.observableArrayList("8 am - 10 am", "10 am - 12 pm", "12 pm - 2 pm", "2 pm - 4 pm", "4 pm - 6 pm", "6 pm - 8 pm");
     @FXML
-    private TableView<Parent> ParentTable;
+    private TableView<ParentColumn> ParentTable;
     @FXML
-    private TableColumn<Parent, Integer> NoColumn;
+    private TableColumn<ParentColumn, Integer> NoColumn;
     @FXML
-    private TableColumn<Parent, String> ParentColumn;
+    private TableColumn<ParentColumn, String> ParentColumn;
     @FXML
-    private TableView<Event> EventTable;
+    private TableView<EventColumn> EventTable;
     @FXML
-    private TableColumn<Event, String> DateColumn, TitleColumn, VenueColumn, TimeColumn;
+    private TableColumn<EventColumn, String> DateColumn, TitleColumn, VenueColumn, TimeColumn;
     @FXML
-    private TableView<BookedStudyTour> BookedStudyTourTable;
+    private TableView<BookedStudyTourColumn> BookedStudyTourTable;
     @FXML
-    private TableColumn<BookedStudyTour, String> BookedDateColumn, BookedVenueColumn;
+    private TableColumn<BookedStudyTourColumn, String> BookedDateColumn, BookedVenueColumn;
     @FXML
     private ScrollPane FriendListScrollPane, FriendRequestScrollPane, QuizScrollPane, DiscussionScrollPane;
 
     private TranslateTransition slideOutTransition, slideInTransition;
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
+    private int currentIndex;
+    public static String friendNameProfile;
+
+    DatabaseConnection dbConnect = new DatabaseConnection();
+    UserRepository userRepository = new UserRepository(dbConnect);
+    Login login = new Login();  // Create a single instance of Login
+    SessionManager sessionManager = new SessionManager(userRepository, login);  // Pass the Login instance to SessionManage
+    Points pointsFromDataBase = new Points();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         // Execute after the layout pass is complete
         Platform.runLater(() -> {
             // Initially hide the MenuPane off the screen
@@ -147,8 +174,6 @@ public class StudentController implements Initializable {
             });
 
             EventTimeChoiceBox.setItems(time);
-
-            ButtonEffect(FriendListPage);
             ProfilePage.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
@@ -160,17 +185,24 @@ public class StudentController implements Initializable {
                 AddParentPane.setVisible(false);
                 //ViewFriendProfilePage.setVisible(false);
                 EditProfilePane.setVisible(false);
+                setUpProfilePage(sessionManager.getCurrentUser().getUsername());
             });
             EditProfilePage.setOnAction(event -> {
                 EditProfilePane.setVisible(true);
                 EditProfilePane.toFront();
                 ExtraStackPane.getChildren().clear();
                 ExtraStackPane.getChildren().add(ChangeUsernameAndEmailPane);
+                NewUsername.setText(sessionManager.getCurrentUser().getUsername()); //get username from database
+                NewEmail.setText(userRepository.getEmailByUsername(sessionManager.getCurrentUser().getUsername())); //get email from database   
+                ChangeUsernameAndEmailButton.setStyle("-fx-background-color: white;");
+                ChangePasswordButton.setStyle("-fx-background-color: transparent;");
             });
             ButtonEffect(ChangeUsernameAndEmailButton);
             ChangeUsernameAndEmailButton.setOnAction(event -> {
                 ExtraStackPane.getChildren().clear();
                 ExtraStackPane.getChildren().add(ChangeUsernameAndEmailPane);
+                NewUsername.setText(sessionManager.getCurrentUser().getUsername()); //get username from database
+                NewEmail.setText(userRepository.getEmailByUsername(sessionManager.getCurrentUser().getUsername())); //get email from database
                 ChangeUsernameAndEmailButton.setStyle("-fx-background-color: white;");
                 ChangePasswordButton.setStyle("-fx-background-color: transparent;");
             });
@@ -189,7 +221,9 @@ public class StudentController implements Initializable {
                 String newUsername = NewUsername.getText();
                 String newEmail = NewEmail.getText();
                 if (oldPassword.isBlank() || newUsername.isBlank() || newEmail.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    editProfile_Username_Email(sessionManager.getCurrentUser().getUsername());
                 }
             });
             SaveChangePasswordButton.setOnAction(event -> {
@@ -197,7 +231,9 @@ public class StudentController implements Initializable {
                 String newPassword = NewPassword.getText();
                 String confirmPassword = ConfirmPassword.getText();
                 if (oldPassword.isBlank() || newPassword.isBlank() || confirmPassword.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    editProfile_Password(sessionManager.getCurrentUser().getUsername());
                 }
             });
             AddParentPage.setOnAction(event -> {
@@ -207,7 +243,10 @@ public class StudentController implements Initializable {
             AddParentButton.setOnAction(event -> {
                 String parentUsername = ParentUsernameField.getText();
                 if (parentUsername.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    Students.addParent(sessionManager.getCurrentUser().getUsername(), parentUsername);
+                    setUpParentTable(sessionManager.getCurrentUser().getUsername());
                 }
                 AddParentPane.setVisible(false);
             });
@@ -227,6 +266,7 @@ public class StudentController implements Initializable {
             FriendRequestPage.setOnAction(event -> {
                 FriendRequestPane.setVisible(true);
                 FriendRequestPane.toFront();
+                showFriendRequests(sessionManager.getCurrentUser().getUsername());
             });
             ButtonEffect(ExitFriendRequestPage);
             ExitFriendRequestPage.setOnAction(event -> {
@@ -242,6 +282,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                refreshDiscussion();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(DiscussionPane);
             });
@@ -249,6 +290,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                clearCreateDiscussion();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateDiscussionPane);
             });
@@ -259,8 +301,9 @@ public class StudentController implements Initializable {
                 String discussionTitle = DiscussionTitleField.getText();
                 String discussionContent = DiscussionContentField.getText();
                 if (discussionTitle.isBlank() || discussionContent.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
+                    createDiscussion();
                     stackPane.getChildren().clear();
                     stackPane.getChildren().add(DiscussionPane);
                 }
@@ -272,6 +315,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                refreshQuiz();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(QuizPane);
             });
@@ -280,6 +324,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                clearCreateQuiz();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateQuizPane);
             });
@@ -287,16 +332,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
-                String quizTitle = QuizTitleField.getText();
-                String quizDescription = QuizDescriptionField.getText();
-                String quizTheme = QuizThemeChoiceBox.getValue();
-                String quizContent = QuizContentField.getText();
-                if (quizTitle.isBlank() || quizDescription.isBlank() || quizTheme.isBlank() || quizContent.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
-                } else {
-                    stackPane.getChildren().clear();
-                    stackPane.getChildren().add(QuizPane);
-                }
+                createQuiz();
             });
 
             EventPage.setOnAction(event -> {
@@ -313,38 +349,20 @@ public class StudentController implements Initializable {
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateEventPane);
             });
-            JoinEvent1.setOnAction(event -> {
-                String title = Event1Title.getText();
-                String description = Event1Description.getText();
-                String venue = Event1Venue.getText();
-                String date = Event1Title.getText();
-                String time = Event1Time.getText();
-                //check clashing
-            });
-            JoinEvent2.setOnAction(event -> {
-                String title = Event2Title.getText();
-                String description = Event2Description.getText();
-                String venue = Event2Venue.getText();
-                String date = Event2Title.getText();
-                String time = Event2Time.getText();
-                //check clashing
-            });
-            JoinEvent3.setOnAction(event -> {
-                String title = Event3Title.getText();
-                String description = Event3Description.getText();
-                String venue = Event3Venue.getText();
-                String date = Event3Title.getText();
-                String time = Event3Time.getText();
-                //check clashing
-            });
-            JoinEvent4.setOnAction(event -> {
-                String title = Event4Title.getText();
-                String description = Event4Description.getText();
-                String venue = Event4Venue.getText();
-                String date = Event4Title.getText();
-                String time = Event4Time.getText();
-                //check clashing
-            });
+            currentIndex = 0;
+            ButtonEffect(PreviousButton);
+            ButtonEffect(NextButton);
+            ArrayList<EventHBoxElement> eventList = new ArrayList<>(Arrays.asList(
+                    new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"),
+                    new EventHBoxElement("Event2", "Description2", "Venue2", "Date2", "Time2"),
+                    new EventHBoxElement("Event3", "Description3", "Venue3", "Date3", "Time3")
+            ));
+            reloadLiveEventHBox(eventList);
+            PreviousButton.setOnAction(e -> showPreviousEvent(eventList));
+            NextButton.setOnAction(e -> showNextEvent(eventList));
+            addEventHBoxToParent(EventHBox1, new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"));
+            addEventHBoxToParent(EventHBox2, new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"));
+            addEventHBoxToParent(EventHBox3, new EventHBoxElement("Event1", "Description1", "Venue1", "Date1", "Time1"));
             DoneCreateEvent.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
@@ -355,7 +373,7 @@ public class StudentController implements Initializable {
                 String eventDate = EventDatePicker.getValue() != null ? EventDatePicker.getValue().toString() : "";
                 String eventTime = EventTimeChoiceBox.getValue();
                 if (eventTitle.isBlank() || eventDescription.isBlank() || eventVenue.isBlank() || eventDate.isBlank() || eventTime.isBlank()) {
-                    showReminderDialog("Please fill in all information!!!");
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     stackPane.getChildren().clear();
                     stackPane.getChildren().add(EventPane);
@@ -382,45 +400,31 @@ public class StudentController implements Initializable {
             selectedButton = (Button) MENU.getChildren().get(0);
             selectedButton.setId("selected");
         });
+        LogOutButton.setOnAction(event -> {
+            try {
+                // Load the login page FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Educator/Login_Register.fxml"));
+                Parent loginRoot = loader.load();
+
+                // Get the current stage
+                Stage stage = (Stage) LogOutButton.getScene().getWindow();
+
+                // Set the scene with the login layout
+                Scene scene = new Scene(loginRoot);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
         //testing
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Cindy");
-        addFriendList("Jack");
-        addFriendList("Leo");
-        addFriendRequest("Jane");
-        addFriendRequest("Jane");
-        addFriendRequest("Jane");
-        addFriendRequest("Jane");
-        addFriendRequest("Jane");
-        addFriendRequest("Johnny Dep");
-        addFriendRequest("Johnny Dep");
-        addFriendRequest("Johnny Dep");
-        addFriendRequest("Johnny Dep");
-        addFriendRequest("Johnny Dep");
-        addNewQuiz("MockTestQuestion", "ENGINEERING", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "MATHEMATIC", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "SCIENCE", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "ENGINEERING", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "SCIENCE", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewQuiz("MockTestQuestion", "TECHNOLOGY", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://en.wikipedia.org/wiki/Cha_Eun-woo");
-        addNewDiscussion("HiTesting", "STUDENT", "jack", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("OKOK", "PARENT", "lily", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("BangBangBang", "EDUCATOR", "janice", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("EatShit", "STUDENT", "leo", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("TomyamNice", "PARENT", "david", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("HiTesting", "STUDENT", "jason", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("YeahGoSleep", "EDUCATOR", "anson", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("SOS", "STUDENT", "lydia", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        setUpProfilePage("Harry");
-        Node quizNode = QuizVBox.getChildren().get(0); // Get the first quiz HBox
-        String themeText = getThemeText(quizNode); // Call the method
-        System.out.println("Theme: " + themeText);
+        setUsername(sessionManager.getCurrentUser().getUsername());
+        Students s = new Students("email", "name", "password", "student");
+        Students.sendFriendRequest("s", "c");
+        Students.sendFriendRequest("1", "c");
+        Students.sendFriendRequest("2", "c");
+        Students.sendFriendRequest("3", "c");
     }
 
     public void switchHomePage() {
@@ -439,45 +443,6 @@ public class StudentController implements Initializable {
         stackPane.getChildren().add(LeaderboardPane);
     }
 
-//    public void switchEventPage() {
-//        if (MenuPane.getTranslateX() == 0) {
-//            slideInTransition.play();
-//        }
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(EventPane);
-//    }
-//
-//    public void switchCreateEventPage() {
-//        if (MenuPane.getTranslateX() == 0) {
-//            slideInTransition.play();
-//        }
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(CreateEventPane);
-//    }
-//
-//    public void switchQuizPage() {
-//        if (MenuPane.getTranslateX() == 0) {
-//            slideInTransition.play();
-//        }
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(QuizPane);
-//    }
-//
-//    public void switchCreateQuizPage() {
-//        if (MenuPane.getTranslateX() == 0) {
-//            slideInTransition.play();
-//        }
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(CreateQuizPane);
-//    }
-//    
-//    public void switchStudentProfilePage() {
-//        if (MenuPane.getTranslateX() == 0) {
-//            slideInTransition.play();
-//        }
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(StudentProfilePane);
-//    }
     // Button effect method
     public void ButtonEffect(Button button) {
         // Create a scale transition
@@ -504,16 +469,40 @@ public class StudentController implements Initializable {
     // Method to add a friend to the friendlist
     private void addFriendList(String friendName) {
         Button friendButton = new Button(friendName);
-        friendButton.setStyle("-fx-background-color: transparent; -fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 20px; ");
+        friendButton.getStyleClass().add("friend-button");
         ButtonEffect(friendButton);
-        friendButton.setOnAction(event -> openProfilePage(friendName));
+        friendButton.setOnAction(event -> {
+            friendNameProfile = friendName;
+            openProfilePage(friendNameProfile);
+        });
         FriendListVBox.getChildren().add(friendButton);
     }
 
     // Method to open the friend's profile page
     private void openProfilePage(String friendName) {
-        // open the profile page using the provided name
-        //need to add "add friend" button
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
+            Parent root = loader.load();
+
+            FriendProfileController controller = loader.getController();
+
+            // Create a new stage for the second view
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.TRANSPARENT);
+
+            // Ensure the scene is also transparent
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.setScene(scene);
+
+            stage.setResizable(false);
+            stage.show();
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
+            stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Method to add an HBox with three buttons to the VBox
@@ -538,7 +527,7 @@ public class StudentController implements Initializable {
         name.setOnAction(event -> openProfilePage(friendName));
 
         confirm.setOnAction(event -> {
-            addFriendList(friendName);
+            Students.acceptFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
             // Retrieve the parent HBox of the confirm button
             HBox parentHBox = (HBox) confirm.getParent();
             // Remove the parent HBox from the FriendRequestVBox
@@ -546,6 +535,7 @@ public class StudentController implements Initializable {
         });
 
         delete.setOnAction(event -> {
+            Students.rejectFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
             // Retrieve the parent HBox of the confirm button
             HBox parentHBox = (HBox) confirm.getParent();
             // Remove the parent HBox from the FriendRequestVBox
@@ -558,7 +548,7 @@ public class StudentController implements Initializable {
         FriendRequestVBox.getChildren().add(FriendRequestHBox);
     }
 
-    private void addNewQuiz(String title, String theme, String description, String content) {
+    private void addNewQuiz(Quiz quiz, boolean isQuizDone) {
         // Create the HBox
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
@@ -570,28 +560,28 @@ public class StudentController implements Initializable {
         vBox.setPadding(new Insets(0, 0, 0, 20));
 
         // Add three text elements to the VBox
-        Text titleText = new Text(title);
+        Text titleText = new Text(quiz.getTitle());
 
         HBox temp = new HBox();
         temp.setSpacing(5);
         temp.setAlignment(Pos.TOP_LEFT);
         Text t = new Text("Theme: ");
         t.setStyle("-fx-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
-        Button themeButton = new Button(theme);
+        Button themeButton = new Button(quiz.getTheme());
         String setColour = "";
-        if (theme.equals("SCIENCE")) {
+        if (quiz.getTheme().equals("SCIENCE")) {
             setColour = "-fx-background-color: #c3dbc2;";
-        } else if (theme.equals("TECHNOLOGY")) {
+        } else if (quiz.getTheme().equals("TECHNOLOGY")) {
             setColour = "-fx-background-color: #a7d1df;";
-        } else if (theme.equals("ENGINEERING")) {
+        } else if (quiz.getTheme().equals("ENGINEERING")) {
             setColour = "-fx-background-color: #e4cfb4;";
-        } else if (theme.equals("MATHEMATIC")) {
+        } else if (quiz.getTheme().equals("MATHEMATIC")) {
             setColour = "-fx-background-color: #f0c9dc;";
         }
         themeButton.setStyle(setColour + "-fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 12px; -fx-background-radius: 20px;");
         temp.getChildren().addAll(t, themeButton);
 
-        Text descriptionText = new Text(description);
+        Text descriptionText = new Text(quiz.getDescription());
         descriptionText.setWrappingWidth(800);
         titleText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 30px; ");
         descriptionText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 14px; ");
@@ -602,13 +592,24 @@ public class StudentController implements Initializable {
         button.setPrefWidth(150);
         button.setStyle("-fx-background-color: linear-gradient( to right,#8c52ff, #5ce1e6); -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
         button.setOnAction(event -> {
+            Students.addDoneQuiz(sessionManager.getCurrentUser().getUsername(), quiz.getID());
+            refreshQuiz();
             try {
                 // Open the link in the default browser
-                Desktop.getDesktop().browse(new URI(content));
+                Desktop.getDesktop().browse(new URI(quiz.getContent()));
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            //ArrayList<String> doneQuizList = Students.getDoneQuizList(sessionManager.getCurrentUser().getUsername());
+//            user.setDoneQuiz(user.getDoneQuiz()+str);
+//            currentUser.addDoneQuiz(quiz.getID()+",");
         });
+        if (isQuizDone) {
+            button.setDisable(true);
+            button.setStyle("-fx-background-color: #239F24; -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
+            button.setText("QUIZ DONE");
+        }
 
         // Add the VBox and the button to the HBox
         hBox.getChildren().addAll(vBox, button);
@@ -672,60 +673,60 @@ public class StudentController implements Initializable {
         return "";
     }
 
-public void filterTheme() {
-    // Get the children of the main VBox
-    ObservableList<Node> children = QuizVBox.getChildren();
+    public void filterTheme() {
+        // Get the children of the main VBox
+        ObservableList<Node> children = QuizVBox.getChildren();
 
-    // Check if any checkbox is selected
-    boolean anyCheckboxSelected = false;
-    for (Node filterChild : FilterVBox.getChildren()) {
-        if (filterChild instanceof CheckBox) {
-            CheckBox checkBox = (CheckBox) filterChild;
-            if (checkBox.isSelected()) {
-                anyCheckboxSelected = true;
-                break;
-            }
-        }
-    }
-
-    // Iterate over the children
-    for (Node child : children) {
-        if (child instanceof HBox) {
-            HBox hbox = (HBox) child;
-            boolean showQuiz = true; // Default to true, display the quiz
-
-            // Get the theme of the current quiz
-            String theme = getThemeText(child);
-
-            // If any checkbox is selected, proceed with filtering
-            if (anyCheckboxSelected) {
-                // If the theme is not empty
-                if (!theme.isEmpty()) {
-                    // Check if any checkbox with the corresponding theme is selected
-                    for (Node filterChild : FilterVBox.getChildren()) {
-                        if (filterChild instanceof CheckBox) {
-                            CheckBox checkBox = (CheckBox) filterChild;
-                            if (checkBox.isSelected() && checkBox.getText().equals(theme)) {
-                                showQuiz = true;
-                                break;
-                            } else {
-                                showQuiz = false;
-                            }
-                        }
-                    }
-                } else {
-                    showQuiz = false; // If the theme is empty, don't show the quiz
+        // Check if any checkbox is selected
+        boolean anyCheckboxSelected = false;
+        for (Node filterChild : FilterVBox.getChildren()) {
+            if (filterChild instanceof CheckBox) {
+                CheckBox checkBox = (CheckBox) filterChild;
+                if (checkBox.isSelected()) {
+                    anyCheckboxSelected = true;
+                    break;
                 }
             }
+        }
 
-            // Set visibility of the quiz based on showQuiz flag
-            hbox.setVisible(showQuiz);
-            hbox.setManaged(showQuiz);
+        // Iterate over the children
+        for (Node child : children) {
+            if (child instanceof HBox) {
+                HBox hbox = (HBox) child;
+                boolean showQuiz = true; // Default to true, display the quiz
+
+                // Get the theme of the current quiz
+                String theme = getThemeText(child);
+
+                // If any checkbox is selected, proceed with filtering
+                if (anyCheckboxSelected) {
+                    // If the theme is not empty
+                    if (!theme.isEmpty()) {
+                        // Check if any checkbox with the corresponding theme is selected
+                        for (Node filterChild : FilterVBox.getChildren()) {
+                            if (filterChild instanceof CheckBox) {
+                                CheckBox checkBox = (CheckBox) filterChild;
+                                if (checkBox.isSelected() && checkBox.getText().equals(theme)) {
+                                    showQuiz = true;
+                                    break;
+                                } else {
+                                    showQuiz = false;
+                                }
+                            }
+                        }
+                    } else {
+                        showQuiz = false; // If the theme is empty, don't show the quiz
+                    }
+                }
+
+                // Set visibility of the quiz based on showQuiz flag
+                hbox.setVisible(showQuiz);
+                hbox.setManaged(showQuiz);
+            }
         }
     }
-}
 
-    private void addNewDiscussion(String title, String role, String username, String content) {
+    private void addNewDiscussion(String title, String role, String username, String content, int numOfLike, String date) {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setSpacing(10);
@@ -753,12 +754,18 @@ public void filterTheme() {
         roleButton.setStyle(setColour + "-fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 12px; -fx-background-radius: 20px;");
 
         Button usernameButton = new Button(username);
-        temp.getChildren().addAll(t, roleButton, usernameButton);
+        usernameButton.getStyleClass().add("username-button");
+        usernameButton.setOnAction(event -> {
+            friendNameProfile = username;
+            openProfilePage(friendNameProfile);
+        });
+        Text dateText = new Text("(" + date + ")");
+        dateText.setStyle("-fx-fill: #EDAB5E; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
+        temp.getChildren().addAll(t, roleButton, usernameButton, dateText);
 
         Text contentText = new Text(content);
-        contentText.setWrappingWidth(900);
+        contentText.setWrappingWidth(880);
         titleText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 30px; ");
-        usernameButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; -fx-padding: 0; ");
         contentText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 14px; ");
         vBox.getChildren().addAll(titleText, temp, contentText);
 
@@ -779,9 +786,11 @@ public void filterTheme() {
                 heartShape.setFill(Color.BLACK);
             }
         });
+        Text NumOfLike = new Text(String.valueOf(numOfLike));
+        NumOfLike.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 12px; ");
 
         // Add the VBox and the button to the HBox
-        hBox.getChildren().addAll(vBox, loveButton);
+        hBox.getChildren().addAll(vBox, loveButton, NumOfLike);
 
         // Add the HBox to the main VBox
         DiscussionVBox.getChildren().add(0, hBox);
@@ -792,122 +801,89 @@ public void filterTheme() {
     }
 
     private void setUpParentTable(String username) {
-        ObservableList<Parent> parentList = FXCollections.observableArrayList(new Parent(1, "Father"), new Parent(2, "Mother"));
+        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList();
 
         //associate data with column
-        NoColumn.setCellValueFactory(new PropertyValueFactory<Parent, Integer>("no"));
-        ParentColumn.setCellValueFactory(new PropertyValueFactory<Parent, String>("username"));
+        NoColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, Integer>("no"));
+        ParentColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, String>("username"));
 
-//        // Replace the connection URL, username, and password with your database credentials
-//        String url = "jdbc:mysql://localhost:3306/your_database";
-//        String username = "your_username";
-//        String password = "your_password";
-//
-//        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-//            // Fetch data from the database
-//            String query = "SELECT no, parent FROM your_table";
-//            PreparedStatement statement = connection.prepareStatement(query);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            // Add fetched data to the TableView
-//            while (resultSet.next()) {
-//                int no = resultSet.getInt("no");
-//                String parent = resultSet.getString("parent");
-//                parentList.add(new Parent(no, parent));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        //modified
+        ArrayList<String> arrayList = new ArrayList<>(Students.getParentList());
+        ArrayList<ParentColumn> temp = new ArrayList<>();
+        for (int i = 1; i <= arrayList.size(); i++) {
+            temp.add(new ParentColumn(i, arrayList.get(i)));
+        }
+
         ParentTable.setItems(parentList);
     }
 
     private void setUpEventTable(String username) {
-        ObservableList<Event> eventList = FXCollections.observableArrayList(new Event("01/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("02/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("03/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("04/01/2024", "Happy New Year", "Alor Setar", "9am-11am"), new Event("05/01/2024", "Happy New Year", "Alor Setar", "9am-11am"));
+        ArrayList<EventColumn> temp = Students.getStudentRegisteredEvents(username);
+        ObservableList<EventColumn> eventList = FXCollections.observableArrayList(temp);
 
         //associate data with column
-        DateColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("date"));
-        TitleColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("title"));
-        VenueColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("venue"));
-        TimeColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("time"));
+        DateColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("date"));
+        TitleColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("title"));
+        VenueColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("venue"));
+        TimeColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("time"));
 
-//        // Replace the connection URL, username, and password with your database credentials
-//        String url = "jdbc:mysql://localhost:3306/your_database";
-//        String username = "your_username";
-//        String password = "your_password";
-//
-//        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-//            // Fetch data from the database
-//            String query = "SELECT no, parent FROM your_table";
-//            PreparedStatement statement = connection.prepareStatement(query);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            // Add fetched data to the TableView
-//            while (resultSet.next()) {
-//                int no = resultSet.getInt("no");
-//                String parent = resultSet.getString("parent");
-//                parentList.add(new Parent(no, parent));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
         EventTable.setItems(eventList);
     }
 
     private void setUpBookedStudyTourTable(String username) {
-        ObservableList<BookedStudyTour> bookedStudyTourList = FXCollections.observableArrayList(new BookedStudyTour("01/01/2024", "Alor Setar"), new BookedStudyTour("02/01/2024", "Alor Setar"), new BookedStudyTour("03/01/2024", "Alor Setar"), new BookedStudyTour("04/01/2024", "Alor Setar"), new BookedStudyTour("05/01/2024", "Alor Setar"));
+        ArrayList<BookedStudyTourColumn> temp = Students.getStudentBookedStudyTour(username);
+        ObservableList<BookedStudyTourColumn> bookedStudyTourList = FXCollections.observableArrayList(temp);
 
         //associate data with column
-        BookedDateColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTour, String>("date"));
-        BookedVenueColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTour, String>("venue"));
+        BookedDateColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("date"));
+        BookedVenueColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("venue"));
 
-//        // Replace the connection URL, username, and password with your database credentials
-//        String url = "jdbc:mysql://localhost:3306/your_database";
-//        String username = "your_username";
-//        String password = "your_password";
-//
-//        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-//            // Fetch data from the database
-//            String query = "SELECT no, parent FROM your_table";
-//            PreparedStatement statement = connection.prepareStatement(query);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            // Add fetched data to the TableView
-//            while (resultSet.next()) {
-//                int no = resultSet.getInt("no");
-//                String parent = resultSet.getString("parent");
-//                parentList.add(new Parent(no, parent));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
         BookedStudyTourTable.setItems(bookedStudyTourList);
     }
 
     private void setUpProfilePage(String username) {
-        String email = "email"; //get email 
-        String location = "location"; //get location 
-        String totalNumOfFriend = "10"; //get total num of friend 
+        String email = userRepository.getEmailByUsername(username);
+        System.out.println(email);
+        String location = userRepository.getLocation(username);
+        System.out.println(location);
+        String totalNumOfFriend = String.valueOf(Students.getTotalFriend(username));
+        System.out.println(totalNumOfFriend);
+
         UsernameProfilePage.setText(username);
         UsernameLabel.setText(username);
         EmailLabel.setText(email);
         LocationLabel.setText(location);
         NumOfFriend.setText(totalNumOfFriend);
 
-        List<String> friendNames = Arrays.asList("Friend 1", "Friend 2", "Friend 3"); // Retrieve friend data from the database, assuming it returns a list of friend names
-        // Add each friend to the friend list
-        for (String friendName : friendNames) {
-            addFriendList(friendName);
-        }
-
         setUpParentTable(username);
         setUpEventTable(username);
         setUpBookedStudyTourTable(username);
 
-        int point = 20; //retrive from database
+        int point = Students.getPoints();
         PointDisplay.setText(String.valueOf(point) + " POINTS");
+
+        showFriendList(username);
     }
 
-    private static void showReminderDialog(String warningContent) {
+    public void showFriendList(String username) {
+        ArrayList<String> friendList = Students.getFriendList(username);
+        for (String friend : friendList) {
+            addFriendList(friend);
+        }
+    }
+
+    public void showFriendRequests(String username) {
+        ArrayList<String> friendRequestList = Students.getFriendRequestList(username);
+        if (friendRequestList != null) {
+            for (String friendRequest : friendRequestList) {
+                addFriendRequest(friendRequest);
+            }
+        } else {
+            System.out.println("Friend request list is null.");
+        }
+    }
+
+    public static void showReminderDialog(String warningContent) {
         // Create a new alert dialog
         Alert alert = new Alert(Alert.AlertType.WARNING);
 
@@ -921,4 +897,337 @@ public void filterTheme() {
                 .filter(response -> response == ButtonType.OK);
     }
 
+    public void editProfile_Username_Email(String username) {
+        try {
+            // Connect to database
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+
+            // Get new username and email from text fields
+            String oldPassword1 = OldPassword1.getText();
+            String newUsernameChange = NewUsername.getText();
+            String newEmailChange = NewEmail.getText();
+            String currentUsername = sessionManager.getCurrentUser().getUsername(); // Store the current username
+            String currentEmail = userRepository.getEmailByUsername(currentUsername); // Store the current email
+
+            // Check the conditions and update
+            if (!currentUsername.equals(newUsernameChange) && currentEmail.equals(newEmailChange)) {
+                // if only username changes
+                try {
+                    // Assuming setUsername may throw an exception on failure
+                    if (login.isPasswordCorrectForUser(oldPassword1)) {
+                        // Check if a user is currently logged in
+                        if (sessionManager.getCurrentUser() != null) {
+                            if (userRepository.isUsernameTaken(newUsernameChange)) {
+                                NewUsername.setText(sessionManager.getCurrentUser().getUsername());
+                            }
+                            boolean updateSuccess = userRepository.updateUsernameInDatabase(currentEmail, newUsernameChange, oldPassword1);
+                            if (updateSuccess) {
+                                EditProfilePane.setVisible(false);
+                                OldPassword1.setText("");
+                                setUpProfilePage(sessionManager.getCurrentUser().getUsername());
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No logged-in user. Username not updated.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        OldPassword1.setText("");
+                        JOptionPane.showMessageDialog(null, "Incorrect password. Username not updated.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Failed to change username. Please check your inputs.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } else if (currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
+                // if only email changes
+                String emailRegex = "^(.+)@(gmail\\.com|hotmail\\.com|yahoo\\.com|siswa\\.um\\.edu\\.my)$";
+                if (!newEmailChange.matches(emailRegex)) {
+                    JOptionPane.showMessageDialog(null, "Invalid email format. Please use a valid email address.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    try {
+                        // Assuming setUsername may throw an exception on failure
+                        if (login.isPasswordCorrectForUser(oldPassword1)) {
+                            // Check if a user is currently logged in
+                            if (sessionManager.getCurrentUser() != null) {
+                                if (!userRepository.isEmailTaken(newEmailChange)) {
+                                    // Update email for the current user
+                                    userRepository.updateEmailInDatabase(sessionManager.getCurrentUser().getUsername(), newEmailChange, oldPassword1);
+                                    JOptionPane.showMessageDialog(null, "Email changed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                                    setUpProfilePage(sessionManager.getCurrentUser().getUsername());
+                                    OldPassword1.setText("");
+                                    EditProfilePane.setVisible(false);
+                                } else {
+                                    NewEmail.setText(userRepository.getEmailByUsername(sessionManager.getCurrentUser().getUsername()));
+                                    JOptionPane.showMessageDialog(null, "Email already exists. Please choose a different email.", "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(null, "No logged-in user. Username not updated.", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } else {
+                            OldPassword1.setText("");
+                            JOptionPane.showMessageDialog(null, "Incorrect password. Username not updated.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, "Failed to change email. Please check your inputs.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } else if (!currentUsername.equals(newUsernameChange) && !currentEmail.equals(newEmailChange)) {
+
+                if (login.isPasswordCorrectForUser(oldPassword1)) {
+                    if (!userRepository.isUsernameTaken(newUsernameChange) && !userRepository.isEmailTaken(newEmailChange)) {
+                        //username and email not taken
+                        if (userRepository.updateUsernameInDatabaseNew(currentEmail, newUsernameChange, oldPassword1) && userRepository.updateEmailInDatabaseNew(newUsernameChange, newEmailChange, oldPassword1)) {
+                            JOptionPane.showMessageDialog(null, "Username and Email has been updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } else if (userRepository.isUsernameTaken(newUsernameChange) && !userRepository.isEmailTaken(newEmailChange)) {
+                        //username taken only
+                        if (userRepository.updateEmailInDatabaseNew(newUsernameChange, newEmailChange, oldPassword1)) {
+                            JOptionPane.showMessageDialog(null, "Email updated succesfully! Username already exists. Please choose a different username.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } else if (!userRepository.isUsernameTaken(newUsernameChange) && (userRepository.isEmailTaken(newEmailChange))) {
+                        //email taken only
+                        if (userRepository.updateUsernameInDatabaseNew(newEmailChange, newUsernameChange, oldPassword1)) {
+                            JOptionPane.showMessageDialog(null, "Username updated succesfully! Email already exists. Please choose a different Email.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        //clear email or reset to the initial
+                        //set username with new one
+                    } else {
+                        //username and email  taken
+                        JOptionPane.showMessageDialog(null, "Both Username and Email already exists. Please choose a different Email and Username.", "Error", JOptionPane.ERROR_MESSAGE);
+                        //clear both or reset to the initial
+                    }
+                    NewUsername.setText(sessionManager.getCurrentUser().getUsername()); //get username from database
+                    NewEmail.setText(userRepository.getEmailByUsername(sessionManager.getCurrentUser().getUsername())); //get email from database        
+                    EditProfilePane.setVisible(false);
+                    OldPassword1.setText("");
+                    setUpProfilePage(sessionManager.getCurrentUser().getUsername());
+                } else {
+                    OldPassword1.setText("");
+                    JOptionPane.showMessageDialog(null, "Incorrect password. Username and Email not updated.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Please enter new Username or Email.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            // Close connection
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+
+    public void editProfile_Password(String username) {
+        // Get old password, new password, and confirmation password from text fields
+        String oldPassword2 = OldPassword2.getText();
+        String newPassword = NewPassword.getText();
+        String confirmPassword = ConfirmPassword.getText();
+
+        if (login.isPasswordCorrectForUser(oldPassword2)) {
+            // Check if the new password and confirmation match
+            if (newPassword.equals(confirmPassword)) {
+                // Update the password for the current user
+                userRepository.updatePasswordInDatabase(sessionManager.getCurrentUser().getUsername(), newPassword);
+                sessionManager.getCurrentUser().setPassword(newPassword); // Update the password field in the User object
+                JOptionPane.showMessageDialog(null, "Password changed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                OldPassword2.setText("");
+                NewPassword.setText("");
+                ConfirmPassword.setText("");
+                EditProfilePane.setVisible(false);
+            } else {
+                OldPassword2.setText("");
+                NewPassword.setText("");
+                ConfirmPassword.setText("");
+                JOptionPane.showMessageDialog(null, "New password and confirmation do not match. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            OldPassword2.setText("");
+            NewPassword.setText("");
+            ConfirmPassword.setText("");
+            JOptionPane.showMessageDialog(null, "Incorrect old password. Password not changed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public HBox createEventHBox(String eventTitle, String eventDescription, String eventVenue, String eventDate, String eventTime) {
+        // Create the main HBox
+        HBox hbox = new HBox();
+        hbox.setPrefHeight(87.0);
+        hbox.setPrefWidth(985.0);
+        hbox.setStyle("-fx-background-color: white;");
+        hbox.setAlignment(javafx.geometry.Pos.CENTER);
+
+        // Create the first VBox for title and description
+        VBox vbox1 = new VBox();
+        vbox1.setPrefHeight(87.0);
+        vbox1.setPrefWidth(512.0);
+
+        Label title = new Label(eventTitle);
+        title.setPrefHeight(32.0);
+        title.setPrefWidth(519.0);
+        title.setFont(new Font("Segoe UI Black", 24.0));
+
+        Text description = new Text(eventDescription);
+        description.setWrappingWidth(108.63671875);
+        description.setFont(new Font("Segoe UI Semibold", 12.0));
+
+        vbox1.getChildren().addAll(title, description);
+
+        // Create the second VBox for venue, date, and time
+        VBox vbox2 = new VBox();
+        vbox2.setAlignment(javafx.geometry.Pos.CENTER);
+        vbox2.setPrefHeight(87.0);
+        vbox2.setPrefWidth(282.0);
+
+        HBox venueHBox = createLabelWithTextHBox("VENUE", "#ff5757", eventVenue);
+        HBox dateHBox = createLabelWithTextHBox("DATE", "#4fc8ab", eventDate);
+        HBox timeHBox = createLabelWithTextHBox("TIME", "#ffd230", eventTime);
+
+        vbox2.getChildren().addAll(venueHBox, dateHBox, timeHBox);
+
+        // Create the Join button
+        Button joinButton = new Button("JOIN");
+        joinButton.setPrefHeight(43.0);
+        joinButton.setPrefWidth(137.0);
+        joinButton.setStyle("-fx-background-radius: 25px;");
+        joinButton.getStyleClass().add("colorGradientButton");
+        joinButton.setTextFill(javafx.scene.paint.Color.WHITE);
+        joinButton.setFont(new Font("Segoe UI Black", 20.0));
+
+        // Add all children to the main HBox
+        hbox.getChildren().addAll(vbox1, vbox2, joinButton);
+
+        return hbox;
+    }
+
+    private HBox createLabelWithTextHBox(String labelText, String bgColor, String textValue) {
+        HBox hbox = new HBox();
+        hbox.setAlignment(javafx.geometry.Pos.CENTER);
+        hbox.setPrefHeight(32.0);
+        hbox.setPrefWidth(260.0);
+        hbox.setSpacing(10.0);
+
+        Label label = new Label(labelText);
+        label.setAlignment(javafx.geometry.Pos.CENTER);
+        label.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
+        label.setPrefHeight(23.0);
+        label.setPrefWidth(87.0);
+        label.setStyle("-fx-background-color: " + bgColor + "; -fx-background-radius: 20px;");
+        label.setTextFill(javafx.scene.paint.Color.WHITE);
+        label.setFont(new Font("Segoe UI Black", 16.0));
+
+        Text text = new Text(textValue);
+        text.setWrappingWidth(150.0);
+        text.setFont(new Font("Segoe UI Semibold", 14.0));
+
+        hbox.getChildren().addAll(label, text);
+
+        return hbox;
+    }
+
+    public void addEventHBoxToParent(HBox parent, EventHBoxElement e) {
+        HBox eventHBox = createEventHBox(e.getEventTitle(), e.getEventDescription(), e.getEventVenue(), e.getEventDate(), e.getEventTime());
+        parent.getChildren().add(eventHBox);
+    }
+
+    private void reloadLiveEventHBox(ArrayList<EventHBoxElement> list) {
+        LiveEventHBox.getChildren().clear(); // Clear previous content
+        if (!list.isEmpty()) {
+            // Add current event to parentHBox
+            addEventHBoxToParent(LiveEventHBox, list.get(currentIndex));
+            // Update button visibility based on currentIndex
+            PreviousButton.setVisible(currentIndex > 0);
+            NextButton.setVisible(currentIndex < list.size() - 1);
+        }
+    }
+
+    private void showPreviousEvent(ArrayList<EventHBoxElement> list) {
+        if (currentIndex > 0) {
+            currentIndex--;
+            reloadLiveEventHBox(list);
+        }
+    }
+
+    private void showNextEvent(ArrayList<EventHBoxElement> list) {
+        if (currentIndex < list.size() - 1) {
+            currentIndex++;
+            reloadLiveEventHBox(list);
+        }
+    }
+
+    private void createQuiz() {
+        String title = QuizTitleField.getText();
+        String description = QuizDescriptionField.getText();
+        String theme = QuizThemeChoiceBox.getValue();
+        String content = QuizContentField.getText();
+
+        if (title.isBlank() || description.isBlank() || theme == null || content.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Quiz quiz = new Quiz(title, description, theme, content);
+            quiz.saveQuiz(sessionManager.getCurrentUser().getUsername());
+            refreshQuiz();
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(QuizPane);
+            clearCreateQuiz();
+        }
+    }
+
+    private void refreshQuiz() {
+        List<Quiz> quizList = Quiz.getQuizList();
+        QuizVBox.getChildren().clear();
+        List<Quiz> notDoneQuizList = new ArrayList<>();
+        ArrayList<String> doneQuizList = Students.getDoneQuizList(sessionManager.getCurrentUser().getUsername());
+        System.out.println(doneQuizList.size());
+        for (Quiz quiz : quizList) {
+            System.out.println(doneQuizList.size());
+            if (doneQuizList.contains(quiz.getID())) {
+                System.out.println(quiz.getID());
+                addNewQuiz(quiz, true);
+            } else {
+                notDoneQuizList.add(quiz);
+            }
+        }
+        for (Quiz quiz : notDoneQuizList) {
+            addNewQuiz(quiz, false);
+        }
+    }
+
+    private void clearCreateQuiz() {
+        QuizTitleField.clear();
+        QuizDescriptionField.clear();
+        QuizThemeChoiceBox.setValue(null);
+        QuizContentField.clear();
+    }
+
+    private void createDiscussion() {
+        String title = DiscussionTitleField.getText();
+        String content = DiscussionContentField.getText();
+        int like = 0;
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDateTime = currentDateTime.format(dateTimeFormatter);
+
+        if (title.isBlank() || content.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Discussion discussion = new Discussion(title, content, sessionManager.getCurrentUser().getUsername(), like, formattedDateTime);
+            discussion.saveDiscussion(sessionManager.getCurrentUser().getUsername());
+            refreshDiscussion();
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(DiscussionPane);
+            clearCreateDiscussion();
+        }
+    }
+
+    private void refreshDiscussion() {
+        List<Discussion> discussionList = Discussion.getDiscussionList();
+        DiscussionVBox.getChildren().clear();
+        for (Discussion discussion : discussionList) {
+            addNewDiscussion(discussion.getTitle(), userRepository.getRole(discussion.getAuthor()).toUpperCase(), discussion.getAuthor(), discussion.getContent(), discussion.getLike(), discussion.getDatetime());
+        }
+    }
+
+    private void clearCreateDiscussion() {
+        DiscussionTitleField.clear();
+        DiscussionContentField.clear();
+    }
 }

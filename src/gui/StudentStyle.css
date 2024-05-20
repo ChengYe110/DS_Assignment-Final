@@ -33,6 +33,19 @@
     -fx-effect: null;
 }
 
+.arrow{
+    -fx-background-image:url('../png/Arrow.png');
+    -fx-background-size: cover;
+    /* Disable button effects */
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-background: transparent;
+    -fx-padding: 0;
+    -fx-text-fill: inherit;
+    -fx-effect: null;
+}
+
 .friendList{
     -fx-background-image:url('../png/SearchIconGrey.png');
     -fx-background-size: cover;
@@ -44,6 +57,10 @@
     -fx-padding: 0;
     -fx-text-fill: inherit;
     -fx-effect: null;
+}
+
+.friendList:hover {
+    -fx-opacity: 0.7; /* Example of hover effect */
 }
 
 .selected:hover{
@@ -108,5 +125,33 @@
     -fx-background-radius: 20px;
     -fx-text-fill: white;
     -fx-font-size: 14px;
+}
+
+.username-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #737373;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 16px;
+    -fx-padding: 0;
+    -fx-underline: false; /* Initially, the text is not underlined */
+}
+
+.username-button:hover {
+    -fx-underline: true; /* Underline text on hover */
+    -fx-text-fill: #555555; /* Darken the text color on hover */
+}
+
+.friend-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 20px;
+    -fx-padding: 0;
+    -fx-underline: false; /* Initially, the text is not underlined */
+}
+
+.friend-button:hover {
+    -fx-underline: true; /* Underline text on hover */
+    -fx-text-fill: #a6a6a6; /* Lighter text color on hover */
 }
 
