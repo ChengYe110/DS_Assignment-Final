@@ -12,67 +12,61 @@ import java.util.List;
 
 /**
  *
- * @author user
+ * @author enjye
  */
-public class Quiz {
-
-    private String ID;
+public class Discussion {
     private String title;
-    private String description;
-    private String theme;
     private String content;
+    private String author;
+    private int like;
+    private String datetime;
 
-    public Quiz(String title, String description, String theme, String content) {
+    public Discussion(String title, String content, String author, int like, String datetime) {
         this.title = title;
-        this.description = description;
-        this.theme = theme;
         this.content = content;
-    }
-    
-    public Quiz(String ID, String title, String description, String theme, String content) {
-        this.ID = ID;
-        this.title = title;
-        this.description = description;
-        this.theme = theme;
-        this.content = content;
+        this.author = author;
+        this.like = like;
+        this.datetime = datetime;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public String getTheme() {
-        return theme;
-    }
-
     public String getContent() {
         return content;
     }
+
+    public String getAuthor() {
+        return author;
+    }
     
-    public String getID(){
-        return this.ID;
+    public int getLike() {
+        return like;
+    }
+    
+    public String getDatetime(){
+        return datetime;
     }
 
-    public static Quiz getQuizFromDatabase(String quizId) {
+    public static Discussion getDiscussionFromDatabase(String DiscussionId) {
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
 
-            String query = "SELECT * FROM quiz WHERE quiz_id = ?";
+            String query = "SELECT * FROM discussionpost WHERE id_discussionpost = ?";
             PreparedStatement preparedStatement = connectDB.prepareStatement(query);
-            preparedStatement.setString(1, quizId);
+            preparedStatement.setString(1, DiscussionId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 String title = resultSet.getString("Title");
                 String description = resultSet.getString("Description");
-                String theme = resultSet.getString("Theme");
                 String content = resultSet.getString("Content");
-                return new Quiz(title, description, theme, content);
+                String author = resultSet.getString("Author");
+                int like = resultSet.getInt("LikeCount");
+                String datetime = resultSet.getString("DatePublished");
+                return new Discussion(title, content, author, like, datetime);
             }
 
         } catch (Exception e) {
@@ -81,20 +75,21 @@ public class Quiz {
 
         return null;
     }
-    
-    public void saveQuiz(String educatorUsername) {
+
+    public void saveDiscussion(String Username) {
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.linkDatabase();
 
         try {
 
-            String query = "INSERT INTO quiz (Title, Description, Theme, Content) VALUES (?,?,?,?)";
+            String query = "INSERT INTO discussionpost (Title, Content, Author, LikeCount, DatePublished) VALUES (?,?,?,?,?)";
             PreparedStatement preparedStatement = connectDB.prepareStatement(query);
             preparedStatement.setString(1, this.title);
-            preparedStatement.setString(2, this.description);
-            preparedStatement.setString(3, this.theme);
-            preparedStatement.setString(4, this.content);
-            
+            preparedStatement.setString(2, this.content);
+            preparedStatement.setString(3, this.author);
+            preparedStatement.setInt(4, this.like);
+            preparedStatement.setString(5,this.datetime);
+
             preparedStatement.executeUpdate(); //delete after execute next
             System.out.println("haha");
 
@@ -104,35 +99,34 @@ public class Quiz {
 //                preparedStatement2.setString(1, educatorUsername);
 //                preparedStatement2.executeUpdate();
 //            }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             connectNow.endDatabase();
         }
     }
-    
-    public static List<Quiz> getQuizList(){
+
+    public static List<Discussion> getDiscussionList() {
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.linkDatabase();
-        
-        List<Quiz> res = new ArrayList<>();
+
+        List<Discussion> res = new ArrayList<>();
 
         try {
 
-            String query = "SELECT * FROM quiz";
+            String query = "SELECT * FROM discussionpost";
             PreparedStatement preparedStatement = connectDB.prepareStatement(query);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                String ID = resultSet.getString("id_quiz");
                 String title = resultSet.getString("Title");
-                String description = resultSet.getString("Description");
-                String theme = resultSet.getString("Theme");
                 String content = resultSet.getString("Content");
-                res.add(new Quiz(ID, title, description, theme, content));
+                String author = resultSet.getString("Author");
+                int like = resultSet.getInt("LikeCount");
+                String datetime = resultSet.getString("DatePublished");
+                res.add(new Discussion(title, content, author, like, datetime));
             }
-            
+
             return res;
 
         } catch (Exception e) {
@@ -142,5 +136,4 @@ public class Quiz {
             connectNow.endDatabase();
         }
     }
-
 }

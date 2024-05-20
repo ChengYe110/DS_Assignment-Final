@@ -145,93 +145,6 @@
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="MenuPane" layoutX="30.0" layoutY="30.0" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;">
-         <children>
-            <ImageView fitHeight="222.0" fitWidth="203.0" layoutX="37.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../png/StudentProfile.png" />
-               </image>
-            </ImageView>
-            <VBox fx:id="DrawerPane" alignment="CENTER" layoutY="310.0" prefHeight="222.0" prefWidth="167.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-               <children>
-                  <HBox alignment="CENTER" styleClass="selected" stylesheets="@StudentStyle.css">
-                     <children>
-                        <ImageView fitHeight="37.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../png/ProfileIcon.png" />
-                           </image>
-                        </ImageView>
-                        <Button fx:id="ProfilePage" mnemonicParsing="false" prefHeight="43.0" prefWidth="145.0" style="-fx-background-color: transparent;" text="PROFILE">
-                           <font>
-                              <Font name="Yu Gothic UI Semibold" size="20.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" styleClass="selected" stylesheets="@StudentStyle.css">
-                     <children>
-                        <ImageView fitHeight="37.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../png/EventIcon.png" />
-                           </image>
-                        </ImageView>
-                        <Button fx:id="EventPage" mnemonicParsing="false" prefHeight="43.0" prefWidth="144.0" style="-fx-background-color: transparent;" text="EVENT">
-                           <font>
-                              <Font name="Yu Gothic UI Semibold" size="20.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" styleClass="selected" stylesheets="@StudentStyle.css">
-                     <children>
-                        <ImageView fitHeight="37.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../png/QuizIcon.png" />
-                           </image>
-                        </ImageView>
-                        <Button fx:id="QuizPage" mnemonicParsing="false" prefHeight="43.0" prefWidth="145.0" style="-fx-background-color: transparent;" text="QUIZ">
-                           <font>
-                              <Font name="Yu Gothic UI Semibold" size="20.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" styleClass="selected" stylesheets="@StudentStyle.css">
-                     <children>
-                        <ImageView fitHeight="37.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../png/DiscussionIcon.png" />
-                           </image>
-                        </ImageView>
-                        <Button fx:id="DiscussionPage" mnemonicParsing="false" style="-fx-background-color: transparent;" text="DISCUSSION">
-                           <font>
-                              <Font name="Yu Gothic UI Semibold" size="20.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </HBox>
-               </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-            </VBox>
-            <Text fx:id="UsernameMenuPane" layoutX="71.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" wrappingWidth="134.13671875">
-               <font>
-                  <Font name="Bell MT Bold" size="30.0" />
-               </font>
-            </Text>
-            <Button layoutX="75.0" layoutY="251.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" style="-fx-background-color: ff3131; -fx-background-radius: 20px;" text="STUDENT" textFill="#fffcfc">
-               <font>
-                  <Font name="Berlin Sans FB Demi Bold" size="20.0" />
-               </font>
-            </Button>
-            <Button fx:id="LogOutButton" layoutX="62.0" layoutY="539.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="153.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="LOG OUT" textFill="#fffcfc">
-               <font>
-                  <Font name="Berlin Sans FB Demi Bold" size="20.0" />
-               </font>
-            </Button>
-         </children>
-      </AnchorPane>
       <HBox fx:id="LiveEventHBox" alignment="CENTER" layoutX="82.0" layoutY="64.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
          <children>
             <VBox prefHeight="87.0" prefWidth="512.0">
@@ -301,5 +214,92 @@
             </Button>
          </children>
       </HBox>
+      <AnchorPane fx:id="MenuPane" layoutX="50.0" layoutY="50.0" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;">
+         <children>
+            <ImageView fitHeight="222.0" fitWidth="203.0" layoutX="37.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../png/StudentProfile.png" />
+               </image>
+            </ImageView>
+            <VBox fx:id="DrawerPane" alignment="CENTER" layoutY="310.0" prefHeight="222.0" prefWidth="167.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <children>
+                  <HBox alignment="CENTER" styleClass="selected" stylesheets="@StudentStyle.css">
+                     <children>
+                        <ImageView fitHeight="37.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../png/ProfileIcon.png" />
+                           </image>
+                        </ImageView>
+                        <Button fx:id="ProfilePage" mnemonicParsing="false" prefHeight="43.0" prefWidth="145.0" style="-fx-background-color: transparent;" text="PROFILE">
+                           <font>
+                              <Font name="Yu Gothic UI Semibold" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" styleClass="selected" stylesheets="@StudentStyle.css">
+                     <children>
+                        <ImageView fitHeight="37.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../png/EventIcon.png" />
+                           </image>
+                        </ImageView>
+                        <Button fx:id="EventPage" mnemonicParsing="false" prefHeight="43.0" prefWidth="144.0" style="-fx-background-color: transparent;" text="EVENT">
+                           <font>
+                              <Font name="Yu Gothic UI Semibold" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" styleClass="selected" stylesheets="@StudentStyle.css">
+                     <children>
+                        <ImageView fitHeight="37.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../png/QuizIcon.png" />
+                           </image>
+                        </ImageView>
+                        <Button fx:id="QuizPage" mnemonicParsing="false" prefHeight="43.0" prefWidth="145.0" style="-fx-background-color: transparent;" text="QUIZ">
+                           <font>
+                              <Font name="Yu Gothic UI Semibold" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" styleClass="selected" stylesheets="@StudentStyle.css">
+                     <children>
+                        <ImageView fitHeight="37.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../png/DiscussionIcon.png" />
+                           </image>
+                        </ImageView>
+                        <Button fx:id="DiscussionPage" mnemonicParsing="false" style="-fx-background-color: transparent;" text="DISCUSSION">
+                           <font>
+                              <Font name="Yu Gothic UI Semibold" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </VBox>
+            <Text fx:id="UsernameMenuPane" layoutX="4.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" wrappingWidth="269.0">
+               <font>
+                  <Font name="Bell MT Bold" size="30.0" />
+               </font>
+            </Text>
+            <Button layoutX="75.0" layoutY="251.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" style="-fx-background-color: ff3131; -fx-background-radius: 20px;" text="STUDENT" textFill="#fffcfc">
+               <font>
+                  <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+               </font>
+            </Button>
+            <Button fx:id="LogOutButton" layoutX="62.0" layoutY="539.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="153.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="LOG OUT" textFill="#fffcfc">
+               <font>
+                  <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

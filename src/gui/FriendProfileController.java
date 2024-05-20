@@ -9,6 +9,7 @@ import ds.assignment.Login;
 import ds.assignment.SessionManager;
 import ds.assignment.Students;
 import ds.assignment.UserRepository;
+import static gui.StudentController.friendNameProfile;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public class FriendProfileController implements Initializable {
     private ScrollPane FriendListScrollPane;
 
     private StudentController studentController;
+    private String friendUsername = StudentController.friendNameProfile;
 
     DatabaseConnection dbConnect = new DatabaseConnection();
     UserRepository userRepository = new UserRepository(dbConnect);
@@ -92,6 +94,10 @@ public class FriendProfileController implements Initializable {
         });
         ExitFriendListPage.setOnAction(event -> {
             FriendListPane.setVisible(false);
+        });
+        setUpProfilePage(friendUsername);
+        AddFriendButton.setOnAction(event -> {
+            Students.sendFriendRequest(sessionManager.getCurrentUser().getUsername(),friendUsername);
         });
     }
 
@@ -120,9 +126,12 @@ public class FriendProfileController implements Initializable {
     // Method to add a friend to the friendlist
     private void addFriendList(String friendName) {
         Button friendButton = new Button(friendName);
-        friendButton.setStyle("-fx-background-color: transparent; -fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 20px; ");
+        friendButton.getStyleClass().add("friend-button");
         ButtonEffect(friendButton);
-        friendButton.setOnAction(event -> openProfilePage(friendName));
+        friendButton.setOnAction(event -> {
+            friendNameProfile = friendName;
+            openProfilePage(friendNameProfile);
+        });
         FriendListVBox.getChildren().add(friendButton);
     }
 
@@ -142,15 +151,13 @@ public class FriendProfileController implements Initializable {
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
             stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
             stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
-            setUpProfilePage(friendName);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void showFriendList(String username) {
-        //ArrayList<String> friendList = student.getFriendList(username);
-        ArrayList<String> friendList = Students.getFriendList(sessionManager.getCurrentUser().getUsername());
+        ArrayList<String> friendList = Students.getFriendList(username);
         for (String friend : friendList) {
             addFriendList(friend);
         }
@@ -224,5 +231,7 @@ public class FriendProfileController implements Initializable {
 
         int point = Students.getPoints();
         PointDisplay.setText(String.valueOf(point) + " POINTS");
+        
+        showFriendList(username);
     }
 }

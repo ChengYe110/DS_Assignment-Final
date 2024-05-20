@@ -5,6 +5,7 @@
 package gui;
 
 import ds.assignment.DatabaseConnection;
+import ds.assignment.Discussion;
 import ds.assignment.Login;
 import ds.assignment.Points;
 import ds.assignment.Quiz;
@@ -68,6 +69,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ds.assignment.Students;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -136,6 +139,7 @@ public class StudentController implements Initializable {
 
     private TranslateTransition slideOutTransition, slideInTransition;
     private int currentIndex;
+    public static String friendNameProfile;
 
     DatabaseConnection dbConnect = new DatabaseConnection();
     UserRepository userRepository = new UserRepository(dbConnect);
@@ -170,8 +174,6 @@ public class StudentController implements Initializable {
             });
 
             EventTimeChoiceBox.setItems(time);
-
-            ButtonEffect(FriendListPage);
             ProfilePage.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
@@ -255,7 +257,6 @@ public class StudentController implements Initializable {
             FriendListPage.setOnAction(event -> {
                 FriendListPane.setVisible(true);
                 FriendListPane.toFront();
-                showFriendList(sessionManager.getCurrentUser().getUsername());
             });
             ButtonEffect(ExitFriendListPage);
             ExitFriendListPage.setOnAction(event -> {
@@ -281,6 +282,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                refreshDiscussion();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(DiscussionPane);
             });
@@ -288,6 +290,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                clearCreateDiscussion();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateDiscussionPane);
             });
@@ -300,6 +303,7 @@ public class StudentController implements Initializable {
                 if (discussionTitle.isBlank() || discussionContent.isBlank()) {
                     JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
+                    createDiscussion();
                     stackPane.getChildren().clear();
                     stackPane.getChildren().add(DiscussionPane);
                 }
@@ -416,14 +420,6 @@ public class StudentController implements Initializable {
 
         //testing
         setUsername(sessionManager.getCurrentUser().getUsername());
-        addNewDiscussion("HiTesting", "STUDENT", "jack", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("OKOK", "PARENT", "lily", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("BangBangBang", "EDUCATOR", "janice", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("EatShit", "STUDENT", "leo", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("TomyamNice", "PARENT", "david", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("HiTesting", "STUDENT", "jason", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("YeahGoSleep", "EDUCATOR", "anson", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("SOS", "STUDENT", "lydia", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         Students s = new Students("email", "name", "password", "student");
         Students.sendFriendRequest("s", "c");
         Students.sendFriendRequest("1", "c");
@@ -473,9 +469,12 @@ public class StudentController implements Initializable {
     // Method to add a friend to the friendlist
     private void addFriendList(String friendName) {
         Button friendButton = new Button(friendName);
-        friendButton.setStyle("-fx-background-color: transparent; -fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 20px; ");
+        friendButton.getStyleClass().add("friend-button");
         ButtonEffect(friendButton);
-        friendButton.setOnAction(event -> openProfilePage(friendName));
+        friendButton.setOnAction(event -> {
+            friendNameProfile = friendName;
+            openProfilePage(friendNameProfile);
+        });
         FriendListVBox.getChildren().add(friendButton);
     }
 
@@ -490,7 +489,12 @@ public class StudentController implements Initializable {
             // Create a new stage for the second view
             Stage stage = new Stage();
             stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setScene(new Scene(root));
+
+            // Ensure the scene is also transparent
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.setScene(scene);
+
             stage.setResizable(false);
             stage.show();
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
@@ -523,7 +527,7 @@ public class StudentController implements Initializable {
         name.setOnAction(event -> openProfilePage(friendName));
 
         confirm.setOnAction(event -> {
-            Students.acceptFriendRequest(sessionManager.getCurrentUser().getUsername(),friendName);
+            Students.acceptFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
             // Retrieve the parent HBox of the confirm button
             HBox parentHBox = (HBox) confirm.getParent();
             // Remove the parent HBox from the FriendRequestVBox
@@ -531,7 +535,7 @@ public class StudentController implements Initializable {
         });
 
         delete.setOnAction(event -> {
-            Students.rejectFriendRequest(sessionManager.getCurrentUser().getUsername(),friendName);
+            Students.rejectFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
             // Retrieve the parent HBox of the confirm button
             HBox parentHBox = (HBox) confirm.getParent();
             // Remove the parent HBox from the FriendRequestVBox
@@ -544,7 +548,7 @@ public class StudentController implements Initializable {
         FriendRequestVBox.getChildren().add(FriendRequestHBox);
     }
 
-    private void addNewQuiz(String title, String theme, String description, String content) {
+    private void addNewQuiz(Quiz quiz, boolean isQuizDone) {
         // Create the HBox
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
@@ -556,28 +560,28 @@ public class StudentController implements Initializable {
         vBox.setPadding(new Insets(0, 0, 0, 20));
 
         // Add three text elements to the VBox
-        Text titleText = new Text(title);
+        Text titleText = new Text(quiz.getTitle());
 
         HBox temp = new HBox();
         temp.setSpacing(5);
         temp.setAlignment(Pos.TOP_LEFT);
         Text t = new Text("Theme: ");
         t.setStyle("-fx-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
-        Button themeButton = new Button(theme);
+        Button themeButton = new Button(quiz.getTheme());
         String setColour = "";
-        if (theme.equals("SCIENCE")) {
+        if (quiz.getTheme().equals("SCIENCE")) {
             setColour = "-fx-background-color: #c3dbc2;";
-        } else if (theme.equals("TECHNOLOGY")) {
+        } else if (quiz.getTheme().equals("TECHNOLOGY")) {
             setColour = "-fx-background-color: #a7d1df;";
-        } else if (theme.equals("ENGINEERING")) {
+        } else if (quiz.getTheme().equals("ENGINEERING")) {
             setColour = "-fx-background-color: #e4cfb4;";
-        } else if (theme.equals("MATHEMATIC")) {
+        } else if (quiz.getTheme().equals("MATHEMATIC")) {
             setColour = "-fx-background-color: #f0c9dc;";
         }
         themeButton.setStyle(setColour + "-fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 12px; -fx-background-radius: 20px;");
         temp.getChildren().addAll(t, themeButton);
 
-        Text descriptionText = new Text(description);
+        Text descriptionText = new Text(quiz.getDescription());
         descriptionText.setWrappingWidth(800);
         titleText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 30px; ");
         descriptionText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 14px; ");
@@ -588,13 +592,24 @@ public class StudentController implements Initializable {
         button.setPrefWidth(150);
         button.setStyle("-fx-background-color: linear-gradient( to right,#8c52ff, #5ce1e6); -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
         button.setOnAction(event -> {
+            Students.addDoneQuiz(sessionManager.getCurrentUser().getUsername(), quiz.getID());
+            refreshQuiz();
             try {
                 // Open the link in the default browser
-                Desktop.getDesktop().browse(new URI(content));
+                Desktop.getDesktop().browse(new URI(quiz.getContent()));
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            //ArrayList<String> doneQuizList = Students.getDoneQuizList(sessionManager.getCurrentUser().getUsername());
+//            user.setDoneQuiz(user.getDoneQuiz()+str);
+//            currentUser.addDoneQuiz(quiz.getID()+",");
         });
+        if (isQuizDone) {
+            button.setDisable(true);
+            button.setStyle("-fx-background-color: #239F24; -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
+            button.setText("QUIZ DONE");
+        }
 
         // Add the VBox and the button to the HBox
         hBox.getChildren().addAll(vBox, button);
@@ -711,7 +726,7 @@ public class StudentController implements Initializable {
         }
     }
 
-    private void addNewDiscussion(String title, String role, String username, String content) {
+    private void addNewDiscussion(String title, String role, String username, String content, int numOfLike, String date) {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setSpacing(10);
@@ -739,12 +754,18 @@ public class StudentController implements Initializable {
         roleButton.setStyle(setColour + "-fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 12px; -fx-background-radius: 20px;");
 
         Button usernameButton = new Button(username);
-        temp.getChildren().addAll(t, roleButton, usernameButton);
+        usernameButton.getStyleClass().add("username-button");
+        usernameButton.setOnAction(event -> {
+            friendNameProfile = username;
+            openProfilePage(friendNameProfile);
+        });
+        Text dateText = new Text("(" + date + ")");
+        dateText.setStyle("-fx-fill: #EDAB5E; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
+        temp.getChildren().addAll(t, roleButton, usernameButton, dateText);
 
         Text contentText = new Text(content);
-        contentText.setWrappingWidth(900);
+        contentText.setWrappingWidth(880);
         titleText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 30px; ");
-        usernameButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; -fx-padding: 0; ");
         contentText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 14px; ");
         vBox.getChildren().addAll(titleText, temp, contentText);
 
@@ -765,9 +786,11 @@ public class StudentController implements Initializable {
                 heartShape.setFill(Color.BLACK);
             }
         });
+        Text NumOfLike = new Text(String.valueOf(numOfLike));
+        NumOfLike.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 12px; ");
 
         // Add the VBox and the button to the HBox
-        hBox.getChildren().addAll(vBox, loveButton);
+        hBox.getChildren().addAll(vBox, loveButton, NumOfLike);
 
         // Add the HBox to the main VBox
         DiscussionVBox.getChildren().add(0, hBox);
@@ -832,24 +855,18 @@ public class StudentController implements Initializable {
         LocationLabel.setText(location);
         NumOfFriend.setText(totalNumOfFriend);
 
-        //modified
-        ArrayList<String> friendNames = Students.getFriendList(username);
-        // Add each friend to the friend list
-        for (String friendName : friendNames) {
-            addFriendList(friendName);
-        }
-
         setUpParentTable(username);
         setUpEventTable(username);
         setUpBookedStudyTourTable(username);
 
         int point = Students.getPoints();
         PointDisplay.setText(String.valueOf(point) + " POINTS");
+
+        showFriendList(username);
     }
 
     public void showFriendList(String username) {
-        //ArrayList<String> friendList = student.getFriendList(username);
-        ArrayList<String> friendList = Students.getFriendList(sessionManager.getCurrentUser().getUsername());
+        ArrayList<String> friendList = Students.getFriendList(username);
         for (String friend : friendList) {
             addFriendList(friend);
         }
@@ -1157,8 +1174,20 @@ public class StudentController implements Initializable {
     private void refreshQuiz() {
         List<Quiz> quizList = Quiz.getQuizList();
         QuizVBox.getChildren().clear();
+        List<Quiz> notDoneQuizList = new ArrayList<>();
+        ArrayList<String> doneQuizList = Students.getDoneQuizList(sessionManager.getCurrentUser().getUsername());
+        System.out.println(doneQuizList.size());
         for (Quiz quiz : quizList) {
-            addNewQuiz(quiz.getTitle(), quiz.getTheme(), quiz.getDescription(), quiz.getContent());
+            System.out.println(doneQuizList.size());
+            if (doneQuizList.contains(quiz.getID())) {
+                System.out.println(quiz.getID());
+                addNewQuiz(quiz, true);
+            } else {
+                notDoneQuizList.add(quiz);
+            }
+        }
+        for (Quiz quiz : notDoneQuizList) {
+            addNewQuiz(quiz, false);
         }
     }
 
@@ -1169,4 +1198,36 @@ public class StudentController implements Initializable {
         QuizContentField.clear();
     }
 
+    private void createDiscussion() {
+        String title = DiscussionTitleField.getText();
+        String content = DiscussionContentField.getText();
+        int like = 0;
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDateTime = currentDateTime.format(dateTimeFormatter);
+
+        if (title.isBlank() || content.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Discussion discussion = new Discussion(title, content, sessionManager.getCurrentUser().getUsername(), like, formattedDateTime);
+            discussion.saveDiscussion(sessionManager.getCurrentUser().getUsername());
+            refreshDiscussion();
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(DiscussionPane);
+            clearCreateDiscussion();
+        }
+    }
+
+    private void refreshDiscussion() {
+        List<Discussion> discussionList = Discussion.getDiscussionList();
+        DiscussionVBox.getChildren().clear();
+        for (Discussion discussion : discussionList) {
+            addNewDiscussion(discussion.getTitle(), userRepository.getRole(discussion.getAuthor()).toUpperCase(), discussion.getAuthor(), discussion.getContent(), discussion.getLike(), discussion.getDatetime());
+        }
+    }
+
+    private void clearCreateDiscussion() {
+        DiscussionTitleField.clear();
+        DiscussionContentField.clear();
+    }
 }
