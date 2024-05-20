@@ -122,7 +122,7 @@ public class SessionManager {
                 // Check if the new email is already taken
                 if (!userRepository.isEmailTaken(newEmail.trim().toLowerCase())) {
                     // Update email for the current user
-                    userRepository.updateEmailInDatabase(currentUser.getUsername(), newEmail);
+                    userRepository.updateEmailInDatabase(currentUser.getUsername(), newEmail,enteredPassword);
                     currentUser.setEmail(newEmail); // Update the email field in the User object
                 } else {
                     System.out.println("Email already exists. Please choose a different email.");
@@ -132,7 +132,6 @@ public class SessionManager {
             }
         }
     }
-
     public void changePassword(String oldPassword, String newPassword, String confirmPassword) {
         if (currentUser != null) {
             // Check if the old password is correct for the current user

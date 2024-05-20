@@ -5,12 +5,16 @@
 package ds.assignment;
 //import javafx.fxml.FXML;
 //import javafx.scene.control.Label;
+import gui.BookedStudyTourColumn;
+import gui.EventColumn;
+import gui.StudentController;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -19,16 +23,14 @@ import java.util.ArrayList;
 public class Students extends User{
 //    @FXML
 //    private Label showUsernameLabel;
-    private int points;
-    private String location;
+    private static int points;
     
-    public Students (String email, String username, String password, String role,int points,String location){
+    public Students(String email, String username, String password, String role) {
         super(email, username, password, role);
-        this.points=0;
-        this.location="";
+        this.points = 0;
     }
-    
-    public int getPoints() {
+
+    public static int getPoints() {
         return points;
     }
 
@@ -44,119 +46,134 @@ public class Students extends User{
     public void setLocation(String location) {
         this.location = location;
     }
-    
-    public void insertIntoDatabase() {
-        if (!InfoCheck()){
-        Connection connection = null;
-        try {
-            // Database connection details
-            connection=dbConnect.linkDatabase();
-            
-            String insertQuery = "INSERT INTO student (Username, Email, Password, Role, Points, Location) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
 
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, email);
-            preparedStatement.setString(3, hashPassword(password));
-            preparedStatement.setString(4, role);
-            preparedStatement.setInt(5, points);
-            preparedStatement.setString(6, location);
-            
-            preparedStatement.executeUpdate();
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dbConnect.endDatabase();
-        }
-    }   else
+    public void insertIntoDatabase() {
+        if (!InfoCheck()) {
+            Connection connection = null;
+            try {
+                // Database connection details
+                connection = dbConnect.linkDatabase();
+
+                String insertQuery = "INSERT INTO student (Username, Email, Password, Role, Points, Location) VALUES (?, ?, ?, ?, ?, ?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, email);
+                preparedStatement.setString(3, hashPassword(password));
+                preparedStatement.setString(4, role);
+                preparedStatement.setInt(5, points);
+                preparedStatement.setString(6, location);
+
+                preparedStatement.executeUpdate();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                dbConnect.endDatabase();
+            }
+        } else {
             System.out.println("Username or password already exists. Please choose a different username or password.");
-            
+        }
+
     }
-    
-    
-    public void displayStudentInfo(){
-        
-        try{
+
+    public static void displayStudentInfo(String username) {
+
+        try {
+            String usernameStudent = "", emailStudent = "", roleStudent = "", locationStudent = "";
+            int pointsStudent = 0;
+
             // Connect to database
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
 
             // Create SQL query
-            String connectQuery = "SELECT Username, Email, Role, Location, Points FROM student";
-        
+            String connectQuery = "SELECT Username, Email, Role, Location, Points FROM student WHERE Username = '" + username + "'";
+
             // Execute query
             Statement statement = connectDB.createStatement();
             ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
+
             // Get info student r from database
-            while(queryOutput.next()){
-                this.username = queryOutput.getString("Username");
-                this.email = queryOutput.getString("Email");
-                this.role = queryOutput.getString("Role");
-                this.location = queryOutput.getString("Location");
-                this.points = queryOutput.getInt("Points");
-                
+            while (queryOutput.next()) {
+                usernameStudent = queryOutput.getString("Username");
+                emailStudent = queryOutput.getString("Email");
+                roleStudent = queryOutput.getString("Role");
+                locationStudent = queryOutput.getString("Location");
+                pointsStudent = queryOutput.getInt("Points");
+
             }
-            
-        }catch(Exception e){
+
+            // Display student's information
+            System.out.println("=====Student=====");
+            System.out.println("Username: " + usernameStudent);
+            System.out.println("Email: " + emailStudent);
+            System.out.println("Role: " + roleStudent);
+            System.out.println("Location: " + locationStudent);
+            System.out.println("Points: " + pointsStudent);
+            System.out.println();
+
+        } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
     }
+
     //uselesss
-    public void displayFriend(){
-        
-        try{
-            DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.linkDatabase();
-            String connectQuery = "SELECT Friends, FriendRequest FROM student ";
-            Statement statement = connectDB.createStatement();
-            ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
-                
-                String friends = queryOutput.getString("Friends");
-                String friendRequest = queryOutput.getString("FriendRequest");
-                System.out.println("Friend: " + friends);
-                System.out.println("Friend request: "+ friendRequest);
-                
-                //showParentUsernameLabel.setText(parentUsername);
+    public void displayFriendInfo(String username) {
+        ArrayList<String> friendList = new ArrayList<>();
+        ArrayList<String> friendRequestList = new ArrayList<>();
+        try {
+            friendList = getFriendList(username);
+            friendRequestList = getFriendRequestList(username);
+
+            System.out.println("==== Friends for " + username + " ====");
+            for (String friend : friendList) {
+                System.out.println(friend);
             }
-            
-        }catch(Exception e){
+            System.out.println("Total number of friends: " + friendList.size());
+            System.out.println("");
+
+            System.out.println("==== Friends requests for " + username + " ====");
+            for (String friendRequest : friendRequestList) {
+                System.out.println(friendRequest);
+            }
+            System.out.println("Total number of friend request: " + friendRequestList.size());
+            System.out.println("");
+
+        } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
     }
+
     //useless
-    public void displayParent(){
-        
-        try{
+    public static void displayParentInfo(String username) {
+
+        try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
             String connectQuery = "SELECT parent.Username FROM parent "
-                        + "JOIN Student ON parent.Email = student.ParentsEmail OR student.ParentsNum";
+                    + "JOIN Student ON parent.Email = student.ParentsEmail OR student.ParentsNum";
             Statement statement = connectDB.createStatement();
             ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
-                
+
+            while (queryOutput.next()) {
+
                 String parentUsername = queryOutput.getString("Username");
                 System.out.println("Parent: " + parentUsername);
-                
+
                 //showParentUsernameLabel.setText(parentUsername);
             }
-            
-        }catch(Exception e){
+
+        } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
     }
-    
-    public ArrayList<String> getParentUsernameList() {
-        ArrayList<String> parentUsernameList = new ArrayList<>();
 
+    public static ArrayList<String> getParentList() {
+        ArrayList<String> parentList = new ArrayList<>();
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
@@ -167,7 +184,7 @@ public class Students extends User{
 
             while (queryOutput.next()) {
                 String parentUsername = queryOutput.getString("Username");
-                parentUsernameList.add(parentUsername);
+                parentList.add(parentUsername);
             }
 
             preparedStatement.close();
@@ -177,21 +194,59 @@ public class Students extends User{
             e.printStackTrace();
         }
 
-        return parentUsernameList;
+        return parentList;
     }
-    
+
     public boolean isDuplicateParent(String username, String newParent) {
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT parent.Username FROM parent "
+                    + "JOIN student ON student.ParentsEmail = parent.Email "
+                    + "WHERE student.Username = ?";
+            PreparedStatement preparedStatement = connectDB.prepareStatement(connectQuery);
+            preparedStatement.setString(1, username);
+            ResultSet queryOutput = preparedStatement.executeQuery();
+
+            while (queryOutput.next()) {
+                String currentParents = queryOutput.getString("ParentsEmail");
+                if (currentParents != null && currentParents.contains(newParent)) {
+                    return true; // Parent already in the list
+                }
+            }
+
+            preparedStatement.close();
+            connectDB.close();
+        } catch (SQLException e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+
+        return false; // Parent not in the list or error occurred
+    }
+
+    public static int getTotalFriend(String username) {
+        return getFriendList(username).size();
+    }
+
+    //get the friend list of a student
+    public static ArrayList<String> getFriendList(String username) {
+        ArrayList<String> friendList = new ArrayList<>();
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT Friends FROM student WHERE Username = '" + username + "'";
             Statement statement = connectDB.createStatement();
-            String connectQuery = "SELECT * FROM student WHERE Username = '" + username + "'";
             ResultSet queryOutput = statement.executeQuery(connectQuery);
 
             if (queryOutput.next()) {
-                String currentParents = queryOutput.getString("Username");
-                if (currentParents != null && currentParents.contains(newParent)) {
-                    return true; // Parent already in the list
+                String currentFriends = queryOutput.getString("Friends");
+                if (currentFriends != null && !currentFriends.isEmpty()) {
+                    // Split the currentFriends string into an array of friends
+                    String[] friendsArray = currentFriends.split(",");
+                    // Add each friend to the friendList
+                    friendList.addAll(Arrays.asList(friendsArray));
                 }
             }
             statement.close();
@@ -201,66 +256,43 @@ public class Students extends User{
             e.printStackTrace();
         }
 
-        return false; // Parent not in the list or error occurred
+        return friendList;
     }
 
-    
-    //get the friend list of a student
-    public ArrayList<String> getFriendList(String username){
-        ArrayList<String> friendLists = new ArrayList<>();
-        
-        try{
+    //add a friend to a student's friend list
+    public static ArrayList<String> addFriendList(String username) {
+        ArrayList<String> friendList = new ArrayList<>();
+        try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
             String connectQuery = "SELECT Friends FROM student WHERE Username = '" + username + "'";
             Statement statement = connectDB.createStatement();
             ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
-                friendLists.add(queryOutput.getString("Friends"));
+
+            while (queryOutput.next()) {
+                friendList.add(queryOutput.getString("Friends"));
             }
-            
+
             statement.close();
             connectDB.close();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
-        
-        return friendLists;
+
+        return friendList;
     }
-    
+
     //add a friend to a student's friend list
-    public ArrayList<String> addFriendList(String username){
-        ArrayList<String> friendLists = new ArrayList<>();
-        
-        try{
-            DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.linkDatabase();
-            String connectQuery = "SELECT Friends FROM student WHERE Username = '" + username + "'";
-            Statement statement = connectDB.createStatement();
-            ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
-                friendLists.add(queryOutput.getString("Friends"));
-            }
-            
-            statement.close();
-            connectDB.close();
+    public static void addFriend(String username, String newFriend) {
+        if (!isExistingUser(newFriend)) {
+            System.out.println("The friend you are trying to add does not exist.");
+            StudentController.showReminderDialog("The friend you are trying to add does not exist.");
+            return;
         }
-        catch(Exception e){
-            System.out.println("SQL query failed.");
-            e.printStackTrace();
-        }
-        
-        return friendLists;
-    }
-    
-    //add a friend to a student's friend list
-    public void addFriend(String username, String newFriend) {
         if (isDuplicateFriend(username, newFriend)) {
             System.out.println("Friend already in the list.");
+            StudentController.showReminderDialog("Friend already in the list.");
             return;
         }
 
@@ -289,8 +321,39 @@ public class Students extends User{
             e.printStackTrace();
         }
     }
-    
-    public boolean isDuplicateFriend(String username, String newFriend) {
+
+    public static boolean isExistingUser(String username) {
+        Connection connectDB = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet queryOutput = null;
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            connectDB = connectNow.linkDatabase();
+
+            // Check if the user exists
+            String selectQuery = "SELECT COUNT(*) FROM student WHERE Username = ?";
+            preparedStatement = connectDB.prepareStatement(selectQuery);
+            preparedStatement.setString(1, username);
+            queryOutput = preparedStatement.executeQuery();
+
+            if (queryOutput.next()) {
+                int count = queryOutput.getInt(1);
+                return count > 0; // User exists if count is greater than 0
+            }
+
+            queryOutput.close();
+            preparedStatement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+
+        return false; // User does not exist or error occurred
+    }
+
+    public static boolean isDuplicateFriend(String username, String newFriend) {
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
@@ -315,92 +378,106 @@ public class Students extends User{
     }
 
     //delete a friend from a student's friend list
-    public void deleteFriend(String username, String friendToRemove){
-        try{
-            DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.linkDatabase();
-            String connectQuery = "SELECT Friends FROM student WHERE Username = '" + username + "'";
-            Statement statement = connectDB.createStatement();
-            ResultSet queryOutput = statement.executeQuery(connectQuery);
+    public static void deleteFriend(String username, String friendToRemove) {
+        if (!isExistingUser(username)) {
+            System.out.println("The friend you are trying to remove does not exist.");
+            StudentController.showReminderDialog("The friend you are trying to remove does not exist.");
+            return;
+        }
 
-            if(queryOutput.next()){
+        Connection connectDB = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet queryOutput = null;
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            connectDB = connectNow.linkDatabase();
+
+            // Retrieve the current friend list
+            String selectQuery = "SELECT Friends FROM student WHERE Username = ?";
+            preparedStatement = connectDB.prepareStatement(selectQuery);
+            preparedStatement.setString(1, username);
+            queryOutput = preparedStatement.executeQuery();
+
+            if (queryOutput.next()) {
                 String currentFriends = queryOutput.getString("Friends");
-                String updatedFriends = currentFriends.replace(friendToRemove + ",", "");
 
-                // Update the database with the new friend list
-                String updateQuery = "UPDATE student SET Friends = '" + updatedFriends + "' WHERE Username = '" + username + "'";
-                statement.executeUpdate(updateQuery);
+                if (currentFriends != null && !currentFriends.isEmpty()) {
+                    // Convert the friend list to an ArrayList
+                    String[] friendsArray = currentFriends.split(",");
+                    ArrayList<String> friendList = new ArrayList<>(Arrays.asList(friendsArray));
+
+                    // Remove the specified friend
+                    if (friendList.remove(friendToRemove)) {
+                        // Join the friends back into a single string
+                        String updatedFriends = String.join(",", friendList);
+
+                        // Update the database with the new friend list
+                        String updateQuery = "UPDATE student SET Friends = ? WHERE Username = ?";
+                        PreparedStatement updateStatement = connectDB.prepareStatement(updateQuery);
+                        updateStatement.setString(1, updatedFriends);
+                        updateStatement.setString(2, username);
+                        updateStatement.executeUpdate();
+                        updateStatement.close();
+                    } else {
+                        System.out.println("Friend not found in the list.");
+                    }
+                } else {
+                    System.out.println("No friends found for the user.");
+                }
+            } else {
+                System.out.println("No such user found.");
             }
-            
-            statement.close();
+            queryOutput.close();
+            preparedStatement.close();
             connectDB.close();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
     }
-    
+
     //get the friend request list of a student
-    public ArrayList<String> getFriendRequestList(String username){
-        ArrayList<String> friendRequestLists = new ArrayList<>();
-        
-        try{
+    public static ArrayList<String> getFriendRequestList(String username) {
+        ArrayList<String> friendRequestList = new ArrayList<>();
+        try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
             String connectQuery = "SELECT FriendRequest FROM student WHERE Username = '" + username + "'";
             Statement statement = connectDB.createStatement();
             ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
-                friendRequestLists.add(queryOutput.getString("FriendRequest"));
+
+            if (queryOutput.next()) {
+                String friendRequests = queryOutput.getString("FriendRequest");
+                if (friendRequests != null && !friendRequests.isEmpty()) {
+                    String[] requestsArray = friendRequests.split(",");
+                    friendRequestList.addAll(Arrays.asList(requestsArray));
+                }
             }
-            
+
             statement.close();
             connectDB.close();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
-        
-        return friendRequestLists;
+
+        return friendRequestList;
     }
-    
+
     //accept a friend request of a student
-    public void acceptFriendRequest(String username, String friendToAccept){
-        
-        try{
-            DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.linkDatabase();
-            String connectQuery = "SELECT FriendRequest FROM student WHERE Username = '" + username + "'";
-            Statement statement = connectDB.createStatement();
-            ResultSet queryOutput = statement.executeQuery(connectQuery);
-
-            if(queryOutput.next()){
-                String currentRequests = queryOutput.getString("FriendRequest");
-                String updatedRequests = currentRequests.replace(friendToAccept + ",", "");
-
-                // Update the database with the new friend request list
-                String updateQuery = "UPDATE student SET FriendRequest = '" + updatedRequests + "' WHERE Username = '" + username + "'";
-                statement.executeUpdate(updateQuery);
-
-                // Add the friend to the friend list
-                addFriend(username, friendToAccept);
-            }
-            
-            statement.close();
-            connectDB.close();
+    public static void acceptFriendRequest(String username, String friendToAccept) {
+        ArrayList<String> friendRequestList = getFriendRequestList(username);
+        if (!isExistingUser(friendToAccept)) {
+            System.out.println("The friend you are trying to add does not exist.");
+            StudentController.showReminderDialog("The friend you are trying to add does not exist.");
+            return;
         }
-        catch(Exception e){
-            System.out.println("SQL query failed.");
-            e.printStackTrace();
+        if (isDuplicateFriend(username, friendToAccept)) {
+            System.out.println("Friend already in the list.");
+            StudentController.showReminderDialog("Friend already in the list.");
+            return;
         }
-    }
-    
-    //reject a friend request of a student
-    public void rejectFriendRequest(String username, String friendToReject) {
-
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
@@ -410,11 +487,21 @@ public class Students extends User{
 
             if (queryOutput.next()) {
                 String currentRequests = queryOutput.getString("FriendRequest");
-                String updatedRequests = currentRequests.replace(friendToReject + ",", "");
+                if (currentRequests == null) {
+                    currentRequests = "";
+                }
+                String updatedRequests = removeFriendFromRequests(currentRequests, friendToAccept);
 
                 // Update the database with the new friend request list
                 String updateQuery = "UPDATE student SET FriendRequest = '" + updatedRequests + "' WHERE Username = '" + username + "'";
                 statement.executeUpdate(updateQuery);
+
+                // Remove pending friend from friend request list
+                friendRequestList.remove(friendToAccept);
+
+                // Add the pending friend to the friend list
+                addFriend(username, friendToAccept);
+                StudentController.showReminderDialog("You have a new friend!");
             }
 
             statement.close();
@@ -425,8 +512,56 @@ public class Students extends User{
         }
     }
 
-    
-    public void sendFriendRequest(String senderUsername, String receiverUsername) {
+    private static String removeFriendFromRequests(String currentRequests, String friendToAccept) {
+        String[] requests = currentRequests.split(",");
+        StringBuilder updatedRequests = new StringBuilder();
+
+        for (String request : requests) {
+            if (!request.trim().equals(friendToAccept.trim())) {
+                if (updatedRequests.length() > 0) {
+                    updatedRequests.append(",");
+                }
+                updatedRequests.append(request.trim());
+            }
+        }
+
+        return updatedRequests.toString();
+    }
+
+    //reject a friend request of a student
+    public static void rejectFriendRequest(String username, String friendToReject) {
+        ArrayList<String> friendRequestList = new ArrayList<>();
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT FriendRequest FROM student WHERE Username = '" + username + "'";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+
+            if (queryOutput.next()) {
+                String currentRequests = queryOutput.getString("FriendRequest");
+                if (currentRequests == null) {
+                    currentRequests = "";
+                }
+                String updatedRequests = currentRequests.replace(friendToReject + ",", "");
+
+                // Update the database with the new friend request list
+                String updateQuery = "UPDATE student SET FriendRequest = '" + updatedRequests + "' WHERE Username = '" + username + "'";
+                statement.executeUpdate(updateQuery);
+            }
+
+            // Remoce pending friend from friend request list
+            friendRequestList.remove(friendToReject);
+
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendFriendRequest(String senderUsername, String receiverUsername) {
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
@@ -460,175 +595,374 @@ public class Students extends User{
             updateStatement.executeUpdate(updateQuery);
 
             System.out.println("Friend request sent successfully.");
-            
+
             checkReceiverStatement.close();
             checkRequestStatement.close();
             connectDB.close();
-            
+
         } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
     }
-    
-    public void checkParentEvent(String username){
+
+    public void checkParentEvent(String username) {
         ArrayList<String> eventList = new ArrayList<>();
-        
-        try{
+
+        try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
             String connectQuery = "SELECT Date FROM event WHERE Username = '" + username + "'";
             Statement statement = connectDB.createStatement();
             ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
+
+            while (queryOutput.next()) {
                 eventList.add(queryOutput.getString("Date"));
             }
-            
+
             // Print out the events
             if (eventList.isEmpty()) {
                 System.out.println("No events registered by parents.");
-            } 
-            else {
+            } else {
                 System.out.println("Events registered by parents for " + username + ":");
-                    for (String eventDate : eventList) {
-                        System.out.println(eventDate);
+                for (String eventDate : eventList) {
+                    System.out.println(eventDate);
+                }
+            }
+
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+
+    // get id_event in student table --> get event details in event table
+    public static ArrayList<EventColumn> getStudentRegisteredEvents(String studentUsername) {
+        ArrayList<EventColumn> registeredEventList = new ArrayList<>();
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+
+            // get id_event from RegisteredEvent column in student table
+            String getRegisteredEventsQuery = "SELECT RegisteredEvent FROM student WHERE Username = ?";
+            PreparedStatement getRegisteredEventsStmt = connectDB.prepareStatement(getRegisteredEventsQuery);
+            getRegisteredEventsStmt.setString(1, studentUsername);
+            ResultSet registeredEventsResultSet = getRegisteredEventsStmt.executeQuery();
+
+            if (registeredEventsResultSet.next()) {
+                String registeredEvents = registeredEventsResultSet.getString("RegisteredEvent");
+                String[] eventIds = registeredEvents.split(",");
+
+                // get event details for each id_event in event table row by row
+                String getEventDetailsQuery = "SELECT Date, Title, Venue, Time FROM event WHERE id_event = ?";
+                PreparedStatement getEventDetailsStmt = connectDB.prepareStatement(getEventDetailsQuery);
+
+                for (String eventId : eventIds) {
+                    getEventDetailsStmt.setString(1, eventId.trim());
+                    ResultSet eventDetailsResultSet = getEventDetailsStmt.executeQuery();
+
+                    if (eventDetailsResultSet.next()) {
+                        String date = eventDetailsResultSet.getString("Date");
+                        String title = eventDetailsResultSet.getString("Title");
+                        String venue = eventDetailsResultSet.getString("Venue");
+                        String time = eventDetailsResultSet.getString("Time");
+
+                        EventColumn event = new EventColumn(date, title, venue, time);
+                        registeredEventList.add(event);
                     }
+                    eventDetailsResultSet.close();  // Close the ResultSet for each event ID
+                    getEventDetailsStmt.close();
+                }
             }
-            
-            statement.close();
+            registeredEventsResultSet.close();
+            getRegisteredEventsStmt.close();
             connectDB.close();
-        }
-        catch(Exception e){
+
+        } catch (SQLException e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
+        return registeredEventList;
     }
-    
-    public ArrayList<String> getDateEvent(String username){
-        ArrayList<String> dateEventList = new ArrayList<>();
-        
-        try{
+
+    // get id_booking in student table --> get study tour details in booking table
+    public static ArrayList<BookedStudyTourColumn> getStudentBookedStudyTour(String studentUsername) {
+        ArrayList<BookedStudyTourColumn> bookedStudyTourList = new ArrayList<>();
+
+        try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
-            String connectQuery = "SELECT Date FROM event WHERE Username = '" + username + "'";
-            Statement statement = connectDB.createStatement();
-            ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
-                dateEventList.add(queryOutput.getString("Date"));
+
+            // get id_booking from RegisteredBooking in student table
+            String getRegisteredBookingQuery = "SELECT RegisteredBooking FROM student WHERE Username = ?";
+            PreparedStatement getRegisteredBookingStmt = connectDB.prepareStatement(getRegisteredBookingQuery);
+            getRegisteredBookingStmt.setString(1, studentUsername);
+            ResultSet registeredBookingResultSet = getRegisteredBookingStmt.executeQuery();
+
+            if (registeredBookingResultSet.next()) {
+                String registeredBooking = registeredBookingResultSet.getString("RegisteredEvent");
+                String[] bookingIds = registeredBooking.split(",");
+
+                // get booking details for each id_booking in booking table row by row
+                String getBookingDetailsQuery = "SELECT Date, VenueFROM booking WHERE id_booking = ?";
+                PreparedStatement getBookingDetailsStmt = connectDB.prepareStatement(getBookingDetailsQuery);
+
+                for (String bookingId : bookingIds) {
+                    getBookingDetailsStmt.setString(1, bookingId.trim());
+                    ResultSet bookingDetailsResultSet = getBookingDetailsStmt.executeQuery();
+
+                    if (bookingDetailsResultSet.next()) {
+                        String date = bookingDetailsResultSet.getString("Date");
+                        String venue = bookingDetailsResultSet.getString("Venue");
+
+                        BookedStudyTourColumn bookedStudyTour = new BookedStudyTourColumn(date, venue);
+                        bookedStudyTourList.add(bookedStudyTour);
+                    }
+                    bookingDetailsResultSet.close();  // Close the ResultSet for each booking ID
+                    getBookingDetailsStmt.close();
+                }
             }
-            
-            statement.close();
+            registeredBookingResultSet.close();
+            getRegisteredBookingStmt.close();
             connectDB.close();
-        }
-        catch(Exception e){
+
+        } catch (SQLException e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
-        return dateEventList;
+        return bookedStudyTourList;
     }
-    
-    public ArrayList<String> getTitleEvent(String username){
-        ArrayList<String> titleEventList = new ArrayList<>();
-        
-        try{
+
+    public static int getNumberOfParents(String childName) {
+        Connection connectDB = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        int currentParentsNum = 0;
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            connectDB = connectNow.linkDatabase();
+
+            // Retrieve the current number of parents and parents' email
+            String connectStudentQuery = "SELECT ParentsNum FROM student WHERE Username = ?";
+            preparedStatement = connectDB.prepareStatement(connectStudentQuery);
+            preparedStatement.setString(1, childName);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                currentParentsNum = resultSet.getInt("ParentsNum");
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+            connectDB.close();
+
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+        return currentParentsNum;
+    }
+
+    public static int getParentIdByParentUsername(String parentUsername) {
+        int parentId = -1;
+
+        try {
+            // Connect to database
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
-            String connectQuery = "SELECT Title FROM event WHERE Username = '" + username + "'";
-            Statement statement = connectDB.createStatement();
-            ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
-                titleEventList.add(queryOutput.getString("Title"));
+
+            // Create SQL query
+            String query = "SELECT id_parent FROM parent WHERE Username = ?";
+
+            // Use PreparedStatement to prevent SQL injection
+            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+            preparedStatement.setString(1, parentUsername);
+
+            // Execute query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Retrieve the parent ID
+            if (resultSet.next()) {
+                parentId = resultSet.getInt("id_parent");
             }
-            
-            statement.close();
+
+            // Close resources
+            resultSet.close();
+            preparedStatement.close();
             connectDB.close();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
-        return titleEventList;
+
+        return parentId;
     }
-    
-    public ArrayList<String> getVenueEvent(String username){
-        ArrayList<String> venueEventList = new ArrayList<>();
-        
-        try{
+
+    public static boolean isExistingParent(int idParent) {
+        boolean exists = false;
+
+        try {
+            // Connect to database
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
-            String connectQuery = "SELECT Venue FROM event WHERE Username = '" + username + "'";
-            Statement statement = connectDB.createStatement();
-            ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
-                venueEventList.add(queryOutput.getString("Venue"));
+
+            // Check if the parent exists using id_parent
+            String query = "SELECT COUNT(*) FROM parent WHERE id_parent = ?";
+            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+            preparedStatement.setInt(1, idParent);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                exists = count > 0; // Parent exists if count is greater than 0
             }
-            
-            statement.close();
+
+            resultSet.close();
+            preparedStatement.close();
             connectDB.close();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
-        return venueEventList;
+        return exists;
     }
-    
-    public ArrayList<String> getTimeEvent(String username){
-        ArrayList<String> timeEventList = new ArrayList<>();
-        
-        try{
+
+    public static String getParentEmailById(int idParent) {
+        String parentEmail = null;
+        Connection connectDB = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
             DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.linkDatabase();
-            String connectQuery = "SELECT Time FROM event WHERE Username = '" + username + "'";
-            Statement statement = connectDB.createStatement();
-            ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
-                timeEventList.add(queryOutput.getString("Time"));
+            connectDB = connectNow.linkDatabase();
+
+            String query = "SELECT Email FROM parent WHERE id_parent = ?";
+            preparedStatement = connectDB.prepareStatement(query);
+            preparedStatement.setInt(1, idParent);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                parentEmail = resultSet.getString("Email");
             }
-            
-            statement.close();
+
+            resultSet.close();
+            preparedStatement.close();
             connectDB.close();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
-        return timeEventList;
+        return parentEmail;
     }
-    
-    public ArrayList<String> getBookedVenue(String username){
-        ArrayList<String> bookedVenueList = new ArrayList<>();
-        
-        try{
+
+    // update student table: parentNums and parentEmail
+    public static void updateStudentInfoAfterAddParent(String childName, String parentEmail) {
+        Connection connectDB = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
             DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.linkDatabase();
-            String connectQuery = "SELECT Place FROM booking WHERE Username = '" + username + "'";
-            Statement statement = connectDB.createStatement();
-            ResultSet queryOutput = statement.executeQuery(connectQuery);
-            
-            while(queryOutput.next()){
-                bookedVenueList.add(queryOutput.getString("Place"));
+            connectDB = connectNow.linkDatabase();
+
+            // Retrieve the current number of parents and parents' email
+            String connectStudentQuery = "SELECT ParentsNum, ParentsEmail FROM student WHERE Username = ?";
+            preparedStatement = connectDB.prepareStatement(connectStudentQuery);
+            preparedStatement.setString(1, childName);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int currentParentsNum = resultSet.getInt("ParentsNum");
+                String currentParentsEmail = resultSet.getString("ParentsEmail");
+
+                // Update the parent's email and increment the number of parents
+                String updatedParentsEmail = currentParentsEmail == null ? parentEmail : currentParentsEmail + "," + parentEmail;
+                int updatedParentsNum = currentParentsNum + 1;
+
+                // Update the database with the new parents' information
+                String updateStudentQuery = "UPDATE student SET ParentsNum = ?, ParentsEmail = ? WHERE Username = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateStudentQuery);
+                updateStatement.setInt(1, updatedParentsNum);
+                updateStatement.setString(2, updatedParentsEmail);
+                updateStatement.setString(3, childName);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+                resultSet.close();
+                preparedStatement.close();
+                connectDB.close();
+                StudentController.showReminderDialog("New parent is added! ");
             }
-            
-            statement.close();
-            connectDB.close();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
-        return bookedVenueList;
     }
-    
-    public void updateProfile(String username){
-        
+
+    public static void addParent(String childName, String parentName) {
+        int idParent = getParentIdByParentUsername(parentName);
+        if (!isExistingParent(idParent)) {
+            System.out.println("The parent name you are trying to add does not exists.");
+            StudentController.showReminderDialog("The parent name you are trying to add does not exists.");
+            return;
+        }
+
+        int numberOfParents = getNumberOfParents(childName);
+        if (numberOfParents >= 2) {
+            System.out.println("Only a maximum of two parents can be added.");
+            StudentController.showReminderDialog("Only a maximum of two parents can be added.");
+            return;
+        }
+
+        Connection connectDB = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            connectDB = connectNow.linkDatabase();
+            String connectParentQuery = "SELECT Children FROM parent WHERE id_parent = ?";
+
+            preparedStatement = connectDB.prepareStatement(connectParentQuery);
+            preparedStatement.setInt(1, idParent);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String currentChildren = resultSet.getString("Children");
+                if (currentChildren == null) {
+                    currentChildren = "";
+                }
+                String updatedChildren = currentChildren + childName + ",";
+
+                // Update the database with the new children list
+                String updateParentQuery = "UPDATE parent SET Children = ? WHERE id_parent = ?";
+                PreparedStatement updateStatement = connectDB.prepareStatement(updateParentQuery);
+                updateStatement.setString(1, updatedChildren);
+                updateStatement.setInt(2, idParent);
+                updateStatement.executeUpdate();
+                updateStatement.close();
+
+                // update student table: parentNums and parentEmail
+                updateStudentInfoAfterAddParent(childName, getParentEmailById(idParent));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
     }
-    
+
+    public void updateProfile(String username) {
+
+    }
+
 //    //I temporary comment it because do not have event class yet
 //    public void checkClashing(String username) {
 //        ArrayList<Event> eventList = new ArrayList<>();
