@@ -79,7 +79,9 @@ public class Login {
             connection = dbConnect.linkDatabase();
 
             // SQL query to retrieve the hashed password based on email
+
             String selectQuery = "SELECT Password FROM user WHERE Email = ? OR Username = ?";
+
             try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
                 preparedStatement.setString(1, email_username);
                 preparedStatement.setString(2, email_username);
