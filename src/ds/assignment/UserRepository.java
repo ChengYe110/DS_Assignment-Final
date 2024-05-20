@@ -159,11 +159,33 @@ public class UserRepository {
         return null; // User not found in the database
     }
 
+    public int getPoints(String username) {
+        Connection connection = dbConnect.linkDatabase();
+        try {
+            String selectQuery = "SELECT * FROM student WHERE Username = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                preparedStatement.setString(1, username);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    int point = resultSet.getInt("Points");
+                    return point;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately in a real application.
+        } finally {
+            dbConnect.endDatabase();
+        }
+        return -1; // User not found in the database
+    }
+
     public void updatePoints(String username, int newPoints) {
         Connection connection = dbConnect.linkDatabase();
 
         try {
-            String updateQuery = "UPDATE student SET Point = ? WHERE Username = ?";
+            String updateQuery = "UPDATE student SET Points = ? WHERE Username = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setInt(1, newPoints);
             preparedStatement.setString(2, username);
@@ -245,7 +267,6 @@ public class UserRepository {
                 preparedStatement.setString(1, newUsername);
                 preparedStatement.setString(2, email);
                 preparedStatement.setString(3, login.getHashedPasswordFromDatabase(email));
-                
 
                 PreparedStatement preparedStatement2 = connection.prepareStatement(updateQueryRole);
                 preparedStatement2.setString(1, newUsername);
@@ -316,7 +337,6 @@ public class UserRepository {
             preparedStatement.setString(1, newEmail);
             preparedStatement.setString(2, username);
             preparedStatement.setString(3, login.getHashedPasswordFromDatabase(username));
-            
 
             PreparedStatement preparedStatement2 = connection.prepareStatement(updateQueryRole);
             preparedStatement2.setString(1, newEmail);
@@ -423,17 +443,17 @@ public class UserRepository {
                 preparedStatement.setString(2, username);
 
                 int rowsUpdated = preparedStatement.executeUpdate();
-                
+
                 PreparedStatement preparedStatement2 = connection.prepareStatement(updateQuery);
                 preparedStatement2.setString(1, pass);
                 preparedStatement2.setString(2, username);
 
                 int rowsUpdated2 = preparedStatement2.executeUpdate();
-                
-                if (rowsUpdated > 0 && rowsUpdated2>0) {
+
+                if (rowsUpdated > 0 && rowsUpdated2 > 0) {
                     System.out.println(login.isPasswordCorrectForUser(newPassword));
                     System.out.println("Password updated successfully for user: " + username);
-                     // Update the password field in the User object
+                    // Update the password field in the User object
                 } else {
                     System.out.println("Failed to update password. User not found: " + username);
                 }

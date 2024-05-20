@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import gui.StudentController;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -289,12 +290,12 @@ public class Students extends User {
     public static void addFriend(String username, String newFriend) {
         if (!isExistingUser(newFriend)) {
             System.out.println("The friend you are trying to add does not exist.");
-            StudentController.showReminderDialog("The friend you are trying to add does not exist.");
+            JOptionPane.showMessageDialog(null, "The friend you are trying to add does not exist. ", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (isDuplicateFriend(username, newFriend)) {
             System.out.println("Friend already in the list.");
-            StudentController.showReminderDialog("Friend already in the list.");
+            JOptionPane.showMessageDialog(null, "Friend already in the list.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -383,7 +384,7 @@ public class Students extends User {
     public static void deleteFriend(String username, String friendToRemove) {
         if (!isExistingUser(username)) {
             System.out.println("The friend you are trying to remove does not exist.");
-            StudentController.showReminderDialog("The friend you are trying to remove does not exist.");
+            JOptionPane.showMessageDialog(null, "The friend you are trying to remove does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -472,12 +473,12 @@ public class Students extends User {
         ArrayList<String> friendRequestList = getFriendRequestList(username);
         if (!isExistingUser(friendToAccept)) {
             System.out.println("The friend you are trying to add does not exist.");
-            StudentController.showReminderDialog("The friend you are trying to add does not exist.");
+            JOptionPane.showMessageDialog(null, "The friend you are trying to add does not exist. ", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (isDuplicateFriend(username, friendToAccept)) {
             System.out.println("Friend already in the list.");
-            StudentController.showReminderDialog("Friend already in the list.");
+            JOptionPane.showMessageDialog(null, "Friend already in the list. ", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         try {
@@ -503,7 +504,7 @@ public class Students extends User {
 
                 // Add the pending friend to the friend list
                 addFriend(username, friendToAccept);
-                StudentController.showReminderDialog("You have a new friend!");
+                JOptionPane.showMessageDialog(null, "You have a new friend! ", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
 
             statement.close();
@@ -575,6 +576,7 @@ public class Students extends User {
 
             if (!checkReceiverResult.next()) {
                 System.out.println("Receiver username does not exist.");
+                JOptionPane.showMessageDialog(null, "Receiver username does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -587,6 +589,7 @@ public class Students extends User {
                 String currentRequests = checkRequestResult.getString("FriendRequest");
                 if (currentRequests != null && currentRequests.contains(senderUsername)) {
                     System.out.println("Friend request already sent to this user.");
+                    JOptionPane.showMessageDialog(null, "Friend request already sent to this user.", "Friend Request Pending", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
             }
@@ -597,6 +600,7 @@ public class Students extends User {
             updateStatement.executeUpdate(updateQuery);
 
             System.out.println("Friend request sent successfully.");
+            JOptionPane.showMessageDialog(null, "Friend request sent successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
             checkReceiverStatement.close();
             checkRequestStatement.close();
@@ -606,6 +610,31 @@ public class Students extends User {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
+    }
+
+    public static boolean checkFriendRequestPending(String senderUsername, String receiverUsername) {
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+
+            Connection connectDB = connectNow.linkDatabase();
+
+            // Check if the sender already sent a friend request to the receiver
+            String checkRequestQuery = "SELECT FriendRequest FROM student WHERE Username = '" + receiverUsername + "'";
+            Statement checkRequestStatement = connectDB.createStatement();
+            ResultSet checkRequestResult = checkRequestStatement.executeQuery(checkRequestQuery);
+
+            if (checkRequestResult.next()) {
+                String currentRequests = checkRequestResult.getString("FriendRequest");
+                if (currentRequests != null && currentRequests.contains(senderUsername)) {
+                    System.out.println("Friend request already sent to this user.");
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void checkParentEvent(String username) {
@@ -709,7 +738,7 @@ public class Students extends User {
                 String[] bookingIds = registeredBooking.split(",");
 
                 // get booking details for each id_booking in booking table row by row
-                String getBookingDetailsQuery = "SELECT Date, VenueFROM booking WHERE id_booking = ?";
+                String getBookingDetailsQuery = "SELECT Date, Venue FROM booking WHERE id_booking = ?";
                 PreparedStatement getBookingDetailsStmt = connectDB.prepareStatement(getBookingDetailsQuery);
 
                 for (String bookingId : bookingIds) {
@@ -897,7 +926,7 @@ public class Students extends User {
                 resultSet.close();
                 preparedStatement.close();
                 connectDB.close();
-                StudentController.showReminderDialog("New parent is added! ");
+                JOptionPane.showMessageDialog(null, "New parent is added! ", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (Exception e) {
             System.out.println("SQL query failed.");
@@ -909,14 +938,14 @@ public class Students extends User {
         int idParent = getParentIdByParentUsername(parentName);
         if (!isExistingParent(idParent)) {
             System.out.println("The parent name you are trying to add does not exists.");
-            StudentController.showReminderDialog("The parent name you are trying to add does not exists.");
+            JOptionPane.showMessageDialog(null, "The parent name you are trying to add does not exists. ", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         int numberOfParents = getNumberOfParents(childName);
         if (numberOfParents >= 2) {
             System.out.println("Only a maximum of two parents can be added.");
-            StudentController.showReminderDialog("Only a maximum of two parents can be added.");
+            JOptionPane.showMessageDialog(null, "Only a maximum of two parents can be added. ", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -1006,7 +1035,6 @@ public class Students extends User {
 //        }
 //        return false; // No clashes
 //    }
-    
     //ADD
     public static ArrayList<String> getDoneQuizList(String username) {
         ArrayList<String> doneQuizList = new ArrayList<>();
