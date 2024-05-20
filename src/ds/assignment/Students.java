@@ -705,7 +705,7 @@ public class Students extends User {
             ResultSet registeredBookingResultSet = getRegisteredBookingStmt.executeQuery();
 
             if (registeredBookingResultSet.next()) {
-                String registeredBooking = registeredBookingResultSet.getString("RegisteredEvent");
+                String registeredBooking = registeredBookingResultSet.getString("RegisteredBooking");
                 String[] bookingIds = registeredBooking.split(",");
 
                 // get booking details for each id_booking in booking table row by row
@@ -1006,4 +1006,63 @@ public class Students extends User {
 //        }
 //        return false; // No clashes
 //    }
+    
+    //ADD
+    public static ArrayList<String> getDoneQuizList(String username) {
+        ArrayList<String> doneQuizList = new ArrayList<>();
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT CompletedQuiz FROM student WHERE Username = '" + username + "'";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+
+            if (queryOutput.next()) {
+                String completedQuizzes = queryOutput.getString("CompletedQuiz");
+                if (completedQuizzes != null && !completedQuizzes.isEmpty()) {
+                    String[] quizzesArray = completedQuizzes.split(",");
+                    for (String quiz : quizzesArray) {
+                        doneQuizList.add(quiz.trim()); // Trim to remove any extra spaces
+                    }
+                }
+            }
+
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+
+        return doneQuizList;
+    }
+
+    public static void addDoneQuiz(String username, String doneQuizID) {
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT CompletedQuiz FROM student WHERE Username = '" + username + "'";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+
+            if (queryOutput.next()) {
+                String currentDoneQuiz = queryOutput.getString("CompletedQuiz");
+                if (currentDoneQuiz == null) {
+                    currentDoneQuiz = "";
+                }
+                String updatedDoneQuiz = currentDoneQuiz + doneQuizID + ",";
+
+                // Update the database with the new friend list
+                String updateQuery = "UPDATE student SET CompletedQuiz = '" + updatedDoneQuiz + "' WHERE Username = '" + username + "'";
+                statement.executeUpdate(updateQuery);
+            }
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
 }

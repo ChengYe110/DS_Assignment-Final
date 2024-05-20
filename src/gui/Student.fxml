@@ -1102,7 +1102,7 @@
                   <Insets />
                </opaqueInsets>
             </VBox>
-            <Text fx:id="UsernameMenuPane" layoutX="71.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" wrappingWidth="134.13671875">
+            <Text fx:id="UsernameMenuPane" layoutX="4.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER" wrappingWidth="269.0">
                <font>
                   <Font name="Bell MT Bold" size="30.0" />
                </font>
