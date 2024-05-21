@@ -93,7 +93,7 @@ import javax.swing.JOptionPane;
 public class StudentController implements Initializable {
 
     @FXML
-    private StackPane stackPane, ExtraStackPane,notification1,notification2,notification3,ProfileImage;
+    private StackPane stackPane, ExtraStackPane, notification1, notification2, notification3, ProfileImage;
     @FXML
     private Button DiscussionPage, EventPage, HomePage, LeaderboardPage, MenuButton, ProfilePage, QuizPage,
             CreateQuizPage, DoneCreateQuiz, DoneCreateEvent, CreateEventPage, FriendListPage, ExitFriendListPage,
@@ -518,6 +518,7 @@ public class StudentController implements Initializable {
         // Create an HBox
         HBox FriendRequestHBox = new HBox();
         FriendRequestHBox.setSpacing(10); // Spacing between buttons
+        FriendRequestHBox.setAlignment(Pos.CENTER_LEFT);
 
         // Create three buttons and add them to the HBox
         Button name = new Button(friendName);
@@ -779,11 +780,13 @@ public class StudentController implements Initializable {
         Button usernameButton = new Button(username);
         usernameButton.getStyleClass().add("username-button");
         usernameButton.setOnAction(event -> {
-            if (friendNameNavigate.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
-                usernameButton.setDisable(true);
-            } else {
-                friendNameNavigate.push(username);
-                openProfilePage(friendNameNavigate.peek());
+            if (canOpenFriendProfile(username)) {
+                if (friendNameNavigate.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
+                    usernameButton.setDisable(true);
+                } else {
+                    friendNameNavigate.push(username);
+                    openProfilePage(friendNameNavigate.peek());
+                }
             }
         });
         Text dateText = new Text("(" + discussion.getDatetime() + ")");
@@ -1284,8 +1287,8 @@ public class StudentController implements Initializable {
 
         if (title.isBlank() || description.isBlank() || venue.isBlank() || dateA == null || time.isBlank()) {
             JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
-        } else if (dateA.isBefore(LocalDate.now())||dateA.equals(LocalDate.now()) ) {
-            JOptionPane.showMessageDialog(null, "Please choose the date after "+LocalDate.now(), "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (dateA.isBefore(LocalDate.now()) || dateA.equals(LocalDate.now())) {
+            JOptionPane.showMessageDialog(null, "Please choose the date after " + LocalDate.now(), "Error", JOptionPane.ERROR_MESSAGE);
             EventDatePicker.setValue(null);
         } else {
             EventHBoxElement eventHboxElement = new EventHBoxElement(title, description, venue, dateA, time);
@@ -1405,29 +1408,29 @@ public class StudentController implements Initializable {
         Winner9pts.setText(sessionManager.getTopPoints(8) + " pts");
         Winner10pts.setText(sessionManager.getTopPoints(9) + " pts");
     }
-    
-    private void hasFriendRequest(){
+
+    private void hasFriendRequest() {
         notification1.getChildren().clear();
         notification2.getChildren().clear();
         notification3.getChildren().clear();
         Circle redDot1 = new Circle(5);
         Circle redDot2 = new Circle(5);
         Circle redDot3 = new Circle(5);
-        if (Students.getFriendRequestList(sessionManager.getCurrentUser().getUsername()).size()>0){
-            redDot1.setFill(Color.RED); 
-            redDot2.setFill(Color.RED); 
-            redDot3.setFill(Color.RED); 
+        if (Students.getFriendRequestList(sessionManager.getCurrentUser().getUsername()).size() > 0) {
+            redDot1.setFill(Color.RED);
+            redDot2.setFill(Color.RED);
+            redDot3.setFill(Color.RED);
         } else {
             redDot1.setFill(new Color(0, 0, 0, 0));
             redDot2.setFill(new Color(0, 0, 0, 0));
             redDot3.setFill(new Color(0, 0, 0, 0));
-        } 
+        }
         notification1.getChildren().add(redDot1);
         notification2.getChildren().add(redDot2);
         notification3.getChildren().add(redDot3);
     }
-    
-    private void setProfileImage(){
+
+    private void setProfileImage() {
         // Load the image
         Image image = new Image(getClass().getResource("../png/StudentProfile.jpg").toExternalForm()); // Replace with your image path
 
@@ -1436,7 +1439,7 @@ public class StudentController implements Initializable {
 
         // Set the fill of the circle to the image using an ImagePattern
         circle.setFill(new ImagePattern(image));
-        
+
         // Create a border circle
         Circle borderCircle = new Circle(101); // Slightly larger radius for the border
         borderCircle.setStroke(Color.BLACK); // Set the border color
@@ -1444,6 +1447,14 @@ public class StudentController implements Initializable {
         borderCircle.setFill(null); // Ensure the border circle is transparent
 
         // Create a layout pane and add the circle to it
-        ProfileImage.getChildren().addAll(circle,borderCircle);
+        ProfileImage.getChildren().addAll(circle, borderCircle);
+    }
+
+    private boolean canOpenFriendProfile(String friendName) {
+        if (userRepository.getRole(friendName).equalsIgnoreCase("student")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

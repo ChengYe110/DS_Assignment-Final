@@ -243,7 +243,7 @@ public class FriendProfileController implements Initializable {
     }
 
     private void refreshAddFriend(String friendName) {
-        if (sessionManager.getCurrentUser().getRole().equals("Student")) {
+        if (sessionManager.getCurrentUser().getRole().equalsIgnoreCase("student")) {
             if (isDuplicateFriend(sessionManager.getCurrentUser().getUsername(), friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
                 AddFriendButton.setVisible(false);
             } else if (Students.checkFriendRequestPending(sessionManager.getCurrentUser().getUsername(), friendName)) {
@@ -259,4 +259,5 @@ public class FriendProfileController implements Initializable {
             AddFriendButton.setVisible(false);
         }
     }
+    
 }
