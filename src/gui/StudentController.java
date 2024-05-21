@@ -364,8 +364,7 @@ public class StudentController implements Initializable {
             currentIndex = 0;
             ButtonEffect(PreviousButton);
             ButtonEffect(NextButton);
-            
-            
+
             DoneCreateEvent.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
@@ -1085,7 +1084,12 @@ public class StudentController implements Initializable {
         }
     }
 
-    public HBox createEventHBox(String eventTitle, String eventDescription, String eventVenue, String eventDate, String eventTime) {
+    public HBox createEventHBox(EventHBoxElement e) {
+        String eventTitle = e.getEventTitle();
+        String eventDescription = e.getEventDescription();
+        String eventVenue = e.getEventVenue();
+        String eventDate = e.getEventDateS();
+        String eventTime = e.getEventTime();
         // Create the main HBox
         HBox hbox = new HBox();
         hbox.setPrefHeight(87.0);
@@ -1131,12 +1135,22 @@ public class StudentController implements Initializable {
         joinButton.setFont(new Font("Segoe UI Black", 20.0));
         joinButton.setOnAction(event -> {
             try {
+                e.addJoinedEvent(sessionManager.getCurrentUser().getUsername(), e.getId());
+                JOptionPane.showMessageDialog(null, "You've successfully joined the event. 5 Points rewarded!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 pointsFromDataBase.addPoints(5);
                 refreshPoints();
-            } catch (Exception e) {
-                e.printStackTrace();
+                refreshEvent();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
+        //Check if liked then red; if never like then black;
+        List<String> JoinedEvent = e.getJoinedEventList(sessionManager.getCurrentUser().getUsername());
+        if (JoinedEvent.contains(e.getId())) {
+            joinButton.setDisable(true);
+            joinButton.setStyle("-fx-background-color: #239F24; -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
+            joinButton.setText("JOINED");
+        }
         // Add all children to the main HBox
         hbox.getChildren().addAll(vbox1, vbox2, joinButton);
 
@@ -1169,7 +1183,7 @@ public class StudentController implements Initializable {
     }
 
     public void addEventHBoxToParent(HBox parent, EventHBoxElement e) {
-        HBox eventHBox = createEventHBox(e.getEventTitle(), e.getEventDescription(), e.getEventVenue(), e.getEventDateS(), e.getEventTime());
+        HBox eventHBox = createEventHBox(e);
         parent.getChildren().add(eventHBox);
     }
 
@@ -1183,6 +1197,9 @@ public class StudentController implements Initializable {
             // Update button visibility based on currentIndex
             PreviousButton.setVisible(currentIndex > 0);
             NextButton.setVisible(currentIndex < list.size() - 1);
+        } else {
+            PreviousButton.setVisible(false);
+            NextButton.setVisible(false);
         }
     }
 
@@ -1259,15 +1276,18 @@ public class StudentController implements Initializable {
         LocalDate dateA = EventDatePicker.getValue();
         String time = EventTimeChoiceBox.getValue();
 
-        if (title.isBlank() || description.isBlank() || venue.isBlank() || dateA==null || time.isBlank()) {
+        if (title.isBlank() || description.isBlank() || venue.isBlank() || dateA == null || time.isBlank()) {
             JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (dateA.isBefore(LocalDate.now())||dateA.equals(LocalDate.now()) ) {
+            JOptionPane.showMessageDialog(null, "Please choose the date after "+LocalDate.now(), "Error", JOptionPane.ERROR_MESSAGE);
+            EventDatePicker.setValue(null);
         } else {
             EventHBoxElement eventHboxElement = new EventHBoxElement(title, description, venue, dateA, time);
             eventHboxElement.saveEvent(sessionManager.getCurrentUser().getUsername());
             refreshEvent();
             stackPane.getChildren().clear();
             stackPane.getChildren().add(EventPane);
-            clearCreateEvent();     
+            clearCreateEvent();
         }
     }
 
@@ -1275,12 +1295,21 @@ public class StudentController implements Initializable {
         ArrayList<EventHBoxElement> EventHBoxElementList = User.getLiveEventList();
         LiveEventHBox.getChildren().clear();
         reloadLiveEventHBox(EventHBoxElementList);
-        
+
         ArrayList<EventHBoxElement> LatestEventList = User.getLatestEventList();
-        addEventHBoxToParent(EventHBox1,LatestEventList.get(0));
-        addEventHBoxToParent(EventHBox2,LatestEventList.get(1));
-        addEventHBoxToParent(EventHBox3,LatestEventList.get(2));
-        
+        EventHBox1.getChildren().clear();
+        EventHBox2.getChildren().clear();
+        EventHBox3.getChildren().clear();
+        if (LatestEventList.size() >= 1) {
+            addEventHBoxToParent(EventHBox1, LatestEventList.get(0));
+            if (LatestEventList.size() >= 2) {
+                addEventHBoxToParent(EventHBox2, LatestEventList.get(1));
+                if (LatestEventList.size() >= 3) {
+                    addEventHBoxToParent(EventHBox3, LatestEventList.get(2));
+                }
+            }
+        }
+
 //        List<EventHBoxElement> notJoinEventList = new ArrayList<>();
 //        ArrayList<String> joinedEventList = EventHBoxElement.getJoinedEventList(sessionManager.getCurrentUser().getUsername());
 //        System.out.println(joinedEventList.size());
@@ -1288,7 +1317,7 @@ public class StudentController implements Initializable {
 //            System.out.println(joinedEventList.size());
 //            if (joinedEventList.contains(eventHBoxElement2.getID())) {
 //                System.out.println(eventHBoxElement2.getID());
-//                addNewQuiz(eventHBoxElement2, true);
+//                addNewEvent(eventHBoxElement2, true);
 //            } else {
 //                notJoinEventList.add(eventHBoxElement2);
 //            }
@@ -1305,7 +1334,7 @@ public class StudentController implements Initializable {
         EventDatePicker.setValue(null);
         EventTimeChoiceBox.setValue("");
     }
-    
+
     private void createDiscussion() {
         String title = DiscussionTitleField.getText();
         String content = DiscussionContentField.getText();

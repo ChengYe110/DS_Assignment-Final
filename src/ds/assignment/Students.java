@@ -16,6 +16,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import gui.StudentController;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 
 /**
@@ -696,17 +699,21 @@ public class Students extends User {
                     ResultSet eventDetailsResultSet = getEventDetailsStmt.executeQuery();
 
                     if (eventDetailsResultSet.next()) {
-                        String date = eventDetailsResultSet.getString("Date");
+                        Date date = eventDetailsResultSet.getDate("Date");
+                        LocalDate localDate = date.toLocalDate();
+                        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                        String dateS = localDate.format(dateFormatter).toString();
+                        System.out.println(dateS);
                         String title = eventDetailsResultSet.getString("Title");
                         String venue = eventDetailsResultSet.getString("Venue");
                         String time = eventDetailsResultSet.getString("Time");
 
-                        EventColumn event = new EventColumn(date, title, venue, time);
+                        EventColumn event = new EventColumn(dateS, title, venue, time);
                         registeredEventList.add(event);
                     }
-                    eventDetailsResultSet.close();  // Close the ResultSet for each event ID
-                    getEventDetailsStmt.close();
+                    eventDetailsResultSet.close();  // Close the ResultSet for each event ID                  
                 }
+                getEventDetailsStmt.close();
             }
             registeredEventsResultSet.close();
             getRegisteredEventsStmt.close();

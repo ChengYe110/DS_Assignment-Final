@@ -8,6 +8,7 @@ import ds.assignment.DatabaseConnection;
 import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.sql.Date;
+import java.util.List;
 
 /**
  *
@@ -24,24 +26,34 @@ import java.sql.Date;
  */
 public class EventHBoxElement {
 
-    private String eventTitle, eventDescription, eventVenue, eventDateS, eventTime;
+    private String ID, eventTitle, eventDescription, eventVenue, eventDateS, eventTime;
     private LocalDate eventDate;
 
     public EventHBoxElement(String eventTitle, String eventDescription, String eventVenue, LocalDate eventDate, String eventTime) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
         this.eventVenue = eventVenue;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = sdf.format(this.eventDate);
-        // Create a Timestamp object from the formatted date string
-        Timestamp currentTimestamp = Timestamp.valueOf(formattedDate); 
         this.eventTime = eventTime;
         this.eventDate = eventDate;
-        this.eventDateS = currentTimestamp.toString();
+        this.eventDateS = eventDate.format(dateFormatter);
     }
 
+    public EventHBoxElement(String ID, String eventTitle, String eventDescription, String eventVenue, LocalDate eventDate, String eventTime) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        this.ID = ID;
+        this.eventTitle = eventTitle;
+        this.eventDescription = eventDescription;
+        this.eventVenue = eventVenue;
+        this.eventTime = eventTime;
+        this.eventDate = eventDate;
+        this.eventDateS = eventDate.format(dateFormatter);
+    }
+
+    public String getId() {
+        return ID;
+    }
+    
     public String getEventTitle() {
         return eventTitle;
     }
@@ -87,6 +99,7 @@ public class EventHBoxElement {
     }
 
     public void saveEvent(String educatorUsername) {
+        System.out.println("hi");
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.linkDatabase();
 
@@ -97,14 +110,6 @@ public class EventHBoxElement {
             preparedStatement.setString(1, this.eventTitle);
             preparedStatement.setString(2, this.eventDescription);
             preparedStatement.setString(3, this.eventVenue);
-
-            // Format the date and time to match DATETIME format in SQL
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String formattedDate = sdf.format(this.eventDate);
-            // Create a Timestamp object from the formatted date string
-            Timestamp currentTimestamp = Timestamp.valueOf(formattedDate);
-            // Set parameters in the prepared statement
-            
             Date a = Date.valueOf(eventDate);
             preparedStatement.setDate(4, a);
             preparedStatement.setString(5, this.eventTime);
@@ -149,5 +154,63 @@ public class EventHBoxElement {
         }
 
         return eventDateList;
+    }
+
+    public List<String> getJoinedEventList(String username) {
+        ArrayList<String> joinedEventList = new ArrayList<>();
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT RegisteredEvent FROM student WHERE Username = '" + username + "'";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+
+            if (queryOutput.next()) {
+                String registeredEvent = queryOutput.getString("RegisteredEvent");
+                if (registeredEvent != null && !registeredEvent.isEmpty()) {
+                    String[] quizzesArray = registeredEvent.split(",");
+                    for (String quiz : quizzesArray) {
+                        joinedEventList.add(quiz.trim()); // Trim to remove any extra spaces
+                    }
+                }
+            }
+
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+
+        return joinedEventList;
+    }
+    
+    public void addJoinedEvent(String username, String doneQuizID) {
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT RegisteredEvent FROM student WHERE Username = '" + username + "'";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+
+            if (queryOutput.next()) {
+                String currentDoneQuiz = queryOutput.getString("RegisteredEvent");
+                if (currentDoneQuiz == null) {
+                    currentDoneQuiz = "";
+                }
+                String updatedDoneQuiz = currentDoneQuiz + doneQuizID + ",";
+
+                // Update the database with the new friend list
+                String updateQuery = "UPDATE student SET RegisteredEvent = '" + updatedDoneQuiz + "' WHERE Username = '" + username + "'";
+                statement.executeUpdate(updateQuery);
+            }
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
     }
 }

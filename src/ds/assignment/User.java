@@ -15,10 +15,12 @@ import java.sql.PreparedStatement;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 /**
  *
@@ -181,11 +183,12 @@ public class User {
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
-            String query = "SELECT Title, Description, Venue, Date, Time FROM event";
+            String query = "SELECT id_event, Title, Description, Venue, Date, Time FROM event";
             PreparedStatement preparedStatement = connectDB.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
+                String id = resultSet.getString("id_event");
                 String title = resultSet.getString("Title");
                 String description = resultSet.getString("Description");
                 String venue = resultSet.getString("Venue");
@@ -193,7 +196,7 @@ public class User {
                 LocalDate localdate = date.toLocalDate();
                 String time = resultSet.getString("Time");
 
-                EventHBoxElement event = new EventHBoxElement(title, description, venue, localdate, time);
+                EventHBoxElement event = new EventHBoxElement(id,title, description, venue, localdate, time);
                 eventList.add(event);
             }
             resultSet.close();
@@ -215,7 +218,7 @@ public class User {
         // Filter the events to get only upcoming events
         ArrayList<EventHBoxElement> upcomingEventList = new ArrayList<>();
         for (EventHBoxElement event : eventList) {
-            if (!event.getEventDate().isBefore(currentDate)) {
+            if (!event.getEventDate().isBefore(currentDate) && !event.getEventDate().equals(currentDate)) {
                 upcomingEventList.add(event);
             }
         }
@@ -243,6 +246,7 @@ public class User {
         long daysUntilEvent = ChronoUnit.DAYS.between(currentDate, event.getEventDate());
             System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTime() + " (in " + daysUntilEvent + " days)");
         }
+
         return closestThreeUpcomingEvents;
     }
     
