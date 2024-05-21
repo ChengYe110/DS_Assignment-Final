@@ -860,7 +860,7 @@ public class Students extends User {
             ResultSet registeredBookingResultSet = getRegisteredBookingStmt.executeQuery();
 
             if (registeredBookingResultSet.next()) {
-                String registeredBooking = registeredBookingResultSet.getString("RegisteredEvent");
+                String registeredBooking = registeredBookingResultSet.getString("RegisteredBooking");
                 String[] bookingIds = registeredBooking.split(",");
 
                 // get booking details for each id_booking in booking table row by row
