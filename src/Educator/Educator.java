@@ -51,7 +51,7 @@ public class Educator extends User {
             dbConnect.endDatabase();
         }
     }   else
-            System.out.println("Username or password already exists. Please choose a different username or password.");
+                System.out.println("Username or password already exists. Please choose a different username or password.");
             
     }
     

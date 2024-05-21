@@ -402,106 +402,6 @@
                   </ImageView>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="QuizPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <ScrollPane fx:id="QuizScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
-                                 <children>
-                                    <VBox fx:id="QuizVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                          </content>
-                        </ScrollPane>
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZ">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <Button fx:id="CreateQuizPage" alignment="CENTER_RIGHT" layoutX="1048.0" layoutY="13.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="137.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW QUIZ  ">
-                     <font>
-                        <Font name="Arial Black" size="13.0" />
-                     </font>
-                  </Button>
-                  
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-                  <VBox fx:id="FilterVBox" alignment="CENTER" layoutX="867.0" layoutY="14.0" prefHeight="35.0" prefWidth="173.0">
-                     <children>
-                        <Button fx:id="FilterButton" alignment="CENTER" mnemonicParsing="false" prefHeight="35.0" prefWidth="173.0" style="-fx-background-color: rgba(255, 255, 255, 0.7); -fx-background-radius: 20px; -fx-alignment: center-right;" text="FILTER           ▼" textFill="WHITE">
-                           <font>
-                              <Font name="Arial Black" size="14.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </VBox>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="879.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/FilterIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
-
-            <AnchorPane fx:id="CreateQuizPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Title">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Description">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Theme">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Content">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <TextArea fx:id="QuizDescriptionField" layoutX="291.0" layoutY="143.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <Button fx:id="DoneCreateQuiz" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI Black" size="20.0" />
-                           </font>
-                        </Button>
-                        <ChoiceBox fx:id="QuizThemeChoiceBox" layoutX="291.0" layoutY="279.0" prefHeight="43.0" prefWidth="203.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                        </ChoiceBox>
-                        <TextField fx:id="QuizTitleField" layoutX="291.0" layoutY="64.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextField fx:id="QuizContentField" layoutX="291.0" layoutY="357.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE QUIZ">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
             <AnchorPane fx:id="DiscussionPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
@@ -673,6 +573,108 @@
                   </ImageView>
                </children>
             </AnchorPane>
+            <AnchorPane fx:id="EventPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <Text layoutX="72.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Live Event">
+                           <font>
+                              <Font name="Segoe UI Black" size="30.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="72.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Upcoming Event">
+                           <font>
+                              <Font name="Segoe UI Black" size="30.0" />
+                           </font>
+                        </Text>
+                        <AnchorPane layoutX="72.0" layoutY="54.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
+                           <children>
+                              <HBox fx:id="LiveEventHBox" alignment="CENTER" prefHeight="87.0" prefWidth="960.0" style="-fx-background-color: white;" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="72.0" layoutY="188.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
+                           <children>
+                              <HBox fx:id="EventHBox1" alignment="CENTER" prefHeight="87.0" prefWidth="960.0" style="-fx-background-color: white;" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="73.0" layoutY="289.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
+                           <children>
+                              <HBox fx:id="EventHBox2" alignment="CENTER" prefHeight="87.0" prefWidth="960.0" style="-fx-background-color: white;" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="73.0" layoutY="391.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
+                           <children>
+                              <HBox fx:id="EventHBox3" alignment="CENTER" prefHeight="87.0" prefWidth="960.0" style="-fx-background-color: white;" />
+                           </children>
+                        </AnchorPane>
+                        <Button fx:id="NextButton" layoutX="1069.0" layoutY="65.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="49.0" styleClass="arrow" stylesheets="@StudentStyle.css" />
+                        <Button fx:id="PreviousButton" layoutX="14.0" layoutY="65.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="49.0" rotate="180.0" styleClass="arrow" stylesheets="@StudentStyle.css" />
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EVENT">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="CreateEventPage" alignment="CENTER_RIGHT" layoutX="1039.0" layoutY="14.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW EVENT  ">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </Button>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1051.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="QuizPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <ScrollPane fx:id="QuizScrollPane" fitToWidth="true" layoutX="54.0" layoutY="42.0" prefHeight="427.0" prefWidth="1023.0" style="-fx-background-color: transparent;">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="1007.0">
+                                 <children>
+                                    <VBox fx:id="QuizVBox" alignment="TOP_CENTER" layoutX="131.0" layoutY="58.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZ">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="CreateQuizPage" alignment="CENTER_RIGHT" layoutX="1048.0" layoutY="13.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="137.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW QUIZ  ">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </Button>
+                  
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+                  <VBox fx:id="FilterVBox" alignment="CENTER" layoutX="867.0" layoutY="14.0" prefHeight="35.0" prefWidth="173.0">
+                     <children>
+                        <Button fx:id="FilterButton" alignment="CENTER" mnemonicParsing="false" prefHeight="35.0" prefWidth="173.0" style="-fx-background-color: rgba(255, 255, 255, 0.7); -fx-background-radius: 20px; -fx-alignment: center-right;" text="FILTER           ▼" textFill="WHITE">
+                           <font>
+                              <Font name="Arial Black" size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="879.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/FilterIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
             <AnchorPane fx:id="StudentProfilePane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
@@ -831,96 +833,6 @@
                               <Image url="@../png/AddIcon.png" />
                            </image>
                         </ImageView>
-                        <AnchorPane fx:id="EditProfilePane" layoutX="360.0" layoutY="15.0" prefHeight="476.0" prefWidth="529.0" style="-fx-background-color: e1e1e1; -fx-background-radius: 20px;">
-                           <children>
-                              <Text layoutX="145.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EDIT PROFILE">
-                                 <font>
-                                    <Font name="Segoe UI Black" size="36.0" />
-                                 </font>
-                              </Text>
-                              <Button fx:id="ExitEditProfilePage" layoutX="489.0" layoutY="22.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="17.0" styleClass="exit" stylesheets="@StudentStyle.css" />
-                              <HBox alignment="TOP_CENTER" layoutX="15.0" layoutY="92.0" prefHeight="41.0" prefWidth="499.0" spacing="24.0">
-                                 <children>
-                                    <Button fx:id="ChangeUsernameAndEmailButton" mnemonicParsing="false" prefHeight="49.0" prefWidth="269.0" style="-fx-background-color: white; -fx-background-radius: 10px;" text="CHANGE USERNAME / EMAIL">
-                                       <font>
-                                          <Font name="Segoe UI Black" size="17.0" />
-                                       </font>
-                                    </Button>
-                                    <Button fx:id="ChangePasswordButton" layoutX="172.0" layoutY="10.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="200.0" style="-fx-background-color: transparent; -fx-background-radius: 10px;" text="CHANGE PASSWORD">
-                                       <font>
-                                          <Font name="Segoe UI Black" size="17.0" />
-                                       </font>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                              <StackPane fx:id="ExtraStackPane" layoutX="18.0" layoutY="127.0" prefHeight="306.0" prefWidth="493.0">
-                                 <children>
-                                    <AnchorPane fx:id="ChangeUsernameAndEmailPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
-                                       <children>
-                                          <Text layoutX="49.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Old Password">
-                                             <font>
-                                                <Font name="Segoe UI Black" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="49.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Username">
-                                             <font>
-                                                <Font name="Segoe UI Black" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="49.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Email">
-                                             <font>
-                                                <Font name="Segoe UI Black" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <TextField fx:id="NewUsername" layoutX="211.0" layoutY="103.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="12.0" />
-                                             </font>
-                                          </TextField>
-                                          <TextField fx:id="NewEmail" layoutX="211.0" layoutY="160.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="12.0" />
-                                             </font>
-                                          </TextField>
-                                          <Button fx:id="SaveChangeUsernameAndEmailButton" layoutX="195.0" layoutY="230.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="103.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="SAVE" textFill="#fffcfc">
-                                             <font>
-                                                <Font name="Berlin Sans FB Demi Bold" size="20.0" />
-                                             </font>
-                                          </Button>
-                                          <PasswordField fx:id="OldPassword1" layoutX="211.0" layoutY="46.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
-                                       </children>
-                                    </AnchorPane>
-                                    <AnchorPane fx:id="ChangePasswordPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
-                                       <children>
-                                          <Text layoutX="26.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Old Password">
-                                             <font>
-                                                <Font name="Segoe UI Black" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="26.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Password">
-                                             <font>
-                                                <Font name="Segoe UI Black" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="26.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm Password">
-                                             <font>
-                                                <Font name="Segoe UI Black" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Button fx:id="SaveChangePasswordButton" layoutX="195.0" layoutY="230.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="103.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="SAVE" textFill="#fffcfc">
-                                             <font>
-                                                <Font name="Berlin Sans FB Demi Bold" size="20.0" />
-                                             </font>
-                                          </Button>
-                                          <PasswordField fx:id="OldPassword2" layoutX="211.0" layoutY="46.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
-                                          <PasswordField fx:id="NewPassword" layoutX="211.0" layoutY="103.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
-                                          <PasswordField fx:id="ConfirmPassword" layoutX="211.0" layoutY="160.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
-                                       </children>
-                                    </AnchorPane>
-                                 </children>
-                              </StackPane>
-                           </children>
-                        </AnchorPane>
                         <AnchorPane fx:id="AddParentPane" layoutX="428.0" layoutY="15.0" prefHeight="337.0" prefWidth="374.0" style="-fx-background-color: effeff; -fx-background-radius: 20px;">
                            <children>
                               <Text layoutX="68.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ADD PARENT">
@@ -961,6 +873,96 @@
                               <Button fx:id="ExitFriendListPage" layoutX="336.0" layoutY="22.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="17.0" styleClass="exit" stylesheets="@StudentStyle.css" />
                            </children>
                         </AnchorPane>
+                        <AnchorPane fx:id="EditProfilePane" layoutX="360.0" layoutY="15.0" prefHeight="476.0" prefWidth="529.0" style="-fx-background-color: e1e1e1; -fx-background-radius: 20px;">
+                           <children>
+                              <Text layoutX="145.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EDIT PROFILE">
+                                 <font>
+                                    <Font name="Segoe UI Black" size="36.0" />
+                                 </font>
+                              </Text>
+                              <Button fx:id="ExitEditProfilePage" layoutX="489.0" layoutY="22.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="17.0" styleClass="exit" stylesheets="@StudentStyle.css" />
+                              <HBox alignment="TOP_CENTER" layoutX="15.0" layoutY="92.0" prefHeight="41.0" prefWidth="499.0" spacing="24.0">
+                                 <children>
+                                    <Button fx:id="ChangeUsernameAndEmailButton" mnemonicParsing="false" prefHeight="49.0" prefWidth="269.0" style="-fx-background-color: white; -fx-background-radius: 10px;" text="CHANGE USERNAME / EMAIL">
+                                       <font>
+                                          <Font name="Segoe UI Black" size="17.0" />
+                                       </font>
+                                    </Button>
+                                    <Button fx:id="ChangePasswordButton" layoutX="172.0" layoutY="10.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="200.0" style="-fx-background-color: transparent; -fx-background-radius: 10px;" text="CHANGE PASSWORD">
+                                       <font>
+                                          <Font name="Segoe UI Black" size="17.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <StackPane fx:id="ExtraStackPane" layoutX="18.0" layoutY="127.0" prefHeight="306.0" prefWidth="493.0">
+                                 <children>
+                                    <AnchorPane fx:id="ChangePasswordPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
+                                       <children>
+                                          <Text layoutX="26.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Old Password">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="26.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Password">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="26.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm Password">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Button fx:id="SaveChangePasswordButton" layoutX="195.0" layoutY="230.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="103.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="SAVE" textFill="#fffcfc">
+                                             <font>
+                                                <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+                                             </font>
+                                          </Button>
+                                          <PasswordField fx:id="OldPassword2" layoutX="211.0" layoutY="46.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
+                                          <PasswordField fx:id="NewPassword" layoutX="211.0" layoutY="103.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
+                                          <PasswordField fx:id="ConfirmPassword" layoutX="211.0" layoutY="160.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane fx:id="ChangeUsernameAndEmailPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
+                                       <children>
+                                          <Text layoutX="49.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="49.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Username">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="49.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Email">
+                                             <font>
+                                                <Font name="Segoe UI Black" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <TextField fx:id="NewUsername" layoutX="211.0" layoutY="103.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="12.0" />
+                                             </font>
+                                          </TextField>
+                                          <TextField fx:id="NewEmail" layoutX="211.0" layoutY="160.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="12.0" />
+                                             </font>
+                                          </TextField>
+                                          <Button fx:id="SaveChangeUsernameAndEmailButton" layoutX="195.0" layoutY="230.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="103.0" style="-fx-background-color: linear-gradient( to right,#ffde59, #ff914d); -fx-background-radius: 20px;" text="SAVE" textFill="#fffcfc">
+                                             <font>
+                                                <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+                                             </font>
+                                          </Button>
+                                          <PasswordField fx:id="OldPassword1" layoutX="211.0" layoutY="46.0" prefHeight="31.0" prefWidth="254.0" style="-fx-background-color: e1e1e1;" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                   <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PROFILE">
@@ -975,55 +977,53 @@
                   </Button>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="EventPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+
+            <AnchorPane fx:id="CreateQuizPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
                      <children>
-                        <Text layoutX="72.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Live Event">
+                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Title">
                            <font>
-                              <Font name="Segoe UI Black" size="30.0" />
+                              <Font name="Segoe UI Black" size="24.0" />
                            </font>
                         </Text>
-                        <Text layoutX="72.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Upcoming Event">
+                        <Text layoutX="80.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Description">
                            <font>
-                              <Font name="Segoe UI Black" size="30.0" />
+                              <Font name="Segoe UI Black" size="24.0" />
                            </font>
                         </Text>
-                        <AnchorPane layoutX="72.0" layoutY="54.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
-                           <children>
-                              <HBox fx:id="LiveEventHBox" alignment="CENTER" prefHeight="87.0" prefWidth="960.0" style="-fx-background-color: white;" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane layoutX="72.0" layoutY="188.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
-                           <children>
-                              <HBox fx:id="EventHBox1" alignment="CENTER" prefHeight="87.0" prefWidth="960.0" style="-fx-background-color: white;" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane layoutX="73.0" layoutY="289.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
-                           <children>
-                              <HBox fx:id="EventHBox2" alignment="CENTER" prefHeight="87.0" prefWidth="960.0" style="-fx-background-color: white;" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane layoutX="73.0" layoutY="391.0" prefHeight="87.0" prefWidth="985.0" style="-fx-background-color: white;">
-                           <children>
-                              <HBox fx:id="EventHBox3" alignment="CENTER" prefHeight="87.0" prefWidth="960.0" style="-fx-background-color: white;" />
-                           </children>
-                        </AnchorPane>
-                        <Button fx:id="NextButton" layoutX="1069.0" layoutY="65.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="49.0" styleClass="arrow" stylesheets="@StudentStyle.css" />
-                        <Button fx:id="PreviousButton" layoutX="14.0" layoutY="65.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="49.0" rotate="180.0" styleClass="arrow" stylesheets="@StudentStyle.css" />
+                        <Text layoutX="80.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Theme">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Content">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <TextArea fx:id="QuizDescriptionField" layoutX="291.0" layoutY="143.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" wrapText="true" />
+                        <Button fx:id="DoneCreateQuiz" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="20.0" />
+                           </font>
+                        </Button>
+                        <ChoiceBox fx:id="QuizThemeChoiceBox" layoutX="291.0" layoutY="281.0" prefHeight="43.0" prefWidth="203.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </ChoiceBox>
+                        <TextField fx:id="QuizTitleField" layoutX="291.0" layoutY="64.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextField fx:id="QuizContentField" layoutX="291.0" layoutY="357.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
                      </children>
                   </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EVENT">
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE QUIZ">
                      <font>
                         <Font name="Segoe UI Black" size="36.0" />
                      </font>
                   </Text>
-                  <Button fx:id="CreateEventPage" alignment="CENTER_RIGHT" layoutX="1039.0" layoutY="14.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" style="-fx-background-color: white; -fx-background-radius: 20px;" text="NEW EVENT  ">
-                     <font>
-                        <Font name="Arial Black" size="13.0" />
-                     </font>
-                  </Button>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1051.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../png/AddIcon.png" />
                      </image>

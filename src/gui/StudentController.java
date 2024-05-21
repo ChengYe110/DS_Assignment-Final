@@ -833,7 +833,7 @@ public class StudentController implements Initializable {
         NumOfFriend.setText(totalNumOfFriend);
 
         //modified
-        ArrayList<String> friendNames = Students.getFriendList(username);
+        ArrayList<String> friendNames = Students.getNameFriendList(username);
         // Add each friend to the friend list
         for (String friendName : friendNames) {
             addFriendList(friendName);
@@ -849,14 +849,14 @@ public class StudentController implements Initializable {
 
     public void showFriendList(String username) {
         //ArrayList<String> friendList = student.getFriendList(username);
-        ArrayList<String> friendList = Students.getFriendList(sessionManager.getCurrentUser().getUsername());
+        ArrayList<String> friendList = Students.getNameFriendList(sessionManager.getCurrentUser().getUsername());
         for (String friend : friendList) {
             addFriendList(friend);
         }
     }
 
     public void showFriendRequests(String username) {
-        ArrayList<String> friendRequestList = Students.getFriendRequestList(username);
+        ArrayList<String> friendRequestList = Students.getNameFriendRequestList(username);
         if (friendRequestList != null) {
             for (String friendRequest : friendRequestList) {
                 addFriendRequest(friendRequest);
@@ -1168,5 +1168,4 @@ public class StudentController implements Initializable {
         QuizThemeChoiceBox.setValue(null);
         QuizContentField.clear();
     }
-
 }

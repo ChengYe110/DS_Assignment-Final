@@ -129,6 +129,7 @@
 //    }
 //
 //    @Override
+
 ////    public void displayBooking() {
 ////        try{
 ////            DatabaseConnection dbConnection = new DatabaseConnection(); 
@@ -155,6 +156,34 @@
 ////            e.printStackTrace();
 ////        }
 ////    }
+
+//    public void displayBooking() {
+//        try{
+//            DatabaseConnection dbConnection = new DatabaseConnection(); 
+//            Connection connectDB = dbConnection.linkDatabase();
+//            String connectQuery = "SELECT Booking FROM oarents";
+//            Statement statement = connectDB.createStatement();
+//            ResultSet queryOutput = statement.executeQuery(connectQuery);
+//        
+//            //add things
+//            if(queryOutput.next()){
+//                String booking = queryOutput.getString("Booking");
+//                if(booking.isEmpty()){
+//                    booking = "";
+//                }
+//                String newChild = booking + chooseTour + ",";
+//                }
+//            
+//            
+//            connectDB.close();
+//            statement.close();
+//            queryOutput.close();
+//            
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+//    }
+
 //    
 //
 //    public void displayInfo(){

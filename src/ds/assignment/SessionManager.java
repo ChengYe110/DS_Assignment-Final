@@ -48,10 +48,9 @@ public class SessionManager {
 
         if (isAuthenticated) {
             if (!enteredEmail.matches("^(.+)@(gmail\\.com|hotmail\\.com|yahoo\\.com|siswa\\.um\\.edu\\.my)$")) {
-                currentUser = userRepository.getUserByUsername(enteredEmail);
 
             } else {
-                currentUser = userRepository.getUserByEmail(enteredEmail);
+                this.currentUser = userRepository.getUserByEmail(enteredEmail);
                 System.out.println(currentUser);
 
             }
