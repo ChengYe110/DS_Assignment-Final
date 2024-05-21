@@ -4,18 +4,23 @@
  */
 package gui;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /**
  *
  * @author enjye
  */
-public class EventColumn {
+public class EventColumn implements Comparable<EventColumn>{
     public String date,title,venue,time;
+    private LocalDate localDate;
 
     public EventColumn(String date, String title, String venue, String time) {
         this.date = date;
         this.title = title;
         this.venue = venue;
         this.time = time;
+        this.localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
 
     public String getDate() {
@@ -33,6 +38,10 @@ public class EventColumn {
     public String getTime() {
         return time;
     }
+    
+    public LocalDate getLocalDate() {
+        return localDate;
+    }
 
     public void setDate(String date) {
         this.date = date;
@@ -48,6 +57,11 @@ public class EventColumn {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    @Override
+    public int compareTo(EventColumn o) {
+        return this.localDate.compareTo(o.localDate);
     }
     
 }

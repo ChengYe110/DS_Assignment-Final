@@ -243,16 +243,20 @@ public class FriendProfileController implements Initializable {
     }
 
     private void refreshAddFriend(String friendName) {
-        if (isDuplicateFriend(sessionManager.getCurrentUser().getUsername(), friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
-            AddFriendButton.setVisible(false);
-        } else if (Students.checkFriendRequestPending(sessionManager.getCurrentUser().getUsername(), friendName)) {
-            AddFriendButton.setText("PENDING");
-            AddFriendButton.setDisable(true);
+        if (sessionManager.getCurrentUser().getRole().equals("Student")) {
+            if (isDuplicateFriend(sessionManager.getCurrentUser().getUsername(), friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
+                AddFriendButton.setVisible(false);
+            } else if (Students.checkFriendRequestPending(sessionManager.getCurrentUser().getUsername(), friendName)) {
+                AddFriendButton.setText("PENDING");
+                AddFriendButton.setDisable(true);
+            } else {
+                AddFriendButton.setOnAction(event -> {
+                    Students.sendFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
+                    refreshAddFriend(friendName);
+                });
+            }
         } else {
-            AddFriendButton.setOnAction(event -> {
-                Students.sendFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
-            });
+            AddFriendButton.setVisible(false);
         }
-
     }
 }
