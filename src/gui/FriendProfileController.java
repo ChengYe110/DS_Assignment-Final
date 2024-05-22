@@ -8,8 +8,9 @@ import ds.assignment.DatabaseConnection;
 import ds.assignment.Login;
 import ds.assignment.SessionManager;
 import ds.assignment.Students;
+import static ds.assignment.Students.isDuplicateFriend;
 import ds.assignment.UserRepository;
-import static gui.StudentController.friendNameProfile;
+import static gui.StudentController.friendNameNavigate;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,8 +30,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -69,7 +73,6 @@ public class FriendProfileController implements Initializable {
     private ScrollPane FriendListScrollPane;
 
     private StudentController studentController;
-    private String friendUsername = StudentController.friendNameProfile;
 
     DatabaseConnection dbConnect = new DatabaseConnection();
     UserRepository userRepository = new UserRepository(dbConnect);
@@ -80,6 +83,7 @@ public class FriendProfileController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         FriendListPane.setVisible(false);
         ExitFriendProfilePage.setOnAction(event -> {
+            friendNameNavigate.pop();
             // Get the stage (window) associated with the button
             Stage stage = (Stage) ExitFriendProfilePage.getScene().getWindow();
 
@@ -90,15 +94,13 @@ public class FriendProfileController implements Initializable {
         FriendListPage.setOnAction(event -> {
             FriendListPane.setVisible(true);
             FriendListPane.toFront();
-            showFriendList(sessionManager.getCurrentUser().getUsername());
+            showFriendList(friendNameNavigate.peek());
         });
         ExitFriendListPage.setOnAction(event -> {
             FriendListPane.setVisible(false);
         });
-        setUpProfilePage(friendUsername);
-        AddFriendButton.setOnAction(event -> {
-            Students.sendFriendRequest(sessionManager.getCurrentUser().getUsername(),friendUsername);
-        });
+        setUpProfilePage(friendNameNavigate.peek());
+        refreshAddFriend(friendNameNavigate.peek());
     }
 
     public void ButtonEffect(Button button) {
@@ -129,8 +131,12 @@ public class FriendProfileController implements Initializable {
         friendButton.getStyleClass().add("friend-button");
         ButtonEffect(friendButton);
         friendButton.setOnAction(event -> {
-            friendNameProfile = friendName;
-            openProfilePage(friendNameProfile);
+            if (friendNameNavigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
+                friendButton.setDisable(true);
+            } else {
+                friendNameNavigate.push(friendName);
+                openProfilePage(friendNameNavigate.peek());
+            }
         });
         FriendListVBox.getChildren().add(friendButton);
     }
@@ -145,24 +151,32 @@ public class FriendProfileController implements Initializable {
             // Create a new stage for the second view
             Stage stage = new Stage();
             stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.show();
+
+            // Ensure the scene is also transparent
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.setScene(scene);
+
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Stage) FriendListPane.getScene().getWindow()));
+
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
             stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
             stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
-        } catch (IOException e) {
+            stage.show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void showFriendList(String username) {
+        FriendListVBox.getChildren().clear();
         ArrayList<String> friendList = Students.getFriendList(username);
         for (String friend : friendList) {
             addFriendList(friend);
         }
     }
-    
+
     private void setUpParentTable(String username) {
         ObservableList<ParentColumn> parentList = FXCollections.observableArrayList();
 
@@ -218,20 +232,32 @@ public class FriendProfileController implements Initializable {
         LocationLabel.setText(location);
         NumOfFriend.setText(totalNumOfFriend);
 
-        //modified
-        ArrayList<String> friendNames = Students.getFriendList(username);
-        // Add each friend to the friend list
-        for (String friendName : friendNames) {
-            addFriendList(friendName);
-        }
-
         setUpParentTable(username);
         setUpEventTable(username);
         setUpBookedStudyTourTable(username);
 
-        int point = Students.getPoints();
+        int point = userRepository.getPoints(username);
         PointDisplay.setText(String.valueOf(point) + " POINTS");
-        
+
         showFriendList(username);
     }
+
+    private void refreshAddFriend(String friendName) {
+        if (sessionManager.getCurrentUser().getRole().equalsIgnoreCase("student")) {
+            if (isDuplicateFriend(sessionManager.getCurrentUser().getUsername(), friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
+                AddFriendButton.setVisible(false);
+            } else if (Students.checkFriendRequestPending(sessionManager.getCurrentUser().getUsername(), friendName)) {
+                AddFriendButton.setText("PENDING");
+                AddFriendButton.setDisable(true);
+            } else {
+                AddFriendButton.setOnAction(event -> {
+                    Students.sendFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
+                    refreshAddFriend(friendName);
+                });
+            }
+        } else {
+            AddFriendButton.setVisible(false);
+        }
+    }
+    
 }

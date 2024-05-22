@@ -18,7 +18,7 @@ import javafx.stage.StageStyle;
  *
  * @author enjye
  */
-public class Main extends Application {
+public class MainStudent extends Application {
 
     @Override
     public void start(Stage primaryStage) {

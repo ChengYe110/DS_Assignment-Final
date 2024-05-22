@@ -155,3 +155,12 @@
     -fx-text-fill: #a6a6a6; /* Lighter text color on hover */
 }
 
+.circular-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-background-radius: 50%; /* Set to 50% to create a circular shape */
+    -fx-min-width: 100px; /* Set the button width */
+    -fx-min-height: 100px; /* Set the button height */
+    -fx-max-width: 100px; /* Set the button width */
+    -fx-max-height: 100px; /* Set the button height */
+}
