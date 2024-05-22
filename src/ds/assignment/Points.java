@@ -28,7 +28,7 @@ public class Points {
     }
 
     public int getPointsFromDatabase() {
-        return currentUser.getCurrentPoints(currentUser.getUsername());
+        return userRepository.getPoints(SessionManager.currentUser.getUsername());
     }
 
     public void setPoints(int points) {
