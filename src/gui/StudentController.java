@@ -5,6 +5,7 @@
 package gui;
 
 import ds.assignment.DatabaseConnection;
+import ds.assignment.Discussion;
 import ds.assignment.Login;
 import ds.assignment.Points;
 import ds.assignment.Quiz;
@@ -98,7 +99,9 @@ public class StudentController implements Initializable {
     private Text UsernameMenuPane, UsernameProfilePage, NumOfFriend, Suggested1, Suggested2, Suggested3, Suggested4, Suggested5,
             Distance1, Distance2, Distance3, Distance4, Distance5, Event1Description, Event2Description, Event3Description,
             Event4Description, Event1Venue, Event2Venue, Event3Venue, Event4Venue, Event1Date, Event2Date, Event3Date, Event4Date,
-            Event1Time, Event2Time, Event3Time, Event4Time;
+            Event1Time, Event2Time, Event3Time, Event4Time,Winner1, Winner1pts, Winner2, Winner2pts, Winner3, Winner3pts, Winner4,
+            Winner4pts, Winner5, Winner5pts, Winner6, Winner6pts, Winner7, Winner7pts, Winner8, Winner8pts, Winner9, Winner9pts,
+            Winner10,Winner10pts;
     @FXML
     private TextArea QuizDescriptionField, EventDescriptionField, DestinationIDField, DiscussionContentField;
     @FXML
@@ -143,6 +146,37 @@ public class StudentController implements Initializable {
     SessionManager sessionManager = new SessionManager(userRepository, login);  // Pass the Login instance to SessionManage
     Points pointsFromDataBase = new Points();
 
+   
+    public void refreshPoints() {
+        //(String.valueOf(sessionManager.getPoint()) + "   point(s)");
+        PointDisplay.setText(String.valueOf(userRepository.getPoints(sessionManager.getCurrentUser().getUsername())) + " POINTS");
+        sessionManager.timestampPoints();
+        updateGlobalLeaderboard();
+    }
+    
+    public void updateGlobalLeaderboard() {
+        Winner1.setText(sessionManager.getTopUsername(0));
+        Winner2.setText(sessionManager.getTopUsername(1));
+        Winner3.setText(sessionManager.getTopUsername(2));
+        Winner4.setText(sessionManager.getTopUsername(3));
+        Winner5.setText(sessionManager.getTopUsername(4));
+        Winner6.setText(sessionManager.getTopUsername(5));
+        Winner7.setText(sessionManager.getTopUsername(6));
+        Winner8.setText(sessionManager.getTopUsername(7));
+        Winner9.setText(sessionManager.getTopUsername(8));
+        Winner10.setText(sessionManager.getTopUsername(9));
+        Winner1pts.setText(sessionManager.getTopPoints(0));
+        Winner2pts.setText(sessionManager.getTopPoints(1));
+        Winner3pts.setText(sessionManager.getTopPoints(2));
+        Winner4pts.setText(sessionManager.getTopPoints(3));
+        Winner5pts.setText(sessionManager.getTopPoints(4));
+        Winner6pts.setText(sessionManager.getTopPoints(5));
+        Winner7pts.setText(sessionManager.getTopPoints(6));
+        Winner8pts.setText(sessionManager.getTopPoints(7));
+        Winner9pts.setText(sessionManager.getTopPoints(8));
+        Winner10pts.setText(sessionManager.getTopPoints(9));
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Execute after the layout pass is complete
@@ -281,6 +315,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                refreshDiscussion();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(DiscussionPane);
             });
@@ -288,6 +323,7 @@ public class StudentController implements Initializable {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
+                clearCreateDiscussion();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(CreateDiscussionPane);
             });
@@ -300,6 +336,7 @@ public class StudentController implements Initializable {
                 if (discussionTitle.isBlank() || discussionContent.isBlank()) {
                     JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
+                    createDiscussion();
                     stackPane.getChildren().clear();
                     stackPane.getChildren().add(DiscussionPane);
                 }
@@ -416,14 +453,6 @@ public class StudentController implements Initializable {
 
         //testing
         setUsername(sessionManager.getCurrentUser().getUsername());
-        addNewDiscussion("HiTesting", "STUDENT", "jack", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("OKOK", "PARENT", "lily", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("BangBangBang", "EDUCATOR", "janice", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("EatShit", "STUDENT", "leo", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("TomyamNice", "PARENT", "david", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("HiTesting", "STUDENT", "jason", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("YeahGoSleep", "EDUCATOR", "anson", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        addNewDiscussion("SOS", "STUDENT", "lydia", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         Students s = new Students("email", "name", "password", "student");
         Students.sendFriendRequest("s", "c");
         Students.sendFriendRequest("1", "c");
@@ -443,6 +472,7 @@ public class StudentController implements Initializable {
         if (MenuPane.getTranslateX() == 0) {
             slideInTransition.play();
         }
+        refreshPoints();
         stackPane.getChildren().clear();
         stackPane.getChildren().add(LeaderboardPane);
     }
@@ -523,7 +553,7 @@ public class StudentController implements Initializable {
         name.setOnAction(event -> openProfilePage(friendName));
 
         confirm.setOnAction(event -> {
-            Students.acceptFriendRequest(sessionManager.getCurrentUser().getUsername(),friendName);
+            Students.acceptFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
             // Retrieve the parent HBox of the confirm button
             HBox parentHBox = (HBox) confirm.getParent();
             // Remove the parent HBox from the FriendRequestVBox
@@ -531,7 +561,7 @@ public class StudentController implements Initializable {
         });
 
         delete.setOnAction(event -> {
-            Students.rejectFriendRequest(sessionManager.getCurrentUser().getUsername(),friendName);
+            Students.rejectFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
             // Retrieve the parent HBox of the confirm button
             HBox parentHBox = (HBox) confirm.getParent();
             // Remove the parent HBox from the FriendRequestVBox
@@ -591,6 +621,8 @@ public class StudentController implements Initializable {
             try {
                 // Open the link in the default browser
                 Desktop.getDesktop().browse(new URI(content));
+                pointsFromDataBase.addPoints(2);
+                refreshPoints();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -711,7 +743,7 @@ public class StudentController implements Initializable {
         }
     }
 
-    private void addNewDiscussion(String title, String role, String username, String content) {
+    private void addNewDiscussion(Discussion discussion) {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setSpacing(10);
@@ -720,13 +752,14 @@ public class StudentController implements Initializable {
         vBox.setAlignment(Pos.TOP_LEFT);
         vBox.setPadding(new Insets(0, 0, 0, 20));
 
-        Text titleText = new Text(title);
+        Text titleText = new Text(discussion.getTitle());
 
         HBox temp = new HBox();
         temp.setSpacing(5);
         temp.setAlignment(Pos.TOP_LEFT);
         Text t = new Text("Posted By: ");
         t.setStyle("-fx-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
+        String role = userRepository.getRole(sessionManager.getCurrentUser().getUsername()).toUpperCase();
         Button roleButton = new Button(role);
         String setColour = "";
         if (role.equals("STUDENT")) {
@@ -738,10 +771,10 @@ public class StudentController implements Initializable {
         }
         roleButton.setStyle(setColour + "-fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 12px; -fx-background-radius: 20px;");
 
-        Button usernameButton = new Button(username);
+        Button usernameButton = new Button(sessionManager.getCurrentUser().getUsername());
         temp.getChildren().addAll(t, roleButton, usernameButton);
 
-        Text contentText = new Text(content);
+        Text contentText = new Text(discussion.getContent());
         contentText.setWrappingWidth(900);
         titleText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 30px; ");
         usernameButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; -fx-padding: 0; ");
@@ -753,16 +786,27 @@ public class StudentController implements Initializable {
         heartShape.setContent("M 5 15 Q 15 0 25 15 Q 35 0 45 15 Q 47.5 20 25 40 Q 2.5 20 5 15");
         heartShape.setFill(Color.BLACK); // Initial color
 
+        //Check if liked then red; if never like then black;
+        List<String> LikedPost = discussion.checkLiked(sessionManager.getCurrentUser().getUsername(), userRepository.getRole(sessionManager.getCurrentUser().getUsername()));
+        if (LikedPost.contains(discussion.getId())) {
+            heartShape.setFill(Color.RED); // If the post is liked, set color to red
+        } else {
+            heartShape.setFill(Color.BLACK); // If the post is not liked, set color to black
+        }
         // Create a button with the heart shape
         Button loveButton = new Button();
         loveButton.setStyle("-fx-background-color: transparent;");
         loveButton.setGraphic(heartShape);
         loveButton.setOnAction(event -> {
             // Toggle button color between red and black
+
             if (heartShape.getFill().equals(Color.BLACK)) {
+                discussion.addLike(sessionManager.getCurrentUser().getUsername(), userRepository.getRole(sessionManager.getCurrentUser().getUsername()));
                 heartShape.setFill(Color.RED);
             } else {
+                discussion.removeLike(sessionManager.getCurrentUser().getUsername(), userRepository.getRole(sessionManager.getCurrentUser().getUsername()));
                 heartShape.setFill(Color.BLACK);
+
             }
         });
 
@@ -1074,7 +1118,14 @@ public class StudentController implements Initializable {
         joinButton.getStyleClass().add("colorGradientButton");
         joinButton.setTextFill(javafx.scene.paint.Color.WHITE);
         joinButton.setFont(new Font("Segoe UI Black", 20.0));
-
+        joinButton.setOnAction(event -> {
+            try {
+                pointsFromDataBase.addPoints(5);
+                refreshPoints();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         // Add all children to the main HBox
         hbox.getChildren().addAll(vbox1, vbox2, joinButton);
 
@@ -1167,6 +1218,36 @@ public class StudentController implements Initializable {
         QuizDescriptionField.clear();
         QuizThemeChoiceBox.setValue(null);
         QuizContentField.clear();
+    }
+
+    private void createDiscussion() {
+        String title = DiscussionTitleField.getText();
+        String content = DiscussionContentField.getText();
+        int like = 0;
+
+        if (title.isBlank() || content.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Discussion discussion = new Discussion(title, content, sessionManager.getCurrentUser().getUsername(), like);
+            discussion.saveDiscussion(sessionManager.getCurrentUser().getUsername());
+            refreshDiscussion();
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(DiscussionPane);
+            clearCreateDiscussion();
+        }
+    }
+
+    private void refreshDiscussion() {
+        List<Discussion> discussionList = Discussion.getDiscussionList();
+        DiscussionVBox.getChildren().clear();
+        for (Discussion discussion : discussionList) {
+            addNewDiscussion(discussion);
+        }
+    }
+
+    private void clearCreateDiscussion() {
+        DiscussionTitleField.clear();
+        DiscussionContentField.clear();
     }
 
 }

@@ -158,12 +158,34 @@ public class UserRepository {
         }
         return null; // User not found in the database
     }
+    
+    public int getPoints(String username) {
+        Connection connection = dbConnect.linkDatabase();
+        try {
+            String selectQuery = "SELECT * FROM student WHERE Username = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                preparedStatement.setString(1, username);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    int point = resultSet.getInt("Points");
+                    return point;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately in a real application.
+        } finally {
+            dbConnect.endDatabase();
+        }
+        return -1; // User not found in the database
+    }
 
     public void updatePoints(String username, int newPoints) {
         Connection connection = dbConnect.linkDatabase();
 
         try {
-            String updateQuery = "UPDATE student SET Point = ? WHERE Username = ?";
+            String updateQuery = "UPDATE student SET Points = ? WHERE Username = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setInt(1, newPoints);
             preparedStatement.setString(2, username);

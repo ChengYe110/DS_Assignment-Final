@@ -120,7 +120,7 @@ public class SessionManager {
                 // Check if the new email is already taken
                 if (!userRepository.isEmailTaken(newEmail.trim().toLowerCase())) {
                     // Update email for the current user
-                    userRepository.updateEmailInDatabase(currentUser.getUsername(), newEmail,enteredPassword);
+                    userRepository.updateEmailInDatabase(currentUser.getUsername(), newEmail, enteredPassword);
                     currentUser.setEmail(newEmail); // Update the email field in the User object
                 } else {
                     System.out.println("Email already exists. Please choose a different email.");
@@ -151,13 +151,14 @@ public class SessionManager {
     }
 
     //Global Leaderboard
+    //Global Leaderboard
     public void timestampPoints() {
         String username = getCurrentUsername();
         Connection connection = dbConnect.linkDatabase();
         try (
                 // Use an UPDATE statement instead of INSERT
                 PreparedStatement preparedStatement = connection.prepareStatement(
-                        "UPDATE profile SET timestampPoints = ? WHERE Username = ?"
+                        "UPDATE student SET TimeStampPoints = ? WHERE Username = ?"
                 )) {
                     // Get the current date and time
                     Date currentDate = new Date();
@@ -185,13 +186,14 @@ public class SessionManager {
     }
 
     public void printTopUsers() {
-
+        topPoints.clear();
+        topUsernames.clear();
         try {
             // Establish database connection
             Connection connection = dbConnect.linkDatabase();
 
             // SQL query
-            String sqlQuery = "SELECT Username, Point, TimeStampPoints FROM student ORDER BY Points DESC, TimeStampPoints ASC LIMIT 10;";
+            String sqlQuery = "SELECT Username, Points, TimeStampPoints FROM student ORDER BY Points DESC, TimeStampPoints ASC LIMIT 10;";
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
                 // Execute the query
@@ -200,7 +202,7 @@ public class SessionManager {
                     while (resultSet.next()) {
                         String username = resultSet.getString("Username");
                         int currentPoint = resultSet.getInt("Points");
-
+                        
                         // Add username and currentPoint to the lists
                         topUsernames.add(username);
                         topPoints.add(currentPoint);
@@ -218,11 +220,15 @@ public class SessionManager {
 
     public String getTopUsername(int i) {
         printTopUsers();
-        return topUsernames.get(i);
+        if(i<topUsernames.size())
+            return topUsernames.get(i);
+        else return " ";
     }
 
     public String getTopPoints(int i) {
         printTopUsers();
-        return String.valueOf(topPoints.get(i));
+        if(i<topPoints.size())
+            return String.valueOf(topPoints.get(i));
+        else return " ";
     }
 }
