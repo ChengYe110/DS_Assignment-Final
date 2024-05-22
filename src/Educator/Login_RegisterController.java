@@ -275,7 +275,8 @@ public class Login_RegisterController implements Initializable {
                     JOptionPane.showMessageDialog(null, "Email existed. Please use another email", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "User created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-
+                    REGISTER.setVisible(false);
+                    LOGIN.setVisible(true);
                     String role = (student.isSelected()) ? "student"
                             : (parent.isSelected()) ? "parent"
                             : "educator";
