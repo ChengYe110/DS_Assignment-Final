@@ -21,7 +21,6 @@ import java.io.IOException;
 
 import java.time.LocalDate;
 import java.time.DayOfWeek;
-import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,7 +77,6 @@ public class Parent extends User implements BookingDestination{
         /*inside the column type the destination name
         invoke readfile method, then take the matched destination name and calculate distance
         or maybe this method no need and direct calculate distance at the readfile method*/
-//        return euclideanDiatance(this.coordinateX, this.coordinateY);
 
         readFile();
         try{
@@ -92,9 +90,10 @@ public class Parent extends User implements BookingDestination{
                 String location = queryOutput.getString("Location");
                 String[] locationToCalc = location.split(",");
                 double x = Double.parseDouble(locationToCalc[0]);
-                double y = Double.parseDouble(locationToCalc[0]);
+                double y = Double.parseDouble(locationToCalc[1]);
                 
-                return euclideanDistance(x,y,destination.,coordinates);
+                
+//                return euclideanDistance(x,y,destination,coordinates);
             }
             
         }catch(Exception e){
