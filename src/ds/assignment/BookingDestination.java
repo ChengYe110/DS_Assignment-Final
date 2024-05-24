@@ -21,6 +21,6 @@ public interface BookingDestination {
     
     public String viewEvent();///method to how the upcoming event
     
-    public void displayBooking();//display the booking made //done
+    public void displayPastBooking();//display the booking made //done
     
 }
