@@ -188,6 +188,7 @@ public class StudentController implements Initializable {
 
             EventTimeChoiceBox.setItems(time);
             ProfilePage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -292,6 +293,7 @@ public class StudentController implements Initializable {
 
             DiscussionScrollPane.setContent(DiscussionVBox);
             DiscussionPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -325,6 +327,16 @@ public class StudentController implements Initializable {
             QuizScrollPane.setContent(QuizVBox);
             createFilterDropdown(theme);
             QuizPage.setOnAction(event -> {
+                selectedButton.setId("");
+                ObservableList<Node> children = FilterVBox.getChildren();
+                for (int i = 1; i < children.size(); i++) { // Start from 1 to skip the FilterButton
+                    Node node = children.get(i);
+                    if (node instanceof CheckBox) {
+                        CheckBox checkBox = (CheckBox) node;
+                        checkBox.setVisible(false);
+                        checkBox.setSelected(false); // Ensure the checkbox is unselected
+                    }
+                }
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -349,6 +361,7 @@ public class StudentController implements Initializable {
             });
 
             EventPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -399,8 +412,10 @@ public class StudentController implements Initializable {
                     }
                     if (btn.equals(HomePage)) {
                         switchHomePage();
+                        selectedButton.setId("selected");
                     } else if (btn.equals(LeaderboardPage)) {
                         switchLeaderboardPage();
+                        selectedButton.setId("selected");
                     }
                 });
             }

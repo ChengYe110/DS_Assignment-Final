@@ -465,4 +465,101 @@ public class UserRepository {
         }
     }
 
+    //ADD
+    public int getNumQuizCreated(String username) {
+        Connection connection = dbConnect.linkDatabase();
+
+        try {
+            String selectQuery = "SELECT * FROM educator WHERE Username = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                preparedStatement.setString(1, username);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    int numQuiz = resultSet.getInt("NumQuiz");
+                    return numQuiz;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately in a real application.
+        } finally {
+            dbConnect.endDatabase();
+        }
+        return -1; // User not found in the database
+    }
+
+    //ADD
+    public int getNumEventCreated(String username) {
+        Connection connection = dbConnect.linkDatabase();
+
+        try {
+            String selectQuery = "SELECT * FROM educator WHERE Username = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                preparedStatement.setString(1, username);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    int numEvent = resultSet.getInt("NumEvent");
+                    return numEvent;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately in a real application.
+        } finally {
+            dbConnect.endDatabase();
+        }
+        return -1; // User not found in the database
+    }
+
+    //ADD
+    public void updateNumQuizCreated(String username, int newNumQuizCreated) {
+        Connection connection = dbConnect.linkDatabase();
+
+        try {
+            String updateQuery = "UPDATE educator SET NumQuiz = ? WHERE Username = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+            preparedStatement.setInt(1, newNumQuizCreated);
+            preparedStatement.setString(2, username);
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("NumQuizCreated updated successfully for user: " + username);
+            } else {
+                System.out.println("Failed to update NumQuizCreated. User not found: " + username);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dbConnect.endDatabase();
+        }
+    }
+
+    //ADD
+    public void updateNumEventCreated(String username, int newNumEventCreated) {
+        Connection connection = dbConnect.linkDatabase();
+
+        try {
+            String updateQuery = "UPDATE educator SET NumEvent = ? WHERE Username = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+            preparedStatement.setInt(1, newNumEventCreated);
+            preparedStatement.setString(2, username);
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("NumEventCreated updated successfully for user: " + username);
+            } else {
+                System.out.println("Failed to update NumEventCreated. User not found: " + username);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dbConnect.endDatabase();
+        }
+    }
 }

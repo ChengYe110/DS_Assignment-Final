@@ -7,6 +7,8 @@ package gui;
 import ds.assignment.DatabaseConnection;
 import ds.assignment.Discussion;
 import ds.assignment.Login;
+import ds.assignment.NumEventCreated;
+import ds.assignment.NumQuizCreated;
 import ds.assignment.Points;
 import ds.assignment.Quiz;
 import ds.assignment.SessionManager;
@@ -93,27 +95,27 @@ import javax.swing.JOptionPane;
 public class EducatorController implements Initializable {
 
     @FXML
-    private StackPane stackPane, ExtraStackPane,ProfileImage;
+    private StackPane stackPane, ExtraStackPane, ProfileImage;
     @FXML
     private Button DiscussionPage, EventPage, HomePage, LeaderboardPage, MenuButton, ProfilePage, QuizPage,
-            CreateQuizPage, DoneCreateQuiz, DoneCreateEvent, CreateEventPage,CreateDiscussionPage, DoneCreateDiscussion,
-            ChangeUsernameAndEmailButton, ChangePasswordButton,SaveChangeUsernameAndEmailButton, SaveChangePasswordButton, 
-            EditProfilePage, ExitEditProfilePage,FilterButton, LogOutButton, NextButton, PreviousButton,
-            CreateQuizShortCut,CreateEventShortCut;
+            CreateQuizPage, DoneCreateQuiz, DoneCreateEvent, CreateEventPage, CreateDiscussionPage, DoneCreateDiscussion,
+            ChangeUsernameAndEmailButton, ChangePasswordButton, SaveChangeUsernameAndEmailButton, SaveChangePasswordButton,
+            EditProfilePage, ExitEditProfilePage, FilterButton, LogOutButton, NextButton, PreviousButton,
+            CreateQuizShortCut, CreateEventShortCut;
     @FXML
     private VBox DrawerPane, QuizVBox, DiscussionVBox, FilterVBox;
     @FXML
     private AnchorPane MenuPane, TopPane, HomePagePane, LeaderboardPane, QuizPane, CreateQuizPane, EventPane,
-            CreateEventPane, EducatorProfilePane,DiscussionPane, CreateDiscussionPane, ChangeUsernameAndEmailPane, 
+            CreateEventPane, EducatorProfilePane, DiscussionPane, CreateDiscussionPane, ChangeUsernameAndEmailPane,
             ChangePasswordPane, EditProfilePane;
     @FXML
     private Text UsernameMenuPane, UsernameProfilePage, Winner1, Winner1pts, Winner2, Winner2pts, Winner3, Winner3pts, Winner4,
             Winner4pts, Winner5, Winner5pts, Winner6, Winner6pts, Winner7, Winner7pts, Winner8, Winner8pts, Winner9, Winner9pts,
-            Winner10, Winner10pts,totalQuizCreated,totalEventCreated;
+            Winner10, Winner10pts, totalQuizCreated, totalEventCreated;
     @FXML
     private TextArea QuizDescriptionField, EventDescriptionField, DiscussionContentField;
     @FXML
-    private Label UsernameLabel, EmailLabel;
+    private Label UsernameLabel, EmailLabel, LocationLabel;
     @FXML
     private TextField NewUsername, NewEmail, ParentUsernameField, EventTitleField, EventVenueField, QuizTitleField, QuizContentField,
             DiscussionTitleField;
@@ -128,7 +130,7 @@ public class EducatorController implements Initializable {
     private Button selectedButton = null;
     private ObservableList<String> theme = FXCollections.observableArrayList("SCIENCE", "TECHNOLOGY", "ENGINEERING", "MATHEMATIC");
     private ObservableList<String> time = FXCollections.observableArrayList("8 am - 10 am", "10 am - 12 pm", "12 pm - 2 pm", "2 pm - 4 pm", "4 pm - 6 pm", "6 pm - 8 pm");
-    
+
     @FXML
     private ScrollPane QuizScrollPane, DiscussionScrollPane;
 
@@ -140,7 +142,8 @@ public class EducatorController implements Initializable {
     UserRepository userRepository = new UserRepository(dbConnect);
     Login login = new Login();  // Create a single instance of Login
     SessionManager sessionManager = new SessionManager(userRepository, login);  // Pass the Login instance to SessionManage
-    Points pointsFromDataBase = new Points();
+    NumQuizCreated numQuizCreatedFromDataBase = new NumQuizCreated();
+    NumEventCreated numEventCreatedFromDataBase = new NumEventCreated();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -169,6 +172,7 @@ public class EducatorController implements Initializable {
 
             EventTimeChoiceBox.setItems(time);
             ProfilePage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -242,10 +246,11 @@ public class EducatorController implements Initializable {
                 } else {
                     editProfile_Password(sessionManager.getCurrentUser().getUsername());
                 }
-            });           
+            });
 
             DiscussionScrollPane.setContent(DiscussionVBox);
             DiscussionPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -254,6 +259,7 @@ public class EducatorController implements Initializable {
                 stackPane.getChildren().add(DiscussionPane);
             });
             CreateDiscussionPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -279,6 +285,16 @@ public class EducatorController implements Initializable {
             QuizScrollPane.setContent(QuizVBox);
             createFilterDropdown(theme);
             QuizPage.setOnAction(event -> {
+                selectedButton.setId("");
+                ObservableList<Node> children = FilterVBox.getChildren();
+                for (int i = 1; i < children.size(); i++) { // Start from 1 to skip the FilterButton
+                    Node node = children.get(i);
+                    if (node instanceof CheckBox) {
+                        CheckBox checkBox = (CheckBox) node;
+                        checkBox.setVisible(false);
+                        checkBox.setSelected(false); // Ensure the checkbox is unselected
+                    }
+                }
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -300,9 +316,19 @@ public class EducatorController implements Initializable {
                     slideInTransition.play();
                 }
                 createQuiz();
+                ObservableList<Node> children = FilterVBox.getChildren();
+                for (int i = 1; i < children.size(); i++) { // Start from 1 to skip the FilterButton
+                    Node node = children.get(i);
+                    if (node instanceof CheckBox) {
+                        CheckBox checkBox = (CheckBox) node;
+                        checkBox.setVisible(false);
+                        checkBox.setSelected(false); // Ensure the checkbox is unselected
+                    }
+                }
             });
 
             EventPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -341,15 +367,19 @@ public class EducatorController implements Initializable {
                     }
                     if (btn.equals(HomePage)) {
                         switchHomePage();
+                        selectedButton.setId("selected");
                     } else if (btn.equals(LeaderboardPage)) {
                         switchLeaderboardPage();
+                        selectedButton.setId("selected");
                     }
                 });
             }
             selectedButton = (Button) MENU.getChildren().get(0);
             selectedButton.setId("selected");
-        });
-        LogOutButton.setOnAction(event -> {
+        }
+        );
+        LogOutButton.setOnAction(event
+                -> {
             try {
                 // Load the login page FXML
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Educator/Login_Register.fxml"));
@@ -365,7 +395,8 @@ public class EducatorController implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
+        }
+        );
         setUsername(sessionManager.getCurrentUser().getUsername());
     }
 
@@ -482,7 +513,7 @@ public class EducatorController implements Initializable {
         Button button = new Button("ATTEMPT QUIZ");
         button.setPrefWidth(150);
         button.setStyle("-fx-background-color: linear-gradient( to right,#8c52ff, #5ce1e6); -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
-        button.setDisable(true);       
+        button.setDisable(true);
 
         // Add the VBox and the button to the HBox
         hBox.getChildren().addAll(vBox, button);
@@ -905,7 +936,7 @@ public class EducatorController implements Initializable {
         joinButton.getStyleClass().add("colorGradientButton");
         joinButton.setTextFill(javafx.scene.paint.Color.WHITE);
         joinButton.setFont(new Font("Segoe UI Black", 20.0));
-        joinButton.setDisable(true);       
+        joinButton.setDisable(true);
         // Add all children to the main HBox
         hbox.getChildren().addAll(vbox1, vbox2, joinButton);
 
@@ -983,6 +1014,7 @@ public class EducatorController implements Initializable {
         } else {
             Quiz quiz = new Quiz(title, description, theme, content);
             quiz.saveQuiz(sessionManager.getCurrentUser().getUsername());
+            numQuizCreatedFromDataBase.addQuizCreated(1);
             refreshQuiz();
             stackPane.getChildren().clear();
             stackPane.getChildren().add(QuizPane);
@@ -1021,12 +1053,13 @@ public class EducatorController implements Initializable {
 
         if (title.isBlank() || description.isBlank() || venue.isBlank() || dateA == null || time.isBlank()) {
             JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
-        } else if (dateA.isBefore(LocalDate.now())||dateA.equals(LocalDate.now()) ) {
-            JOptionPane.showMessageDialog(null, "Please choose the date after "+LocalDate.now(), "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (dateA.isBefore(LocalDate.now()) || dateA.equals(LocalDate.now())) {
+            JOptionPane.showMessageDialog(null, "Please choose the date after " + LocalDate.now(), "Error", JOptionPane.ERROR_MESSAGE);
             EventDatePicker.setValue(null);
         } else {
             EventHBoxElement eventHboxElement = new EventHBoxElement(title, description, venue, dateA, time);
             eventHboxElement.saveEvent(sessionManager.getCurrentUser().getUsername());
+            numEventCreatedFromDataBase.addEventCreated(1);
             refreshEvent();
             stackPane.getChildren().clear();
             stackPane.getChildren().add(EventPane);
@@ -1094,14 +1127,13 @@ public class EducatorController implements Initializable {
         DiscussionTitleField.clear();
         DiscussionContentField.clear();
     }
-    
+
     public void refreshPoints() {
         sessionManager.timestampPoints();
         updateGlobalLeaderboard();
     }
 
     public void updateGlobalLeaderboard() {
-
         Winner1.setText(sessionManager.getTopUsername(0));
         Winner2.setText(sessionManager.getTopUsername(1));
         Winner3.setText(sessionManager.getTopUsername(2));
@@ -1123,8 +1155,8 @@ public class EducatorController implements Initializable {
         Winner9pts.setText(sessionManager.getTopPoints(8) + " pts");
         Winner10pts.setText(sessionManager.getTopPoints(9) + " pts");
     }
-    
-    private void setProfileImage(){
+
+    private void setProfileImage() {
         // Load the image
         Image image = new Image(getClass().getResource("../png/EducatorProfile.jpg").toExternalForm()); // Replace with your image path
 
@@ -1133,7 +1165,7 @@ public class EducatorController implements Initializable {
 
         // Set the fill of the circle to the image using an ImagePattern
         circle.setFill(new ImagePattern(image));
-        
+
         // Create a border circle
         Circle borderCircle = new Circle(101); // Slightly larger radius for the border
         borderCircle.setStroke(Color.BLACK); // Set the border color
@@ -1141,23 +1173,24 @@ public class EducatorController implements Initializable {
         borderCircle.setFill(null); // Ensure the border circle is transparent
 
         // Create a layout pane and add the circle to it
-        ProfileImage.getChildren().addAll(circle,borderCircle);
+        ProfileImage.getChildren().addAll(circle, borderCircle);
     }
-    
+
     private void setUpProfilePage(String username) {
         String email = userRepository.getEmailByUsername(username);
         System.out.println(email);
         String location = userRepository.getLocation(username);
         System.out.println(location);
-        String totalNumOfFriend = String.valueOf(Students.getTotalFriend(username));
-        System.out.println(totalNumOfFriend);
+        int quizCreated = userRepository.getNumQuizCreated(username);
+        int eventCreated = userRepository.getNumEventCreated(username);
 
         UsernameProfilePage.setText(username);
         UsernameLabel.setText(username);
         EmailLabel.setText(email);
-        
-        totalQuizCreated.setText("XX"); //setTotalQuiz
-        totalEventCreated.setText("XX"); //setTotalEvent
-        
+        LocationLabel.setText(location);
+
+        totalQuizCreated.setText(String.valueOf(quizCreated)); //setTotalQuiz
+        totalEventCreated.setText(String.valueOf(eventCreated)); //setTotalEvent
+
     }
 }
