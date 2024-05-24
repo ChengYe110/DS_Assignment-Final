@@ -4,6 +4,7 @@
  */
 package ds.assignment;
 
+import Educator.Event;
 import ds.assignment.DatabaseConnection;
 import ds.assignment.UserRepository;
 import gui.EventHBoxElement;
@@ -15,12 +16,19 @@ import java.sql.PreparedStatement;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+<<<<<<< HEAD
 import java.time.format.DateTimeFormatter;
+=======
+import java.time.LocalTime;
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+<<<<<<< HEAD
 import java.util.List;
+=======
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
 import org.mindrot.jbcrypt.BCrypt;
 /**
  *
@@ -177,17 +185,111 @@ public class User {
         return this.role;
     }
     
+<<<<<<< HEAD
+=======
+//    public static ArrayList<LocalDate> getEventDateList(){
+//        ArrayList<LocalDate> eventDateList = new ArrayList<>();
+//        try {
+//            DatabaseConnection connectNow = new DatabaseConnection();
+//            Connection connectDB = connectNow.linkDatabase();
+//            String query = "SELECT Date FROM event";
+//            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                LocalDate date = resultSet.getDate("Date").toLocalDate();
+//                eventDateList.add(date);
+//            }
+//            Collections.sort(eventDateList);
+//            
+//            resultSet.close();
+//            preparedStatement.close();
+//            connectDB.close();
+//        } catch (Exception e) {
+//            System.out.println("SQL query failed.");
+//            e.printStackTrace();
+//        } 
+//
+//        return eventDateList;
+//    }
+    
+//    public static ArrayList<LocalDate> getUpcomingEventDateList(){
+//        ArrayList<LocalDate> eventDateList = getEventDateList();
+//        LocalDate currentDate = LocalDate.now();
+//        
+//        // filter out the pass event date 
+//        ArrayList<LocalDate> upcomingDateList = getEventDateList();
+//        
+//        try {
+//            DatabaseConnection connectNow = new DatabaseConnection();
+//            Connection connectDB = connectNow.linkDatabase();
+//            String query = "SELECT Date FROM event";
+//            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                LocalDate date = resultSet.getDate("Date").toLocalDate();
+//                eventDateList.add(date);
+//            }
+//            resultSet.close();
+//            preparedStatement.close();
+//            connectDB.close();
+//        } catch (Exception e) {
+//            System.out.println("SQL query failed.");
+//            e.printStackTrace();
+//        } 
+//
+//        return eventDateList;
+//    }
+    
+//    public static ArrayList<EventHBoxElement> getEventList(){
+//        ArrayList<EventHBoxElement> eventList = new ArrayList<>();
+//        
+//        try {
+//            DatabaseConnection connectNow = new DatabaseConnection();
+//            Connection connectDB = connectNow.linkDatabase();
+//            String query = "SELECT Title, Description, Venue, Date, Time FROM event";
+//            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                String title = resultSet.getString("Title");
+//                String description = resultSet.getString("Description");
+//                String venue = resultSet.getString("Venue");
+//                LocalDate date = resultSet.getDate("Date").toLocalDate();
+//                LocalTime time = resultSet.getTime("Time").toLocalTime();
+//
+//                EventHBoxElement event = new EventHBoxElement(title, description, venue, date, time);
+//                eventList.add(event);
+//            }
+//            resultSet.close();
+//            preparedStatement.close();
+//            connectDB.close();
+//        } catch (Exception e) {
+//            System.out.println("SQL query failed.");
+//            e.printStackTrace();
+//        } 
+//
+//        return eventList;
+//    }
+    
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
     public static ArrayList<EventHBoxElement> getEventList() {
         ArrayList<EventHBoxElement> eventList = new ArrayList<>();
 
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
+<<<<<<< HEAD
             String query = "SELECT id_event, Title, Description, Venue, Date, Time FROM event";
+=======
+            String query = "SELECT Title, Description, Venue, Date, Time FROM event";
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
             PreparedStatement preparedStatement = connectDB.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
+<<<<<<< HEAD
                 String id = resultSet.getString("id_event");
                 String title = resultSet.getString("Title");
                 String description = resultSet.getString("Description");
@@ -197,6 +299,15 @@ public class User {
                 String time = resultSet.getString("Time");
 
                 EventHBoxElement event = new EventHBoxElement(id,title, description, venue, localdate, time);
+=======
+                String title = resultSet.getString("Title");
+                String description = resultSet.getString("Description");
+                String venue = resultSet.getString("Venue");
+                String date = resultSet.getString("Date");
+                String time = resultSet.getString("Time");
+
+                EventHBoxElement event = new EventHBoxElement(title, description, venue, date, time);
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
                 eventList.add(event);
             }
             resultSet.close();
@@ -218,7 +329,11 @@ public class User {
         // Filter the events to get only upcoming events
         ArrayList<EventHBoxElement> upcomingEventList = new ArrayList<>();
         for (EventHBoxElement event : eventList) {
+<<<<<<< HEAD
             if (!event.getEventDate().isBefore(currentDate) && !event.getEventDate().equals(currentDate)) {
+=======
+            if (!event.getEventDate().isBefore(currentDate)) {
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
                 upcomingEventList.add(event);
             }
         }
@@ -229,8 +344,14 @@ public class User {
             public int compare(EventHBoxElement event1, EventHBoxElement event2) {
                 if (!event1.getEventDate().equals(event2.getEventDate())) {
                     return event1.getEventDate().compareTo(event2.getEventDate());
+<<<<<<< HEAD
                 } 
                 return -1;
+=======
+                } else {
+                    return event1.getEventTime().compareTo(event2.getEventTime());
+                }
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
             }
         });
 
@@ -243,10 +364,16 @@ public class User {
         // Display the closest events
         System.out.println("Closest upcoming events to " + currentDate + " are:");
         for (EventHBoxElement event : closestThreeUpcomingEvents) {
+<<<<<<< HEAD
         long daysUntilEvent = ChronoUnit.DAYS.between(currentDate, event.getEventDate());
             System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTime() + " (in " + daysUntilEvent + " days)");
         }
 
+=======
+            long daysUntilEvent = ChronoUnit.DAYS.between(currentDate, event.getEventDate());
+            System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTimeS() + " (in " + daysUntilEvent + " days)");
+        }
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
         return closestThreeUpcomingEvents;
     }
     
@@ -266,13 +393,16 @@ public class User {
         // Display the live events
         System.out.println("Events happening today, " + currentDate + " are:");
         for (EventHBoxElement event : liveEventList) {
+<<<<<<< HEAD
             System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTime());
+=======
+            System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTimeS());
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
         }
 
         return liveEventList;
     }
     
 }
-
 
 

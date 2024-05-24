@@ -3,30 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Tan%20Zhi%20Wei/Documents/NetBeansProjects/DSAssignment/src/ds/assignment/Students.java</file>
-            <file>file:/C:/Users/Tan%20Zhi%20Wei/Documents/NetBeansProjects/DSAssignment/src/ds/assignment/Login.java</file>
-            <file>file:/C:/Users/Tan%20Zhi%20Wei/Documents/NetBeansProjects/DSAssignment/src/ds/assignment/DatabaseConnection.java</file>
-            <file>file:/C:/Users/Tan%20Zhi%20Wei/Documents/NetBeansProjects/DSAssignment/src/ds/assignment/Parent.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/Educator/Login_RegisterController.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/ds/assignment/Points.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/ds/assignment/UserRepository.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/gui/StudentController.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/ds/assignment/SessionManager.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/ds/assignment/User.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/gui/Parent.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/Educator/Educator.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/gui/Main.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/ds/assignment/Students.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/Educator/GUI.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/ds/assignment/DatabaseConfig.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/ds/assignment/DatabaseConnection.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/ds/assignment/Login.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/Educator/User.java</file>
-            <file>file:/C:/Users/user/Documents/NetBeansProjects/JavaApplication60/src/ds/assignment/NewMain.java</file>
-            <file>file:/C:/Users/enjye/OneDrive/Documents/NetBeansProjects/DS_Assignment-Final/src/gui/StudentController.java</file>
-            <file>file:/C:/Users/enjye/OneDrive/Documents/NetBeansProjects/DS_Assignment-Final/src/gui/Main.java</file>
-            <file>file:/C:/Users/enjye/OneDrive/Documents/NetBeansProjects/DS_Assignment-Final/src/gui/StudentStyle.css</file>
-            <file>file:/C:/Users/enjye/OneDrive/Documents/NetBeansProjects/DS_Assignment-Final/src/gui/Quiz.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/gui/EventColumn.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/ds/assignment/SessionManager.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/Educator/User.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/ds/assignment/User.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/ds/assignment/Students.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/Educator/GUI.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/ds/assignment/Parent.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/gui/StudentController.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/Educator/Educator.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/ds/assignment/Quiz.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/gui/EventHBoxElement.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/ds/assignment/UserRepository.java</file>
+            <file>file:/C:/Users/user/Documents/NetBeansProjects/ds%20new/DS_Assignment-Final/src/gui/FriendProfileController.java</file>
         </group>
     </open-files>
 </project-private>

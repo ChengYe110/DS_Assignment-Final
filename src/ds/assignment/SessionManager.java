@@ -48,16 +48,17 @@ public class SessionManager {
 
         if (isAuthenticated) {
             if (!enteredEmail.matches("^(.+)@(gmail\\.com|hotmail\\.com|yahoo\\.com|siswa\\.um\\.edu\\.my)$")) {
-                this.currentUser = userRepository.getUserByUsername(enteredEmail);
+
             } else {
                 this.currentUser = userRepository.getUserByEmail(enteredEmail);
                 System.out.println(currentUser);
+
             }
         }
 
         return isAuthenticated;
     }
-
+    
     public void setPoints(int newPoints) {
         if (currentUser != null) {
             // Update points for the current user
@@ -130,7 +131,6 @@ public class SessionManager {
             }
         }
     }
-
     public void changePassword(String oldPassword, String newPassword, String confirmPassword) {
         if (currentUser != null) {
             // Check if the old password is correct for the current user

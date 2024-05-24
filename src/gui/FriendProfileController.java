@@ -170,8 +170,14 @@ public class FriendProfileController implements Initializable {
     }
 
     public void showFriendList(String username) {
+<<<<<<< HEAD
         FriendListVBox.getChildren().clear();
         ArrayList<String> friendList = Students.getFriendList(username);
+=======
+
+        //ArrayList<String> friendList = student.getFriendList(username);
+        ArrayList<String> friendList = Students.getNameFriendList(sessionManager.getCurrentUser().getUsername());
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
         for (String friend : friendList) {
             addFriendList(friend);
         }
@@ -232,6 +238,16 @@ public class FriendProfileController implements Initializable {
         LocationLabel.setText(location);
         NumOfFriend.setText(totalNumOfFriend);
 
+<<<<<<< HEAD
+=======
+        //modified
+        ArrayList<String> friendNames = Students.getNameFriendList(username);
+        // Add each friend to the friend list
+        for (String friendName : friendNames) {
+            addFriendList(friendName);
+        }
+
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
         setUpParentTable(username);
         setUpEventTable(username);
         setUpBookedStudyTourTable(username);

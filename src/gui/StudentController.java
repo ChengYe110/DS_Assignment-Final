@@ -898,6 +898,14 @@ public class StudentController implements Initializable {
         LocationLabel.setText(location);
         NumOfFriend.setText(totalNumOfFriend);
 
+
+        //modified
+        ArrayList<String> friendNames = Students.getNameFriendList(username);
+        // Add each friend to the friend list
+        for (String friendName : friendNames) {
+            addFriendList(friendName);
+        }
+
         setUpParentTable(username);
         setUpEventTable(username);
         setUpBookedStudyTourTable(username);
@@ -910,16 +918,27 @@ public class StudentController implements Initializable {
     }
 
     public void showFriendList(String username) {
+<<<<<<< HEAD
         FriendListVBox.getChildren().clear();
         ArrayList<String> friendList = Students.getFriendList(username);
+=======
+
+        //ArrayList<String> friendList = student.getFriendList(username);
+        ArrayList<String> friendList = Students.getNameFriendList(sessionManager.getCurrentUser().getUsername());
+
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
         for (String friend : friendList) {
             addFriendList(friend);
         }
     }
 
     public void showFriendRequests(String username) {
+<<<<<<< HEAD
         FriendRequestVBox.getChildren().clear();
         ArrayList<String> friendRequestList = Students.getFriendRequestList(username);
+=======
+        ArrayList<String> friendRequestList = Students.getNameFriendRequestList(username);
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
         if (friendRequestList != null) {
             for (String friendRequest : friendRequestList) {
                 addFriendRequest(friendRequest);
@@ -1192,7 +1211,11 @@ public class StudentController implements Initializable {
     }
 
     public void addEventHBoxToParent(HBox parent, EventHBoxElement e) {
+<<<<<<< HEAD
         HBox eventHBox = createEventHBox(e);
+=======
+        HBox eventHBox = createEventHBox(e.getEventTitle(), e.getEventDescription(), e.getEventVenue(), e.getEventDateS(), e.getEventTimeS());
+>>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
         parent.getChildren().add(eventHBox);
     }
 
@@ -1458,3 +1481,4 @@ public class StudentController implements Initializable {
         }
     }
 }
+
