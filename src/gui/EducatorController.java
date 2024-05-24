@@ -136,7 +136,7 @@ public class EducatorController implements Initializable {
 
     private TranslateTransition slideOutTransition, slideInTransition;
     private int currentIndex;
-    public static Stack<String> friendNameNavigate = new Stack<>();
+    public static Stack<String> friendNameNavigateEducator = new Stack<>();
 
     DatabaseConnection dbConnect = new DatabaseConnection();
     UserRepository userRepository = new UserRepository(dbConnect);
@@ -304,6 +304,7 @@ public class EducatorController implements Initializable {
             });
             QuizThemeChoiceBox.setItems(theme);
             CreateQuizPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -337,6 +338,7 @@ public class EducatorController implements Initializable {
                 stackPane.getChildren().add(EventPane);
             });
             CreateEventPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -442,31 +444,53 @@ public class EducatorController implements Initializable {
 
     // Method to open the friend's profile page
     private void openProfilePage(String friendName) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
-            Parent root = loader.load();
+        String role = userRepository.getRole(friendName).toUpperCase();
+        if (role.equals("STUDENT")) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
+                Parent root = loader.load();
 
-            FriendProfileController controller = loader.getController();
+                FriendProfileController controller = loader.getController();
 
-            // Create a new stage for the second view
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.TRANSPARENT);
+                // Create a new stage for the second view
+                Stage stage = new Stage();
+                stage.initStyle(StageStyle.TRANSPARENT);
 
-            // Ensure the scene is also transparent
-            Scene scene = new Scene(root);
-            scene.setFill(Color.TRANSPARENT);
-            stage.setScene(scene);
+                // Ensure the scene is also transparent
+                Scene scene = new Scene(root);
+                scene.setFill(Color.TRANSPARENT);
+                stage.setScene(scene);
 
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(((Stage) MENU.getScene().getWindow()));
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.initOwner(((Stage) MENU.getScene().getWindow()));
 
-            stage.setResizable(false);
-            stage.show();
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
-            stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
-        } catch (IOException e) {
-            e.printStackTrace();
+                stage.setResizable(false);
+                stage.show();
+                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+                stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
+                stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (role.equals("EDUCATOR")) {
+            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (role.equals("PARENT")) {
+            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public boolean canOpenProfilePage(String friendName) {
+        String role = userRepository.getRole(friendName).toUpperCase();
+        if (role.equals("STUDENT")) {
+            return true;
+        } else if (role.equals("EDUCATOR")) {
+            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else if (role.equals("PARENT")) {
+            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else {
+            return false;
         }
     }
 
@@ -646,7 +670,7 @@ public class EducatorController implements Initializable {
         temp.setAlignment(Pos.TOP_LEFT);
         Text t = new Text("Posted By: ");
         t.setStyle("-fx-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
-        String role = userRepository.getRole(sessionManager.getCurrentUser().getUsername()).toUpperCase();
+        String role = userRepository.getRole(discussion.getAuthor()).toUpperCase();
         Button roleButton = new Button(role);
         String setColour = "";
         if (role.equals("STUDENT")) {
@@ -662,11 +686,13 @@ public class EducatorController implements Initializable {
         Button usernameButton = new Button(username);
         usernameButton.getStyleClass().add("username-button");
         usernameButton.setOnAction(event -> {
-            if (friendNameNavigate.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
-                usernameButton.setDisable(true);
-            } else {
-                friendNameNavigate.push(username);
-                openProfilePage(friendNameNavigate.peek());
+            if (canOpenProfilePage(username)) {
+                if (friendNameNavigateEducator.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
+                    usernameButton.setDisable(true);
+                } else {
+                    friendNameNavigateEducator.push(username);
+                    openProfilePage(friendNameNavigateEducator.peek());
+                }
             }
         });
         Text dateText = new Text("(" + discussion.getDatetime() + ")");
@@ -1106,7 +1132,7 @@ public class EducatorController implements Initializable {
         if (title.isBlank() || content.isBlank()) {
             JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            Discussion discussion = new Discussion(title, content, sessionManager.getCurrentUser().getUsername(), like, formattedDateTime);
+            Discussion discussion = new Discussion(title, content, userRepository.getID(sessionManager.getCurrentUser().getUsername()), like, formattedDateTime);
             discussion.saveDiscussion(sessionManager.getCurrentUser().getUsername());
             refreshDiscussion();
             stackPane.getChildren().clear();

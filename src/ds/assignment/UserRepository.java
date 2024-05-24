@@ -181,6 +181,52 @@ public class UserRepository {
         return -1; // User not found in the database
     }
 
+    public String getID(String username) {
+        Connection connection = dbConnect.linkDatabase();
+        try {
+            String selectQuery = "SELECT * FROM user WHERE Username = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                preparedStatement.setString(1, username);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    String role = resultSet.getString("id");
+                    return role;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately in a real application.
+        } finally {
+            dbConnect.endDatabase();
+        }
+        return null; // User not found in the database
+    }
+    
+    
+    public String getUsernameByID(String id) {
+        Connection connection = dbConnect.linkDatabase();
+        try {
+            String selectQuery = "SELECT * FROM user WHERE id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                preparedStatement.setString(1, id);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    String username = resultSet.getString("Username");
+                    return username;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately in a real application.
+        } finally {
+            dbConnect.endDatabase();
+        }
+        return null; // User not found in the database
+    }
+    
+    
     public void updatePoints(String username, int newPoints) {
         Connection connection = dbConnect.linkDatabase();
 

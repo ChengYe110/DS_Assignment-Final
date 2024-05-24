@@ -302,6 +302,7 @@ public class StudentController implements Initializable {
                 stackPane.getChildren().add(DiscussionPane);
             });
             CreateDiscussionPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -346,6 +347,7 @@ public class StudentController implements Initializable {
             });
             QuizThemeChoiceBox.setItems(theme);
             CreateQuizPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -370,6 +372,7 @@ public class StudentController implements Initializable {
                 stackPane.getChildren().add(EventPane);
             });
             CreateEventPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -488,11 +491,13 @@ public class StudentController implements Initializable {
         friendButton.getStyleClass().add("friend-button");
         ButtonEffect(friendButton);
         friendButton.setOnAction(event -> {
-            if (friendNameNavigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
-                friendButton.setDisable(true);
-            } else {
-                friendNameNavigate.push(friendName);
-                openProfilePage(friendNameNavigate.peek());
+            if (canOpenProfilePage(friendName)) {
+                if (friendNameNavigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
+                    friendButton.setDisable(true);
+                } else {
+                    friendNameNavigate.push(friendName);
+                    openProfilePage(friendNameNavigate.peek());
+                }
             }
         });
         FriendListVBox.getChildren().add(friendButton);
@@ -526,6 +531,22 @@ public class StudentController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public boolean canOpenProfilePage(String friendName) {
+        String role = userRepository.getRole(friendName).toUpperCase();
+        if (role.equals("STUDENT")) {
+            return true;
+        } else if (role.equals("EDUCATOR")) {
+            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else if (role.equals("PARENT")) {
+            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else {
+            return false;
+        }
     }
 
     // Method to add an HBox with three buttons to the VBox
@@ -549,11 +570,13 @@ public class StudentController implements Initializable {
 
         ButtonEffect(name);
         name.setOnAction(event -> {
-            if (friendNameNavigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
-                name.setDisable(true);
-            } else {
-                friendNameNavigate.push(friendName);
-                openProfilePage(friendNameNavigate.peek());
+            if (canOpenProfilePage(friendName)) {
+                if (friendNameNavigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
+                    name.setDisable(true);
+                } else {
+                    friendNameNavigate.push(friendName);
+                    openProfilePage(friendNameNavigate.peek());
+                }
             }
         });
 
@@ -779,7 +802,7 @@ public class StudentController implements Initializable {
         temp.setAlignment(Pos.TOP_LEFT);
         Text t = new Text("Posted By: ");
         t.setStyle("-fx-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
-        String role = userRepository.getRole(sessionManager.getCurrentUser().getUsername()).toUpperCase();
+        String role = userRepository.getRole(discussion.getAuthor()).toUpperCase();
         Button roleButton = new Button(role);
         String setColour = "";
         if (role.equals("STUDENT")) {
@@ -795,7 +818,7 @@ public class StudentController implements Initializable {
         Button usernameButton = new Button(username);
         usernameButton.getStyleClass().add("username-button");
         usernameButton.setOnAction(event -> {
-            if (canOpenFriendProfile(username)) {
+            if (canOpenProfilePage(username)) {
                 if (friendNameNavigate.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
                     usernameButton.setDisable(true);
                 } else {
@@ -859,18 +882,13 @@ public class StudentController implements Initializable {
     }
 
     private void setUpParentTable(String username) {
-        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList();
-
         //associate data with column
         NoColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, Integer>("no"));
         ParentColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, String>("username"));
 
-        //modified
-        ArrayList<String> arrayList = new ArrayList<>(Students.getParentList());
-        ArrayList<ParentColumn> temp = new ArrayList<>();
-        for (int i = 1; i <= arrayList.size(); i++) {
-            temp.add(new ParentColumn(i, arrayList.get(i)));
-        }
+         //get chilren arraylist from parent
+        ArrayList<ParentColumn> arrayList = new ArrayList<>(Students.getParentList(username));
+        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList(arrayList);
 
         ParentTable.setItems(parentList);
     }
@@ -1370,7 +1388,7 @@ public class StudentController implements Initializable {
         if (title.isBlank() || content.isBlank()) {
             JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            Discussion discussion = new Discussion(title, content, sessionManager.getCurrentUser().getUsername(), like, formattedDateTime);
+            Discussion discussion = new Discussion(title, content, userRepository.getID(sessionManager.getCurrentUser().getUsername()), like, formattedDateTime);
             discussion.saveDiscussion(sessionManager.getCurrentUser().getUsername());
             refreshDiscussion();
             stackPane.getChildren().clear();
@@ -1463,13 +1481,5 @@ public class StudentController implements Initializable {
 
         // Create a layout pane and add the circle to it
         ProfileImage.getChildren().addAll(circle, borderCircle);
-    }
-
-    private boolean canOpenFriendProfile(String friendName) {
-        if (userRepository.getRole(friendName).equalsIgnoreCase("student")) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }

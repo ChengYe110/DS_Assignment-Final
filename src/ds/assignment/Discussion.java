@@ -20,13 +20,17 @@ public class Discussion {
     private String title;
     private String content;
     private String author;
+    private String authorID;
     private int like;
     private String datetime;
-
+    
+    DatabaseConnection dbConnect = new DatabaseConnection();
+    UserRepository userRepository = new UserRepository(dbConnect);
+    
     public Discussion(String title, String content, String author, int like, String datetime) {
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.authorID = author;
         this.like = like;
         this.datetime = datetime;
     }
@@ -35,7 +39,7 @@ public class Discussion {
         this.ID = ID;
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.authorID = author;
         this.like = like;
         this.datetime = datetime;
     }
@@ -49,7 +53,8 @@ public class Discussion {
     }
 
     public String getAuthor() {
-        return author;
+        this.author=userRepository.getUsernameByID(this.authorID);
+        return this.author;
     }
 
     public int getLike() {
@@ -63,11 +68,17 @@ public class Discussion {
     public String getDatetime(){
         return datetime;
     }
+    
+    public String getAuthorID(){
+        return authorID;
+    }
+    
 
     public static Discussion getDiscussionFromDatabase(String DiscussionId) {
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
+            UserRepository userRepository = new UserRepository(connectNow);
 
             String query = "SELECT * FROM discussionpost WHERE id_discussionpost = ?";
             PreparedStatement preparedStatement = connectDB.prepareStatement(query);
@@ -77,10 +88,10 @@ public class Discussion {
             if (resultSet.next()) {
                 String title = resultSet.getString("Title");
                 String content = resultSet.getString("Content");
-                String author = resultSet.getString("Author");
+                String authorID = resultSet.getString("Author");
                 int like = resultSet.getInt("LikeCount");
                 String datetime = resultSet.getString("DatePublished");
-                return new Discussion(title, content, author, like, datetime);
+                return new Discussion(title, content, authorID, like, datetime);
             }
 
         } catch (Exception e) {
@@ -100,7 +111,7 @@ public class Discussion {
             PreparedStatement preparedStatement = connectDB.prepareStatement(query);
             preparedStatement.setString(1, this.title);
             preparedStatement.setString(2, this.content);
-            preparedStatement.setString(3, this.author);
+            preparedStatement.setString(3, this.authorID);
             preparedStatement.setInt(4, this.like);
             preparedStatement.setString(5, this.datetime);
 

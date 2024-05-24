@@ -8,6 +8,7 @@ package ds.assignment;
 
 import gui.BookedStudyTourColumn;
 import gui.EventColumn;
+import gui.ParentColumn;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -179,28 +180,50 @@ public class Students extends User {
         }
     }
 
-    public static ArrayList<String> getParentList() {
-        ArrayList<String> parentList = new ArrayList<>();
+    public static ArrayList<ParentColumn> getParentList(String username) {
+        ArrayList<ParentColumn> parentList = new ArrayList<>();
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.linkDatabase();
-            String connectQuery = "SELECT parent.Username FROM parent "
-                    + "JOIN Student ON student.ParentsEmail = parent.Email";
-            PreparedStatement preparedStatement = connectDB.prepareStatement(connectQuery);
-            ResultSet queryOutput = preparedStatement.executeQuery();
 
-            while (queryOutput.next()) {
-                String parentUsername = queryOutput.getString("Username");
-                parentList.add(parentUsername);
+            // get id_student from Children column in parent table
+            String getIdParentQuery = "SELECT id_parent FROM student WHERE Username = ?";
+            PreparedStatement getIdParentStmt = connectDB.prepareStatement(getIdParentQuery);
+            getIdParentStmt.setString(1, username);
+            ResultSet idParentResultSet = getIdParentStmt.executeQuery();
+
+            if (idParentResultSet.next()) {
+                String idParent = idParentResultSet.getString("id_parent");
+                if (idParent != null && !idParent.isEmpty()) {
+                    String[] parentIds = idParent.split(",");
+
+                    // get children name details for each id_student in student table row by row
+                    String getNameParentQuery = "SELECT Username FROM parent WHERE id_parent = ?";
+                    PreparedStatement getNameParentStmt = connectDB.prepareStatement(getNameParentQuery);
+
+                    Integer numberOfParent = 1;
+                    for (String parentId : parentIds) {
+                        getNameParentStmt.setString(1, parentId.trim());
+                        ResultSet nameParentResultSet = getNameParentStmt.executeQuery();
+
+                        if (nameParentResultSet.next()) {
+                            String nameChildren = nameParentResultSet.getString("Username");
+                            ParentColumn parent = new ParentColumn(numberOfParent++,nameChildren);
+                            parentList.add(parent);
+                        }
+                        nameParentResultSet.close();  // Close the ResultSet for each event ID                  
+                    }
+                    getNameParentStmt.close();
+                }
             }
-
-            preparedStatement.close();
+            idParentResultSet.close();
+            getIdParentStmt.close();
             connectDB.close();
+
         } catch (SQLException e) {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
-
         return parentList;
     }
 

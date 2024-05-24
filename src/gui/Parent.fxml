@@ -342,17 +342,203 @@
                   </Text>
                </children>
             </AnchorPane>
+            <AnchorPane fx:id="BookingPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <Text layoutX="80.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Suggested">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="92.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Destination ID for Booking   :">
+                           <font>
+                              <Font name="Segoe UI Black" size="23.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="92.0" layoutY="395.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Available Time Slots                         :">
+                           <font>
+                              <Font name="Segoe UI Black" size="23.0" />
+                           </font>
+                        </Text>
+                        <Button fx:id="DoneBooking" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="BOOK" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="20.0" />
+                           </font>
+                        </Button>
+                        <AnchorPane layoutX="82.0" layoutY="57.0" prefHeight="186.0" prefWidth="967.0" style="-fx-background-color: white;">
+                           <children>
+                              <VBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="8.0" prefHeight="169.0" prefWidth="937.0">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="883.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="[1]" wrappingWidth="30.09375">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="Suggested1" layoutX="428.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Petrosains Science Discovery Centre" wrappingWidth="355.12890625">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="452.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="----------------------------------------------" wrappingWidth="374.0">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="Distance1" layoutX="475.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100.00 km away" textAlignment="RIGHT" wrappingWidth="171.2265625">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="72.0" prefHeight="45.0" prefWidth="883.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="[2]" wrappingWidth="30.09375">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="Suggested2" layoutX="428.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Petrosains Science Discovery Centre" wrappingWidth="355.12890625">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="452.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="----------------------------------------------" wrappingWidth="374.0">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="Distance2" layoutX="475.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100.00 km away" textAlignment="RIGHT" wrappingWidth="171.2265625">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="95.0" prefHeight="45.0" prefWidth="883.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="[3]" wrappingWidth="30.09375">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="Suggested3" layoutX="428.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Petrosains Science Discovery Centre" wrappingWidth="355.12890625">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="452.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="----------------------------------------------" wrappingWidth="374.0">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="Distance3" layoutX="475.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100.00 km away" textAlignment="RIGHT" wrappingWidth="171.2265625">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="117.0" prefHeight="45.0" prefWidth="883.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="[4]" wrappingWidth="30.09375">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="Suggested4" layoutX="428.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Petrosains Science Discovery Centre" wrappingWidth="355.12890625">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="452.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="----------------------------------------------" wrappingWidth="374.0">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="Distance4" layoutX="475.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100.00 km away" textAlignment="RIGHT" wrappingWidth="171.2265625">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="137.0" prefHeight="45.0" prefWidth="883.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="[5]" wrappingWidth="30.09375">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="Suggested5" layoutX="428.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Petrosains Science Discovery Centre" wrappingWidth="355.12890625">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text layoutX="452.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="----------------------------------------------" wrappingWidth="374.0">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="Distance5" layoutX="475.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100.00 km away" textAlignment="RIGHT" wrappingWidth="171.2265625">
+                                             <font>
+                                                <Font name="Segoe UI Semibold" size="20.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                        <ChoiceBox fx:id="DestinationIDChoiceBox" layoutX="534.0" layoutY="266.0" prefHeight="38.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: Yu Gothic UI Semibold; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </ChoiceBox>
+                        <Text layoutX="90.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Target Child                            :" wrappingWidth="426.9140625">
+                           <font>
+                              <Font name="Segoe UI Black" size="23.0" />
+                           </font>
+                        </Text>
+                        <ChoiceBox fx:id="ChildChoiceBox" layoutX="534.0" layoutY="316.0" prefHeight="38.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: Yu Gothic UI Semibold; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </ChoiceBox>
+                        <ChoiceBox fx:id="AvailableTimeSlotChoiceBox" layoutX="534.0" layoutY="367.0" prefHeight="38.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: Yu Gothic UI Semibold; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </ChoiceBox>
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BOOKING">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
             <AnchorPane fx:id="ParentProfilePane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
                      <children>
                         <TableView fx:id="PastBookingTable" layoutX="493.0" layoutY="256.0" prefHeight="193.0" prefWidth="612.0" style="-fx-background-color: white;">
                            <columns>
-                              <TableColumn fx:id="DateColumn" editable="false" prefWidth="49.5" style="-fx-alignment: center;" text="NO" />
-                              <TableColumn fx:id="TitleColumn" editable="false" prefWidth="98.5" style="-fx-alignment: center;" text="DATE" />
-                              <TableColumn fx:id="VenueColumn" editable="false" prefWidth="147.0" style="-fx-alignment: center;" text="CHILDREN" />
-                              <TableColumn fx:id="TimeColumn" editable="false" prefWidth="185.5" style="-fx-alignment: center;" text="PLACE" />
-                              <TableColumn fx:id="DateColumn1" editable="false" prefWidth="132.5" style="-fx-alignment: center;" text="DISTANCE" />
+                              <TableColumn fx:id="NoColumnPastBooking" editable="false" prefWidth="49.5" style="-fx-alignment: center;" text="NO" />
+                              <TableColumn fx:id="DateColumn" editable="false" prefWidth="98.5" style="-fx-alignment: center;" text="DATE" />
+                              <TableColumn fx:id="ChildrenColumn" editable="false" prefWidth="147.0" style="-fx-alignment: center;" text="CHILDREN" />
+                              <TableColumn fx:id="PlaceColumn" editable="false" prefWidth="185.5" style="-fx-alignment: center;" text="PLACE" />
+                              <TableColumn fx:id="DistanceColumn" editable="false" prefWidth="132.5" style="-fx-alignment: center;" text="DISTANCE" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -404,10 +590,10 @@
                               <Font name="Segoe UI Black" size="24.0" />
                            </font>
                         </Text>
-                        <TableView fx:id="ChildTable" layoutX="493.0" layoutY="97.0" prefHeight="87.0" prefWidth="612.0" style="-fx-background-color: white;">
+                        <TableView fx:id="ChildTable" layoutX="484.0" layoutY="86.0" prefHeight="87.0" prefWidth="612.0" style="-fx-background-color: white;">
                            <columns>
-                              <TableColumn fx:id="NoColumn" editable="false" prefWidth="103.5" style="-fx-alignment: center;" text="NO" />
-                              <TableColumn fx:id="ParentColumn" editable="false" prefWidth="370.5" style="-fx-alignment: center;" text="NAME" />
+                              <TableColumn fx:id="NoColumnChildren" editable="false" prefWidth="103.5" style="-fx-alignment: center;" text="NO" />
+                              <TableColumn fx:id="ChildColumn" editable="false" prefWidth="370.5" style="-fx-alignment: center;" text="NAME" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -572,178 +758,6 @@
                   </AnchorPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="BookingPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <Text layoutX="80.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Suggested">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="318.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Destination ID for Booking   :">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="394.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Available Time Slots                         :">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <TextArea fx:id="DestinationIDField" layoutX="521.0" layoutY="285.0" prefHeight="49.0" prefWidth="529.0" style="-fx-border-color: transparent;" styleClass="text-field" stylesheets="@StudentStyle.css" wrapText="true" />
-                        <Button fx:id="DoneBooking" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="BOOK" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI Black" size="20.0" />
-                           </font>
-                        </Button>
-                        <ChoiceBox fx:id="AvailableTimeSlotChoiceBox" layoutX="521.0" layoutY="363.0" prefHeight="43.0" prefWidth="203.0" style="-fx-background-color: white; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                        </ChoiceBox>
-                        <AnchorPane layoutX="82.0" layoutY="77.0" prefHeight="186.0" prefWidth="967.0" style="-fx-background-color: white;">
-                           <children>
-                              <VBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="8.0" prefHeight="169.0" prefWidth="937.0">
-                                 <children>
-                                    <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="883.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="[1]" wrappingWidth="30.09375">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fx:id="Suggested1" layoutX="428.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Petrosains Science Discovery Centre" wrappingWidth="355.12890625">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="452.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="----------------------------------------------" wrappingWidth="374.0">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fx:id="Distance1" layoutX="475.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100.00 km away" textAlignment="RIGHT" wrappingWidth="171.2265625">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="72.0" prefHeight="45.0" prefWidth="883.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="[2]" wrappingWidth="30.09375">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fx:id="Suggested2" layoutX="428.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Petrosains Science Discovery Centre" wrappingWidth="355.12890625">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="452.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="----------------------------------------------" wrappingWidth="374.0">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fx:id="Distance2" layoutX="475.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100.00 km away" textAlignment="RIGHT" wrappingWidth="171.2265625">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="95.0" prefHeight="45.0" prefWidth="883.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="[3]" wrappingWidth="30.09375">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fx:id="Suggested3" layoutX="428.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Petrosains Science Discovery Centre" wrappingWidth="355.12890625">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="452.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="----------------------------------------------" wrappingWidth="374.0">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fx:id="Distance3" layoutX="475.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100.00 km away" textAlignment="RIGHT" wrappingWidth="171.2265625">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="117.0" prefHeight="45.0" prefWidth="883.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="[4]" wrappingWidth="30.09375">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fx:id="Suggested4" layoutX="428.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Petrosains Science Discovery Centre" wrappingWidth="355.12890625">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="452.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="----------------------------------------------" wrappingWidth="374.0">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fx:id="Distance4" layoutX="475.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100.00 km away" textAlignment="RIGHT" wrappingWidth="171.2265625">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="137.0" prefHeight="45.0" prefWidth="883.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="[5]" wrappingWidth="30.09375">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fx:id="Suggested5" layoutX="428.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Petrosains Science Discovery Centre" wrappingWidth="355.12890625">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="452.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="----------------------------------------------" wrappingWidth="374.0">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fx:id="Distance5" layoutX="475.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100.00 km away" textAlignment="RIGHT" wrappingWidth="171.2265625">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                          </Text>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BOOKING">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
          </children>
       </StackPane>
       <AnchorPane fx:id="MenuPane" layoutX="60.0" layoutY="60.0" prefHeight="606.0" prefWidth="284.0" style="-fx-background-color: #ffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
@@ -827,7 +841,7 @@
                </font>
             </Button>
             <StackPane fx:id="notification21" layoutX="218.0" layoutY="318.0" prefHeight="20.0" prefWidth="17.0" />
-            <StackPane fx:id="ProfileImage1" layoutX="42.0" layoutY="16.0" prefHeight="192.0" prefWidth="200.0" />
+            <StackPane fx:id="ProfileImage" layoutX="42.0" layoutY="16.0" prefHeight="192.0" prefWidth="200.0" />
          </children>
       </AnchorPane>
    </children>

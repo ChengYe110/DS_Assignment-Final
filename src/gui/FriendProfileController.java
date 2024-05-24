@@ -10,11 +10,11 @@ import ds.assignment.SessionManager;
 import ds.assignment.Students;
 import static ds.assignment.Students.isDuplicateFriend;
 import ds.assignment.UserRepository;
-import static gui.StudentController.friendNameNavigate;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Stack;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -38,6 +38,7 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -79,11 +80,15 @@ public class FriendProfileController implements Initializable {
     Login login = new Login();  // Create a single instance of Login
     SessionManager sessionManager = new SessionManager(userRepository, login);
 
+    private Stack<String> navigate = new Stack<>();
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        loadStack();
         FriendListPane.setVisible(false);
         ExitFriendProfilePage.setOnAction(event -> {
-            friendNameNavigate.pop();
+            navigate.pop();
+            resetStack();
             // Get the stage (window) associated with the button
             Stage stage = (Stage) ExitFriendProfilePage.getScene().getWindow();
 
@@ -94,13 +99,13 @@ public class FriendProfileController implements Initializable {
         FriendListPage.setOnAction(event -> {
             FriendListPane.setVisible(true);
             FriendListPane.toFront();
-            showFriendList(friendNameNavigate.peek());
+            showFriendList(navigate.peek());
         });
         ExitFriendListPage.setOnAction(event -> {
             FriendListPane.setVisible(false);
         });
-        setUpProfilePage(friendNameNavigate.peek());
-        refreshAddFriend(friendNameNavigate.peek());
+        setUpProfilePage(navigate.peek());
+        refreshAddFriend(navigate.peek());
     }
 
     public void ButtonEffect(Button button) {
@@ -131,14 +136,31 @@ public class FriendProfileController implements Initializable {
         friendButton.getStyleClass().add("friend-button");
         ButtonEffect(friendButton);
         friendButton.setOnAction(event -> {
-            if (friendNameNavigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
-                friendButton.setDisable(true);
-            } else {
-                friendNameNavigate.push(friendName);
-                openProfilePage(friendNameNavigate.peek());
+            if (canOpenProfilePage(friendName)) {
+                if (navigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
+                    friendButton.setDisable(true);
+                } else {
+                    navigate.push(friendName);
+                    openProfilePage(navigate.peek());
+                }
             }
         });
         FriendListVBox.getChildren().add(friendButton);
+    }
+
+    public boolean canOpenProfilePage(String friendName) {
+        String role = userRepository.getRole(friendName).toUpperCase();
+        if (role.equals("STUDENT")) {
+            return true;
+        } else if (role.equals("EDUCATOR")) {
+            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else if (role.equals("PARENT")) {
+            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else {
+            return false;
+        }
     }
 
     private void openProfilePage(String friendName) {
@@ -178,18 +200,13 @@ public class FriendProfileController implements Initializable {
     }
 
     private void setUpParentTable(String username) {
-        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList();
-
         //associate data with column
         NoColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, Integer>("no"));
         ParentColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, String>("username"));
 
-        //modified
-        ArrayList<String> arrayList = new ArrayList<>(Students.getParentList());
-        ArrayList<ParentColumn> temp = new ArrayList<>();
-        for (int i = 1; i <= arrayList.size(); i++) {
-            temp.add(new ParentColumn(i, arrayList.get(i)));
-        }
+         //get chilren arraylist from parent
+        ArrayList<ParentColumn> arrayList = new ArrayList<>(Students.getParentList(username));
+        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList(arrayList);
 
         ParentTable.setItems(parentList);
     }
@@ -260,4 +277,26 @@ public class FriendProfileController implements Initializable {
         }
     }
     
+    public void loadStack(){
+        String role = userRepository.getRole(sessionManager.getCurrentUser().getUsername()).toUpperCase();
+        if (role.equals("STUDENT")) {
+            navigate = StudentController.friendNameNavigate;
+        } else if (role.equals("EDUCATOR")) {
+            navigate = EducatorController.friendNameNavigateEducator;
+        } else if (role.equals("PARENT")) {
+            navigate = ParentController.friendNameNavigateParent;
+        } 
+    }
+    
+    public void resetStack(){
+        String role = userRepository.getRole(sessionManager.getCurrentUser().getUsername()).toUpperCase();
+        if (role.equals("STUDENT")) {
+            StudentController.friendNameNavigate = navigate;
+        } else if (role.equals("EDUCATOR")) {
+            EducatorController.friendNameNavigateEducator = navigate;
+        } else if (role.equals("PARENT")) {
+            ParentController.friendNameNavigateParent= navigate;
+        } 
+    }
+
 }

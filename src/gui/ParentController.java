@@ -5,8 +5,10 @@
 package gui;
 
 import ds.assignment.DatabaseConnection;
+import ds.assignment.Destination;
 import ds.assignment.Discussion;
 import ds.assignment.Login;
+import ds.assignment.Parents;
 import ds.assignment.Points;
 import ds.assignment.Quiz;
 import ds.assignment.SessionManager;
@@ -112,7 +114,7 @@ public class ParentController implements Initializable {
             Winner3pts, Winner4, Winner4pts, Winner5, Winner5pts, Winner6, Winner6pts, Winner7, Winner7pts, Winner8,
             Winner8pts, Winner9, Winner9pts, Winner10, Winner10pts;
     @FXML
-    private TextArea DestinationIDField, DiscussionContentField;
+    private TextArea DiscussionContentField;
     @FXML
     private Label UsernameLabel, EmailLabel, LocationLabel;
     @FXML
@@ -120,12 +122,14 @@ public class ParentController implements Initializable {
     @FXML
     private PasswordField OldPassword1, OldPassword2, NewPassword, ConfirmPassword;
     @FXML
-    private ChoiceBox<String> QuizThemeChoiceBox, AvailableTimeSlotChoiceBox;
+    private ChoiceBox<String> AvailableTimeSlotChoiceBox, DestinationIDChoiceBox, ChildChoiceBox;
     @FXML
     private HBox MENU, LiveEventHBox, EventHBox1, EventHBox2, EventHBox3;
     private Button selectedButton = null;
     private ObservableList<String> theme = FXCollections.observableArrayList("SCIENCE", "TECHNOLOGY", "ENGINEERING", "MATHEMATIC");
     private ObservableList<String> time = FXCollections.observableArrayList("8 am - 10 am", "10 am - 12 pm", "12 pm - 2 pm", "2 pm - 4 pm", "4 pm - 6 pm", "6 pm - 8 pm");
+    private ObservableList<String> destinationID = FXCollections.observableArrayList("1", "2", "3", "4", "5");
+
     @FXML
     private TableView<ChildrenColumn> ChildTable;
     @FXML
@@ -143,7 +147,7 @@ public class ParentController implements Initializable {
 
     private TranslateTransition slideOutTransition, slideInTransition;
     private int currentIndex;
-    public static Stack<String> friendNameNavigate = new Stack<>();
+    public static Stack<String> friendNameNavigateParent = new Stack<>();
 
     DatabaseConnection dbConnect = new DatabaseConnection();
     UserRepository userRepository = new UserRepository(dbConnect);
@@ -177,6 +181,7 @@ public class ParentController implements Initializable {
             });
 
             ProfilePage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -244,8 +249,9 @@ public class ParentController implements Initializable {
                 if (childrenUsername.isBlank()) {
                     JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    //Students.addParent(sessionManager.getCurrentUser().getUsername(), parentUsername);//change parent add children
+                    Parents.addChildren(childrenUsername, sessionManager.getCurrentUser().getUsername());//change parent add children
                     setUpChildTable(sessionManager.getCurrentUser().getUsername());
+                    setUpProfilePage(sessionManager.getCurrentUser().getUsername());
                 }
                 AddChildPane.setVisible(false);
             });
@@ -255,6 +261,7 @@ public class ParentController implements Initializable {
 
             DiscussionScrollPane.setContent(DiscussionVBox);
             DiscussionPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -263,6 +270,7 @@ public class ParentController implements Initializable {
                 stackPane.getChildren().add(DiscussionPane);
             });
             CreateDiscussionPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -286,21 +294,53 @@ public class ParentController implements Initializable {
             });
 
             BookingPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
-                //refresh booking
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(BookingPane);
+                setUpSuggestedDestination();
+                DestinationIDChoiceBox.setItems(destinationID);
+                ChildChoiceBox.setDisable(true);
+                AvailableTimeSlotChoiceBox.setDisable(true);
+            });
+            DestinationIDChoiceBox.setOnAction(event -> {
+                String destinationID = DestinationIDChoiceBox.getValue();
+                if (destinationID != null) {
+                    setUpChildChoiceBox();
+                }
+            });
+            ChildChoiceBox.setOnAction(event -> {
+                String destinationID = DestinationIDChoiceBox.getValue();
+                String childUsername = ChildChoiceBox.getValue();
+                if (destinationID != null && childUsername != null) {
+                    setUpAvailableTimeSlotChoiceBox(childUsername);
+                }
             });
             DoneBooking.setOnAction(event -> {
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
-                //implement method after booking
+                String destinationID = DestinationIDChoiceBox.getValue();
+                String childUsername = ChildChoiceBox.getValue();
+                String timeSlot = AvailableTimeSlotChoiceBox.getValue();
+                if (destinationID != null && childUsername != null && timeSlot != null) {
+                    saveBooking(destinationID, childUsername, timeSlot);               
+                    JOptionPane.showMessageDialog(null, "Successfully booked!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    DestinationIDChoiceBox.getItems().clear();
+                    ChildChoiceBox.getItems().clear();
+                    ChildChoiceBox.setDisable(true);
+                    AvailableTimeSlotChoiceBox.getItems().clear();
+                    AvailableTimeSlotChoiceBox.setDisable(true);
+                    setUpProfilePage(sessionManager.getCurrentUser().getUsername());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             });
 
             EventPage.setOnAction(event -> {
+                selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
@@ -394,31 +434,53 @@ public class ParentController implements Initializable {
 
     // Method to open the friend's profile page
     private void openProfilePage(String friendName) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
-            Parent root = loader.load();
+        String role = userRepository.getRole(friendName).toUpperCase();
+        if (role.equals("STUDENT")) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
+                Parent root = loader.load();
 
-            FriendProfileController controller = loader.getController();
+                FriendProfileController controller = loader.getController();
 
-            // Create a new stage for the second view
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.TRANSPARENT);
+                // Create a new stage for the second view
+                Stage stage = new Stage();
+                stage.initStyle(StageStyle.TRANSPARENT);
 
-            // Ensure the scene is also transparent
-            Scene scene = new Scene(root);
-            scene.setFill(Color.TRANSPARENT);
-            stage.setScene(scene);
+                // Ensure the scene is also transparent
+                Scene scene = new Scene(root);
+                scene.setFill(Color.TRANSPARENT);
+                stage.setScene(scene);
 
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(((Stage) MENU.getScene().getWindow()));
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.initOwner(((Stage) MENU.getScene().getWindow()));
 
-            stage.setResizable(false);
-            stage.show();
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
-            stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
-        } catch (IOException e) {
-            e.printStackTrace();
+                stage.setResizable(false);
+                stage.show();
+                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+                stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
+                stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (role.equals("EDUCATOR")) {
+            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (role.equals("PARENT")) {
+            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public boolean canOpenProfilePage(String friendName) {
+        String role = userRepository.getRole(friendName).toUpperCase();
+        if (role.equals("STUDENT")) {
+            return true;
+        } else if (role.equals("EDUCATOR")) {
+            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else if (role.equals("PARENT")) {
+            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else {
+            return false;
         }
     }
 
@@ -438,7 +500,7 @@ public class ParentController implements Initializable {
         temp.setAlignment(Pos.TOP_LEFT);
         Text t = new Text("Posted By: ");
         t.setStyle("-fx-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
-        String role = userRepository.getRole(sessionManager.getCurrentUser().getUsername()).toUpperCase();
+        String role = userRepository.getRole(discussion.getAuthor()).toUpperCase();
         Button roleButton = new Button(role);
         String setColour = "";
         if (role.equals("STUDENT")) {
@@ -454,11 +516,13 @@ public class ParentController implements Initializable {
         Button usernameButton = new Button(username);
         usernameButton.getStyleClass().add("username-button");
         usernameButton.setOnAction(event -> {
-            if (friendNameNavigate.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
-                usernameButton.setDisable(true);
-            } else {
-                friendNameNavigate.push(username);
-                openProfilePage(friendNameNavigate.peek());
+            if (canOpenProfilePage(username)) {
+                if (friendNameNavigateParent.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
+                    usernameButton.setDisable(true);
+                } else {
+                    friendNameNavigateParent.push(username);
+                    openProfilePage(friendNameNavigateParent.peek());
+                }
             }
         });
         Text dateText = new Text("(" + discussion.getDatetime() + ")");
@@ -516,25 +580,21 @@ public class ParentController implements Initializable {
     }
 
     private void setUpChildTable(String username) {
-        ObservableList<ChildrenColumn> childrenList = FXCollections.observableArrayList();
-
         //associate data with column
         NoColumnChildren.setCellValueFactory(new PropertyValueFactory<ChildrenColumn, Integer>("no"));
         ChildColumn.setCellValueFactory(new PropertyValueFactory<ChildrenColumn, String>("username"));
 
         //get chilren arraylist from parent
-//        ArrayList<String> arrayList = new ArrayList<>(Parent.getChildrenList());
-//        ArrayList<ChildrenColumn> temp = new ArrayList<>();
-//        for (int i = 1; i <= arrayList.size(); i++) {
-//            temp.add(new ChildrenColumn(i, arrayList.get(i)));
-//        }
+        ArrayList<ChildrenColumn> arrayList = new ArrayList<>(Parents.getChildren(username));
+        System.out.println(arrayList);
+        ObservableList<ChildrenColumn> childrenList = FXCollections.observableArrayList(arrayList);
         ChildTable.setItems(childrenList);
     }
 
     private void setUpPastBookingTable(String username) {
-        //ArrayList<PastBookingColumn> temp = Parent.getPastBooking(username); //implement method from parent
-        //ObservableList<PastBookingColumn> pastBookingList = FXCollections.observableArrayList(temp);
-
+        ArrayList<PastBookingColumn> temp = Parents.getPastBooking(username);
+        ObservableList<PastBookingColumn> pastBookingList = FXCollections.observableArrayList(temp);
+        System.out.println(temp);
         //associate data with column
         NoColumnPastBooking.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, Integer>("no"));
         DateColumn.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, String>("date"));
@@ -542,7 +602,7 @@ public class ParentController implements Initializable {
         PlaceColumn.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, String>("place"));
         DistanceColumn.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, String>("distance"));
 
-        //PastBookingTable.setItems(pastBookingList);
+        PastBookingTable.setItems(pastBookingList);
     }
 
     private void setUpProfilePage(String username) {
@@ -775,17 +835,7 @@ public class ParentController implements Initializable {
         joinButton.getStyleClass().add("colorGradientButton");
         joinButton.setTextFill(javafx.scene.paint.Color.WHITE);
         joinButton.setFont(new Font("Segoe UI Black", 20.0));
-        joinButton.setOnAction(event -> {
-            try {
-                e.addJoinedEvent(sessionManager.getCurrentUser().getUsername(), e.getId());
-                JOptionPane.showMessageDialog(null, "You've successfully joined the event. 5 Points rewarded!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                pointsFromDataBase.addPoints(5);
-                refreshPoints();
-                refreshEvent();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+        joinButton.setDisable(true);
         //Check if liked then red; if never like then black;
         List<String> JoinedEvent = e.getJoinedEventList(sessionManager.getCurrentUser().getUsername());
         if (JoinedEvent.contains(e.getId())) {
@@ -897,7 +947,7 @@ public class ParentController implements Initializable {
         if (title.isBlank() || content.isBlank()) {
             JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            Discussion discussion = new Discussion(title, content, sessionManager.getCurrentUser().getUsername(), like, formattedDateTime);
+            Discussion discussion = new Discussion(title, content, userRepository.getID(sessionManager.getCurrentUser().getUsername()), like, formattedDateTime);
             discussion.saveDiscussion(sessionManager.getCurrentUser().getUsername());
             refreshDiscussion();
             stackPane.getChildren().clear();
@@ -966,5 +1016,81 @@ public class ParentController implements Initializable {
 
         // Create a layout pane and add the circle to it
         ProfileImage.getChildren().addAll(circle, borderCircle);
+    }
+
+    private void setUpSuggestedDestination() {
+        List<Destination> destination = Parents.getTop5ShortestDistances();
+        Suggested1.setText(destination.get(0).getDestinationName());
+        Distance1.setText(String.valueOf(destination.get(0).getDistance()) + " km away");
+        Suggested2.setText(destination.get(1).getDestinationName());
+        Distance2.setText(String.valueOf(destination.get(1).getDistance()) + " km away");
+        Suggested3.setText(destination.get(2).getDestinationName());
+        Distance3.setText(String.valueOf(destination.get(2).getDistance()) + " km away");
+        Suggested4.setText(destination.get(3).getDestinationName());
+        Distance4.setText(String.valueOf(destination.get(3).getDistance()) + " km away");
+        Suggested5.setText(destination.get(4).getDestinationName());
+        Distance5.setText(String.valueOf(destination.get(4).getDistance()) + " km away");
+    }
+
+    private void setUpChildChoiceBox() {
+        ChildChoiceBox.setDisable(false);
+        ChildChoiceBox.getItems().clear();
+        ArrayList<ChildrenColumn> temp = Parents.getChildren(sessionManager.getCurrentUser().getUsername());
+        ArrayList<String> childName = new ArrayList<>();
+        for (int i = 0; i < temp.size(); i++) {
+            childName.add(temp.get(i).getUsername());
+        }
+        if (temp.size() == 0) {
+            JOptionPane.showMessageDialog(null, "Since you did not add any child, you cannot book any event. Please add child in profile page first before proceed.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            childName.add("All Children");
+            ObservableList<String> child = FXCollections.observableArrayList(childName);
+            ChildChoiceBox.setItems(child);
+        }
+    }
+
+    private void setUpAvailableTimeSlotChoiceBox(String childUsername) {
+        AvailableTimeSlotChoiceBox.setDisable(false);
+        AvailableTimeSlotChoiceBox.getItems().clear();
+        ObservableList<String> timeSlot = FXCollections.observableArrayList(Parents.compareDate(childUsername));
+        System.out.println(timeSlot);
+        AvailableTimeSlotChoiceBox.setItems(timeSlot);
+    }
+
+    private void saveBooking(String destinationID, String childUsername, String timeSlot) {
+        String destination = "";
+        String distance = "";
+        switch (destinationID) {
+            case "1":
+                destination = Suggested1.getText();
+                distance = Distance1.getText();
+                break;
+            case "2":
+                destination = Suggested2.getText();
+                distance = Distance2.getText();
+                break;
+            case "3":
+                destination = Suggested2.getText();
+                distance = Distance3.getText();
+                break;
+            case "4":
+                destination = Suggested2.getText();
+                distance = Distance4.getText();
+                break;
+            case "5":
+                destination = Suggested2.getText();
+                distance = Distance5.getText();
+                break;
+            default:
+                destination = "";
+                distance = "";
+                break;
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date = LocalDate.parse(timeSlot, formatter);
+        Booking.getBookingList();
+        Booking booking = new Booking(destination, distance, date, userRepository.getID(sessionManager.getCurrentUser().getUsername()), userRepository.getID(childUsername));
+        booking.saveBooking(sessionManager.getCurrentUser().getUsername());
+        booking.addPastBooking(sessionManager.getCurrentUser().getUsername(), booking.getID());
     }
 }

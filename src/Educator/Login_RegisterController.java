@@ -19,6 +19,7 @@ import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import ds.assignment.Parents;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
@@ -26,6 +27,7 @@ import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import ds.assignment.Students;
 import gui.EducatorController;
+import gui.ParentController;
 import javax.swing.JDialog;
 
 public class Login_RegisterController implements Initializable {
@@ -217,8 +219,12 @@ public class Login_RegisterController implements Initializable {
                             loader = new FXMLLoader(getClass().getResource("/gui/Student.fxml"));
                             root = loader.load();
                             StudentController studentController = loader.getController();
+                        } else if (role.equals("Parent")) {
+                            loader = new FXMLLoader(getClass().getResource("/gui/Parent.fxml"));
+                            root = loader.load();
+                            ParentController parentController = loader.getController();
                         }
-
+                        
                         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                         scene = new Scene(root);
                         stage.setScene(scene);
@@ -295,7 +301,8 @@ public class Login_RegisterController implements Initializable {
                         Students newStud = new Students(email, username, password, role);
                         newStud.insertIntoDatabase();
                     } else if (parent.isSelected()) {
-                        System.out.println("save parent");
+                        Parents newPar = new Parents(email, username, password, role);
+                        newPar.insertIntoDatabase();
                     } else {
                         // Create a Educator object with the user's input
                         Educator newEdu = new Educator(email, username, password, role);
