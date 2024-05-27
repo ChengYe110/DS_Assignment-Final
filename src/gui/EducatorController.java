@@ -933,11 +933,12 @@ public class EducatorController implements Initializable {
 
         Label title = new Label(eventTitle);
         title.setPrefHeight(32.0);
-        title.setPrefWidth(519.0);
+        title.setMaxWidth(519.0);
+        title.setWrapText(true); // Enable text wrapping
         title.setFont(new Font("Segoe UI Black", 24.0));
 
         Text description = new Text(eventDescription);
-        description.setWrappingWidth(108.63671875);
+        description.setWrappingWidth(519.0);
         description.setFont(new Font("Segoe UI Semibold", 12.0));
 
         vbox1.getChildren().addAll(title, description);
