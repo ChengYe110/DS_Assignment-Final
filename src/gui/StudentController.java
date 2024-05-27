@@ -7,6 +7,7 @@ package gui;
 import ds.assignment.DatabaseConnection;
 import ds.assignment.Discussion;
 import ds.assignment.Login;
+import ds.assignment.Parents;
 import ds.assignment.Points;
 import ds.assignment.Quiz;
 import ds.assignment.SessionManager;
@@ -258,10 +259,13 @@ public class StudentController implements Initializable {
                 String parentUsername = ParentUsernameField.getText();
                 if (parentUsername.isBlank()) {
                     JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (Students.getParentList(sessionManager.getCurrentUser().getUsername()).contains(userRepository.getID(parentUsername))) {
+                    JOptionPane.showMessageDialog(null, "The parent has been added before!!!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    Students.addParent(sessionManager.getCurrentUser().getUsername(), parentUsername);
+                    Students.addParent(sessionManager.getCurrentUser().getUsername(), parentUsername);                
                     setUpParentTable(sessionManager.getCurrentUser().getUsername());
                 }
+                ParentUsernameField.clear();
                 AddParentPane.setVisible(false);
             });
             ExitAddParentPane.setOnAction(event -> {
@@ -886,8 +890,8 @@ public class StudentController implements Initializable {
         NoColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, Integer>("no"));
         ParentColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, String>("username"));
 
-         //get chilren arraylist from parent
-        ArrayList<ParentColumn> arrayList = new ArrayList<>(Students.getParentList(username));
+        //get chilren arraylist from parent
+        ArrayList<ParentColumn> arrayList = new ArrayList<>(Students.getParent(username));
         ObservableList<ParentColumn> parentList = FXCollections.observableArrayList(arrayList);
 
         ParentTable.setItems(parentList);

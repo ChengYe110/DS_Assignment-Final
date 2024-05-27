@@ -180,7 +180,7 @@ public class Students extends User {
         }
     }
 
-    public static ArrayList<ParentColumn> getParentList(String username) {
+    public static ArrayList<ParentColumn> getParent(String username) {
         ArrayList<ParentColumn> parentList = new ArrayList<>();
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
@@ -208,7 +208,7 @@ public class Students extends User {
 
                         if (nameParentResultSet.next()) {
                             String nameChildren = nameParentResultSet.getString("Username");
-                            ParentColumn parent = new ParentColumn(numberOfParent++,nameChildren);
+                            ParentColumn parent = new ParentColumn(numberOfParent++, nameChildren);
                             parentList.add(parent);
                         }
                         nameParentResultSet.close();  // Close the ResultSet for each event ID                  
@@ -224,6 +224,37 @@ public class Students extends User {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
+        return parentList;
+    }
+
+    //student username
+    public static ArrayList<String> getParentList(String username) {
+        ArrayList<String> parentList = new ArrayList<>();
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT id_parent FROM student WHERE Username = '" + username + "'";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+
+            if (queryOutput.next()) {
+                String parent = queryOutput.getString("id_parent");
+                if (parent != null && !parent.isEmpty()) {
+                    String[] parrentArray = parent.split(",");
+                    for (String c : parrentArray) {
+                        parentList.add(c.trim()); // Trim to remove any extra spaces
+                    }
+                }
+            }
+
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+
         return parentList;
     }
 
@@ -896,51 +927,65 @@ public class Students extends User {
 
     // get id_booking in student table --> get study tour details in booking table
     public static ArrayList<BookedStudyTourColumn> getStudentBookedStudyTour(String studentUsername) {
-        ArrayList<BookedStudyTourColumn> bookedStudyTourList = new ArrayList<>();
+    ArrayList<BookedStudyTourColumn> bookedStudyTourList = new ArrayList<>();
+    Connection connectDB = null;
+    PreparedStatement getRegisteredBookingStmt = null;
+    PreparedStatement getBookingDetailsStmt = null;
+    ResultSet registeredBookingResultSet = null;
+    
+    try {
+        DatabaseConnection connectNow = new DatabaseConnection();
+        connectDB = connectNow.linkDatabase();
 
-        try {
-            DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.linkDatabase();
+        // get id_booking from RegisteredBooking in student table
+        String getRegisteredBookingQuery = "SELECT RegisteredBooking FROM student WHERE Username = ?";
+        getRegisteredBookingStmt = connectDB.prepareStatement(getRegisteredBookingQuery);
+        getRegisteredBookingStmt.setString(1, studentUsername);
+        registeredBookingResultSet = getRegisteredBookingStmt.executeQuery();
 
-            // get id_booking from RegisteredBooking in student table
-            String getRegisteredBookingQuery = "SELECT RegisteredBooking FROM student WHERE Username = ?";
-            PreparedStatement getRegisteredBookingStmt = connectDB.prepareStatement(getRegisteredBookingQuery);
-            getRegisteredBookingStmt.setString(1, studentUsername);
-            ResultSet registeredBookingResultSet = getRegisteredBookingStmt.executeQuery();
+        if (registeredBookingResultSet.next()) {
+            String registeredBooking = registeredBookingResultSet.getString("RegisteredBooking");
+            String[] bookingIds = registeredBooking.split(",");
 
-            if (registeredBookingResultSet.next()) {
-                String registeredBooking = registeredBookingResultSet.getString("RegisteredBooking");
-                String[] bookingIds = registeredBooking.split(",");
+            // get booking details for each id_booking in booking table row by row
+            String getBookingDetailsQuery = "SELECT Date, Venue FROM booking WHERE id_booking = ?";
+            getBookingDetailsStmt = connectDB.prepareStatement(getBookingDetailsQuery);
 
-                // get booking details for each id_booking in booking table row by row
-                String getBookingDetailsQuery = "SELECT Date, Venue FROM booking WHERE id_booking = ?";
-                PreparedStatement getBookingDetailsStmt = connectDB.prepareStatement(getBookingDetailsQuery);
+            for (String bookingId : bookingIds) {
+                getBookingDetailsStmt.setString(1, bookingId.trim());
+                ResultSet bookingDetailsResultSet = getBookingDetailsStmt.executeQuery();
 
-                for (String bookingId : bookingIds) {
-                    getBookingDetailsStmt.setString(1, bookingId.trim());
-                    ResultSet bookingDetailsResultSet = getBookingDetailsStmt.executeQuery();
+                if (bookingDetailsResultSet.next()) {
+                    Date date = bookingDetailsResultSet.getDate("Date");
+                    LocalDate localDate = date.toLocalDate();
+                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    String dateS = localDate.format(dateFormatter);
+                    String venue = bookingDetailsResultSet.getString("Venue");
 
-                    if (bookingDetailsResultSet.next()) {
-                        String date = bookingDetailsResultSet.getString("Date");
-                        String venue = bookingDetailsResultSet.getString("Venue");
-
-                        BookedStudyTourColumn bookedStudyTour = new BookedStudyTourColumn(date, venue);
-                        bookedStudyTourList.add(bookedStudyTour);
-                    }
-                    bookingDetailsResultSet.close();  // Close the ResultSet for each booking ID
-                    getBookingDetailsStmt.close();
+                    BookedStudyTourColumn bookedStudyTour = new BookedStudyTourColumn(dateS, venue);
+                    bookedStudyTourList.add(bookedStudyTour);
                 }
+                bookingDetailsResultSet.close();  // Close the ResultSet for each booking ID
             }
-            registeredBookingResultSet.close();
-            getRegisteredBookingStmt.close();
-            connectDB.close();
-
+        }
+    } catch (SQLException e) {
+        System.out.println("SQL query failed.");
+        e.printStackTrace();
+    } finally {
+        // Close all resources in finally block to ensure they are always closed
+        try {
+            if (registeredBookingResultSet != null) registeredBookingResultSet.close();
+            if (getRegisteredBookingStmt != null) getRegisteredBookingStmt.close();
+            if (getBookingDetailsStmt != null) getBookingDetailsStmt.close();
+            if (connectDB != null) connectDB.close();
         } catch (SQLException e) {
-            System.out.println("SQL query failed.");
+            System.out.println("Failed to close resources.");
             e.printStackTrace();
         }
-        return bookedStudyTourList;
     }
+    return bookedStudyTourList;
+}
+
 
     public static int getNumberOfParents(String childName) {
         Connection connectDB = null;
@@ -973,8 +1018,8 @@ public class Students extends User {
         return currentParentsNum;
     }
 
-    public static int getParentIdByParentUsername(String parentUsername) {
-        int parentId = -1;
+    public static String getParentIdByParentUsername(String parentUsername) {
+        String parentId = null;
 
         try {
             // Connect to database
@@ -993,7 +1038,7 @@ public class Students extends User {
 
             // Retrieve the parent ID
             if (resultSet.next()) {
-                parentId = resultSet.getInt("id_parent");
+                parentId = resultSet.getString("id_parent");
             }
 
             // Close resources
@@ -1008,7 +1053,7 @@ public class Students extends User {
         return parentId;
     }
 
-    public static boolean isExistingParent(int idParent) {
+    public static boolean isExistingParent(String idParent) {
         boolean exists = false;
 
         try {
@@ -1019,7 +1064,7 @@ public class Students extends User {
             // Check if the parent exists using id_parent
             String query = "SELECT COUNT(*) FROM parent WHERE id_parent = ?";
             PreparedStatement preparedStatement = connectDB.prepareStatement(query);
-            preparedStatement.setInt(1, idParent);
+            preparedStatement.setString(1, idParent);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
@@ -1067,7 +1112,9 @@ public class Students extends User {
     }
 
     // update student table: parentNums and parentEmail
-    public static void updateStudentInfoAfterAddParent(String childName, String parentEmail) {
+    public static void updateStudentInfoAfterAddParent(String childName, String parentName) {
+        String id_parent = getParentIdByParentUsername(parentName);
+
         Connection connectDB = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -1076,32 +1123,31 @@ public class Students extends User {
             DatabaseConnection connectNow = new DatabaseConnection();
             connectDB = connectNow.linkDatabase();
 
-            // Retrieve the current number of parents and parents' email
-            String connectStudentQuery = "SELECT ParentsNum, ParentsEmail FROM student WHERE Username = ?";
+            // Retrieve the current number of parents and parents' id
+            String connectStudentQuery = "SELECT ParentsNum, id_parent FROM student WHERE Username = ?";
             preparedStatement = connectDB.prepareStatement(connectStudentQuery);
             preparedStatement.setString(1, childName);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 int currentParentsNum = resultSet.getInt("ParentsNum");
-                String currentParentsEmail = resultSet.getString("ParentsEmail");
+                String currentIdParent = resultSet.getString("id_parent");
 
-                // Update the parent's email and increment the number of parents
-                String updatedParentsEmail = currentParentsEmail == null ? parentEmail : currentParentsEmail + "," + parentEmail;
+                // Update the parent's id and increment the number of parents
+                String updatedIdParent = currentIdParent == null ? id_parent : currentIdParent + "," + id_parent;
                 int updatedParentsNum = currentParentsNum + 1;
 
                 // Update the database with the new parents' information
-                String updateStudentQuery = "UPDATE student SET ParentsNum = ?, ParentsEmail = ? WHERE Username = ?";
+                String updateStudentQuery = "UPDATE student SET ParentsNum = ?, id_parent = ? WHERE Username = ?";
                 PreparedStatement updateStatement = connectDB.prepareStatement(updateStudentQuery);
                 updateStatement.setInt(1, updatedParentsNum);
-                updateStatement.setString(2, updatedParentsEmail);
+                updateStatement.setString(2, updatedIdParent);
                 updateStatement.setString(3, childName);
                 updateStatement.executeUpdate();
                 updateStatement.close();
                 resultSet.close();
                 preparedStatement.close();
                 connectDB.close();
-                JOptionPane.showMessageDialog(null, "New parent is added! ", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (Exception e) {
             System.out.println("SQL query failed.");
@@ -1110,10 +1156,27 @@ public class Students extends User {
     }
 
     public static void addParent(String childName, String parentName) {
-        int idParent = getParentIdByParentUsername(parentName);
+        String idParent = getParentIdByParentUsername(parentName);
+        String idChild = getIdStudentFromName(childName);
+
+        DatabaseConnection dbConnect = new DatabaseConnection();
+        UserRepository userRepository = new UserRepository(dbConnect);
+
+        if (childName.equals(parentName)) {
+            System.out.println("You cannot add yourself as parent!!!");
+            JOptionPane.showMessageDialog(null, "You cannot add yourself as parent!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         if (!isExistingParent(idParent)) {
             System.out.println("The parent name you are trying to add does not exists.");
             JOptionPane.showMessageDialog(null, "The parent name you are trying to add does not exists. ", "Error", JOptionPane.ERROR_MESSAGE);
+            
+            return;
+        }
+        if (!userRepository.getRole(parentName).equalsIgnoreCase("Parent")) {
+            System.out.println("You cannot add " + userRepository.getRole(parentName) + " as parent!!!");
+            JOptionPane.showMessageDialog(null, "You cannot add " + userRepository.getRole(parentName) + " as parent!!!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -1134,7 +1197,7 @@ public class Students extends User {
             String connectParentQuery = "SELECT Children FROM parent WHERE id_parent = ?";
 
             preparedStatement = connectDB.prepareStatement(connectParentQuery);
-            preparedStatement.setInt(1, idParent);
+            preparedStatement.setString(1, idParent);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
@@ -1142,18 +1205,20 @@ public class Students extends User {
                 if (currentChildren == null) {
                     currentChildren = "";
                 }
-                String updatedChildren = currentChildren + childName + ",";
+                String updatedChildren = currentChildren + idChild + ",";
 
                 // Update the database with the new children list
                 String updateParentQuery = "UPDATE parent SET Children = ? WHERE id_parent = ?";
                 PreparedStatement updateStatement = connectDB.prepareStatement(updateParentQuery);
                 updateStatement.setString(1, updatedChildren);
-                updateStatement.setInt(2, idParent);
+                updateStatement.setString(2, idParent);
                 updateStatement.executeUpdate();
                 updateStatement.close();
 
-                // update student table: parentNums and parentEmail
-                updateStudentInfoAfterAddParent(childName, getParentEmailById(idParent));
+                JOptionPane.showMessageDialog(null, "You've successfully add " + parentName + " as your parent!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                // update student table: parentNums and id_parent
+                updateStudentInfoAfterAddParent(childName, parentName);
             }
 
             resultSet.close();
@@ -1268,4 +1333,5 @@ public class Students extends User {
             e.printStackTrace();
         }
     }
+
 }

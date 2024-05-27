@@ -204,8 +204,8 @@ public class FriendProfileController implements Initializable {
         NoColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, Integer>("no"));
         ParentColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, String>("username"));
 
-         //get chilren arraylist from parent
-        ArrayList<ParentColumn> arrayList = new ArrayList<>(Students.getParentList(username));
+        //get chilren arraylist from parent
+        ArrayList<ParentColumn> arrayList = new ArrayList<>(Students.getParent(username));
         ObservableList<ParentColumn> parentList = FXCollections.observableArrayList(arrayList);
 
         ParentTable.setItems(parentList);

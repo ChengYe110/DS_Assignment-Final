@@ -72,12 +72,20 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ds.assignment.Students;
 import ds.assignment.User;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -248,11 +256,13 @@ public class ParentController implements Initializable {
                 String childrenUsername = ChildUsernameField.getText();
                 if (childrenUsername.isBlank()) {
                     JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (Parents.getChildList(sessionManager.getCurrentUser().getUsername()).contains(userRepository.getID(childrenUsername))) {
+                    JOptionPane.showMessageDialog(null, "The child has been added before!!!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    Parents.addChildren(childrenUsername, sessionManager.getCurrentUser().getUsername());//change parent add children
-                    setUpChildTable(sessionManager.getCurrentUser().getUsername());
+                    Parents.addChildren(childrenUsername, sessionManager.getCurrentUser().getUsername());//change parent add children                   
                     setUpProfilePage(sessionManager.getCurrentUser().getUsername());
                 }
+                ChildUsernameField.clear();
                 AddChildPane.setVisible(false);
             });
             ExitAddChildPane.setOnAction(event -> {
@@ -325,10 +335,22 @@ public class ParentController implements Initializable {
                 String destinationID = DestinationIDChoiceBox.getValue();
                 String childUsername = ChildChoiceBox.getValue();
                 String timeSlot = AvailableTimeSlotChoiceBox.getValue();
-                if (destinationID != null && childUsername != null && timeSlot != null) {
-                    saveBooking(destinationID, childUsername, timeSlot);               
+                if (childUsername.equals("All Children")) {
+                    ArrayList<String> allChild = Parents.getChildList(sessionManager.getCurrentUser().getUsername());
+                    for (int i = 0; i < allChild.size(); i++) {
+                        saveBooking(destinationID, userRepository.getUsernameByID(allChild.get(i)), timeSlot);
+                    }
                     JOptionPane.showMessageDialog(null, "Successfully booked!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    DestinationIDChoiceBox.getItems().clear();
+                    DestinationIDChoiceBox.setValue("");
+                    ChildChoiceBox.getItems().clear();
+                    ChildChoiceBox.setDisable(true);
+                    AvailableTimeSlotChoiceBox.getItems().clear();
+                    AvailableTimeSlotChoiceBox.setDisable(true);
+                    setUpProfilePage(sessionManager.getCurrentUser().getUsername());
+                } else if (destinationID != null && childUsername != null && timeSlot != null) {
+                    saveBooking(destinationID, childUsername, timeSlot);
+                    JOptionPane.showMessageDialog(null, "Successfully booked!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    DestinationIDChoiceBox.setValue("");
                     ChildChoiceBox.getItems().clear();
                     ChildChoiceBox.setDisable(true);
                     AvailableTimeSlotChoiceBox.getItems().clear();
@@ -1033,8 +1055,6 @@ public class ParentController implements Initializable {
     }
 
     private void setUpChildChoiceBox() {
-        ChildChoiceBox.setDisable(false);
-        ChildChoiceBox.getItems().clear();
         ArrayList<ChildrenColumn> temp = Parents.getChildren(sessionManager.getCurrentUser().getUsername());
         ArrayList<String> childName = new ArrayList<>();
         for (int i = 0; i < temp.size(); i++) {
@@ -1043,7 +1063,11 @@ public class ParentController implements Initializable {
         if (temp.size() == 0) {
             JOptionPane.showMessageDialog(null, "Since you did not add any child, you cannot book any event. Please add child in profile page first before proceed.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            childName.add("All Children");
+            ChildChoiceBox.setDisable(false);
+            ChildChoiceBox.getItems().clear();
+            if (childName.size() != 1) {
+                childName.add("All Children");
+            }
             ObservableList<String> child = FXCollections.observableArrayList(childName);
             ChildChoiceBox.setItems(child);
         }
@@ -1052,9 +1076,54 @@ public class ParentController implements Initializable {
     private void setUpAvailableTimeSlotChoiceBox(String childUsername) {
         AvailableTimeSlotChoiceBox.setDisable(false);
         AvailableTimeSlotChoiceBox.getItems().clear();
-        ObservableList<String> timeSlot = FXCollections.observableArrayList(Parents.compareDate(childUsername));
-        System.out.println(timeSlot);
-        AvailableTimeSlotChoiceBox.setItems(timeSlot);
+        if (childUsername.equals("All Children")) {
+            ArrayList<String> allChild = Parents.getChildList(sessionManager.getCurrentUser().getUsername());
+            System.out.println(allChild);
+
+            Set<String> commonTimeSlots = new HashSet<>(Parents.compareDate(userRepository.getUsernameByID(allChild.get(0))));
+            System.out.println(commonTimeSlots);
+
+            for (int i = 1; i < allChild.size(); i++) {
+                List<String> childTimeSlots = Parents.compareDate(userRepository.getUsernameByID(allChild.get(i)));
+                commonTimeSlots.retainAll(childTimeSlots);
+                System.out.println("Common Time Slots after child " + i + ": " + commonTimeSlots);
+            }
+
+            // Define a custom comparator for date strings
+            Comparator<String> dateComparator = (dateStr1, dateStr2) -> {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date1 = sdf.parse(dateStr1);
+                    Date date2 = sdf.parse(dateStr2);
+                    return date1.compareTo(date2);
+                } catch (ParseException e) {
+                    e.printStackTrace(); // Handle parsing exception
+                }
+                return 0; // Default to 0 if parsing fails
+            };
+
+            // Convert set to list
+            List<String> sortedTimeSlots = new ArrayList<>(commonTimeSlots);
+
+            // Sort the list using the custom comparator
+            Collections.sort(sortedTimeSlots, dateComparator);
+
+            // Convert sorted list back to set
+            commonTimeSlots = new LinkedHashSet<>(sortedTimeSlots);
+            AvailableTimeSlotChoiceBox.setItems(FXCollections.observableArrayList(commonTimeSlots));
+            if (commonTimeSlots.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Your child's schedule is full!!! No available time slots!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                AvailableTimeSlotChoiceBox.setDisable(true);
+            }
+        } else {
+            ObservableList<String> timeSlot = FXCollections.observableArrayList(Parents.compareDate(childUsername));
+            System.out.println(timeSlot);
+            AvailableTimeSlotChoiceBox.setItems(timeSlot);
+            if (timeSlot.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Your child's schedule is full!!! No available time slots!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                AvailableTimeSlotChoiceBox.setDisable(true);
+            }
+        }
     }
 
     private void saveBooking(String destinationID, String childUsername, String timeSlot) {
@@ -1070,15 +1139,15 @@ public class ParentController implements Initializable {
                 distance = Distance2.getText();
                 break;
             case "3":
-                destination = Suggested2.getText();
+                destination = Suggested3.getText();
                 distance = Distance3.getText();
                 break;
             case "4":
-                destination = Suggested2.getText();
+                destination = Suggested4.getText();
                 distance = Distance4.getText();
                 break;
             case "5":
-                destination = Suggested2.getText();
+                destination = Suggested5.getText();
                 distance = Distance5.getText();
                 break;
             default:
@@ -1090,7 +1159,6 @@ public class ParentController implements Initializable {
         LocalDate date = LocalDate.parse(timeSlot, formatter);
         Booking.getBookingList();
         Booking booking = new Booking(destination, distance, date, userRepository.getID(sessionManager.getCurrentUser().getUsername()), userRepository.getID(childUsername));
-        booking.saveBooking(sessionManager.getCurrentUser().getUsername());
-        booking.addPastBooking(sessionManager.getCurrentUser().getUsername(), booking.getID());
+        booking.saveBooking(sessionManager.getCurrentUser().getUsername(), childUsername);
     }
 }

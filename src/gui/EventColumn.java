@@ -20,7 +20,7 @@ public class EventColumn implements Comparable<EventColumn>{
         this.title = title;
         this.venue = venue;
         this.time = time;
-        //this.localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        this.localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
 
     public String getDate() {

@@ -5,6 +5,8 @@
 package ds.assignment;
 
 import ds.assignment.Destination;
+import static ds.assignment.Students.getNumberOfParents;
+import static ds.assignment.Students.updateStudentInfoAfterAddParent;
 import gui.ChildrenColumn;
 import gui.PastBookingColumn;
 import java.sql.Connection;
@@ -432,11 +434,34 @@ public class Parents extends User {
 
     public static void addChildren(String childName, String parentName) {
         String idChildren = getChildrenIdByChildrenUsername(childName);
+        
+        DatabaseConnection dbConnect = new DatabaseConnection();
+        UserRepository userRepository = new UserRepository(dbConnect);
+        
+        if (parentName.equals(childName)){
+            System.out.println("You cannot add yourself as child!!!");
+            JOptionPane.showMessageDialog(null, "You cannot add yourself as child!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         if (!isExistingChildren(idChildren)) {
             System.out.println("The children name you are trying to add does not exists.");
             JOptionPane.showMessageDialog(null, "The children name you are trying to add does not exists. ", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
+        if (!userRepository.getRole(childName).equalsIgnoreCase("Student")){
+            System.out.println("You cannot add "+userRepository.getRole(childName)+" as child!!!");
+            JOptionPane.showMessageDialog(null, "You cannot add "+userRepository.getRole(childName)+" as child!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }    
+        
+        int numberOfParents = getNumberOfParents(childName);
+        if (numberOfParents >= 2) {
+            System.out.println(childName+" already have 2 parents!!!");
+            JOptionPane.showMessageDialog(null, childName+" already have 2 parents!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }    
 
         Connection connectDB = null;
         PreparedStatement preparedStatement = null;
@@ -465,9 +490,11 @@ public class Parents extends User {
                 updateStatement.setString(2, parentName);
                 updateStatement.executeUpdate();
                 updateStatement.close();
+                
+                JOptionPane.showMessageDialog(null, "You've successfully add "+childName+" as your child!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 // update student table: parentNums and parentEmail
-                //updateParentInfoAfterAddChildren(childName);
+                updateStudentInfoAfterAddParent(childName,parentName);
             }
 
             resultSet.close();
@@ -477,6 +504,36 @@ public class Parents extends User {
             System.out.println("SQL query failed.");
             e.printStackTrace();
         }
+    }
+    
+    public static ArrayList<String> getChildList(String username) {
+        ArrayList<String> childList = new ArrayList<>();
+
+        try {
+            DatabaseConnection connectNow = new DatabaseConnection();
+            Connection connectDB = connectNow.linkDatabase();
+            String connectQuery = "SELECT Children FROM parent WHERE Username = '" + username + "'";
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(connectQuery);
+
+            if (queryOutput.next()) {
+                String child = queryOutput.getString("Children");
+                if (child != null && !child.isEmpty()) {
+                    String[] childArray = child.split(",");
+                    for (String c : childArray) {
+                        childList.add(c.trim()); // Trim to remove any extra spaces
+                    }
+                }
+            }
+
+            statement.close();
+            connectDB.close();
+        } catch (Exception e) {
+            System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+
+        return childList;
     }
 
     public static boolean isExistingChildren(String idChildren) {
