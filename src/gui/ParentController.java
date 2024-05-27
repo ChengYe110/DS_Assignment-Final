@@ -5,6 +5,7 @@
 package gui;
 
 import ds.assignment.DatabaseConnection;
+import ds.assignment.Destination;
 import ds.assignment.Discussion;
 import ds.assignment.Login;
 import ds.assignment.Parents;
@@ -71,12 +72,20 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ds.assignment.Students;
 import ds.assignment.User;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,61 +100,62 @@ import javax.swing.JOptionPane;
  *
  * @author enjye
  */
-public class StudentController implements Initializable {
+public class ParentController implements Initializable {
 
     @FXML
-    private StackPane stackPane, ExtraStackPane, notification1, notification2, notification3, ProfileImage;
+    private StackPane stackPane, ExtraStackPane, ProfileImage;
     @FXML
-    private Button DiscussionPage, EventPage, HomePage, LeaderboardPage, MenuButton, ProfilePage, QuizPage,
-            FriendListPage, ExitFriendListPage, FriendRequestPage, ExitFriendRequestPage, ExitViewFriendProfilePage, 
-            CreateDiscussionPage, DoneCreateDiscussion,AddParentButton, AddParentPage, ExitAddParentPane, 
-            ChangeUsernameAndEmailButton, ChangePasswordButton,SaveChangeUsernameAndEmailButton, SaveChangePasswordButton, 
-            EditProfilePage, ExitEditProfilePage,PointDisplay, FilterButton, LogOutButton, NextButton, PreviousButton;
+    private Button DiscussionPage, EventPage, HomePage, LeaderboardPage, MenuButton, ProfilePage,
+            CreateDiscussionPage, DoneCreateDiscussion, AddChildButton, AddChildPage, ExitAddChildPane,
+            ChangeUsernameAndEmailButton, ChangePasswordButton, SaveChangeUsernameAndEmailButton,
+            SaveChangePasswordButton, EditProfilePage, ExitEditProfilePage, FilterButton, LogOutButton,
+            NextButton, PreviousButton, BookingPage, DoneBooking;
     @FXML
-    private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox, DiscussionVBox, FilterVBox;
+    private VBox DrawerPane, QuizVBox, DiscussionVBox, FilterVBox;
     @FXML
-    private AnchorPane MenuPane, TopPane, HomePagePane, LeaderboardPane, QuizPane, EventPane,StudentProfilePane, 
-            FriendListPane, FriendRequestPane, ViewFriendProfilePage,DiscussionPane, CreateDiscussionPane, 
-            AddParentPane, ChangeUsernameAndEmailPane, ChangePasswordPane, EditProfilePane;
+    private AnchorPane MenuPane, TopPane, HomePagePane, LeaderboardPane, EventPane, BookingPane, ParentProfilePane,
+            DiscussionPane, CreateDiscussionPane, AddChildPane, ChangeUsernameAndEmailPane, ChangePasswordPane,
+            EditProfilePane;
     @FXML
-    private Text UsernameMenuPane, UsernameProfilePage, NumOfFriend, Winner1, Winner1pts, Winner2, Winner2pts, Winner3, 
-            Winner3pts, Winner4,Winner4pts, Winner5, Winner5pts, Winner6, Winner6pts, Winner7, Winner7pts, Winner8, 
-            Winner8pts, Winner9, Winner9pts,Winner10, Winner10pts;
+    private Text UsernameMenuPane, UsernameProfilePage, Suggested1, Suggested2, Suggested3, Suggested4, Suggested5,
+            Distance1, Distance2, Distance3, Distance4, Distance5, Winner1, Winner1pts, Winner2, Winner2pts, Winner3,
+            Winner3pts, Winner4, Winner4pts, Winner5, Winner5pts, Winner6, Winner6pts, Winner7, Winner7pts, Winner8,
+            Winner8pts, Winner9, Winner9pts, Winner10, Winner10pts;
     @FXML
     private TextArea DiscussionContentField;
     @FXML
     private Label UsernameLabel, EmailLabel, LocationLabel;
     @FXML
-    private TextField NewUsername, NewEmail, ParentUsernameField,DiscussionTitleField;
+    private TextField NewUsername, NewEmail, ChildUsernameField, DiscussionTitleField;
     @FXML
     private PasswordField OldPassword1, OldPassword2, NewPassword, ConfirmPassword;
     @FXML
-    private ChoiceBox<String> QuizThemeChoiceBox;
+    private ChoiceBox<String> AvailableTimeSlotChoiceBox, DestinationIDChoiceBox, ChildChoiceBox;
     @FXML
     private HBox MENU, LiveEventHBox, EventHBox1, EventHBox2, EventHBox3;
     private Button selectedButton = null;
     private ObservableList<String> theme = FXCollections.observableArrayList("SCIENCE", "TECHNOLOGY", "ENGINEERING", "MATHEMATIC");
+    private ObservableList<String> time = FXCollections.observableArrayList("8 am - 10 am", "10 am - 12 pm", "12 pm - 2 pm", "2 pm - 4 pm", "4 pm - 6 pm", "6 pm - 8 pm");
+    private ObservableList<String> destinationID = FXCollections.observableArrayList("1", "2", "3", "4", "5");
+
     @FXML
-    private TableView<ParentColumn> ParentTable;
+    private TableView<ChildrenColumn> ChildTable;
     @FXML
-    private TableColumn<ParentColumn, Integer> NoColumn;
+    private TableColumn<ChildrenColumn, Integer> NoColumnChildren;
     @FXML
-    private TableColumn<ParentColumn, String> ParentColumn;
+    private TableColumn<ChildrenColumn, String> ChildColumn;
     @FXML
-    private TableView<EventColumn> EventTable;
+    private TableView<PastBookingColumn> PastBookingTable;
     @FXML
-    private TableColumn<EventColumn, String> DateColumn, TitleColumn, VenueColumn, TimeColumn;
+    private TableColumn<PastBookingColumn, Integer> NoColumnPastBooking;
     @FXML
-    private TableView<BookedStudyTourColumn> BookedStudyTourTable;
+    private TableColumn<PastBookingColumn, String> DateColumn, ChildrenColumn, PlaceColumn, DistanceColumn;
     @FXML
-    private TableColumn<BookedStudyTourColumn, String> BookedDateColumn, BookedVenueColumn;
-    @FXML
-    private ScrollPane FriendListScrollPane, FriendRequestScrollPane, QuizScrollPane, DiscussionScrollPane;
+    private ScrollPane DiscussionScrollPane;
 
     private TranslateTransition slideOutTransition, slideInTransition;
     private int currentIndex;
-    //public static String friendNameProfile;
-    public static Stack<String> friendNameNavigate = new Stack<>();
+    public static Stack<String> friendNameNavigateParent = new Stack<>();
 
     DatabaseConnection dbConnect = new DatabaseConnection();
     UserRepository userRepository = new UserRepository(dbConnect);
@@ -169,7 +179,6 @@ public class StudentController implements Initializable {
             slideInTransition = new TranslateTransition(Duration.seconds(0.5), MenuPane);
             slideInTransition.setToX(-MenuPane.getWidth()); // Slide back to the initial position
 
-            hasFriendRequest();
             ButtonEffect(MenuButton);
             MenuButton.setOnAction(event -> {
                 if (MenuPane.getTranslateX() != 0) {
@@ -178,18 +187,15 @@ public class StudentController implements Initializable {
                     slideInTransition.play(); // Slide in the menu
                 }
             });
-            
+
             ProfilePage.setOnAction(event -> {
                 selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
                 stackPane.getChildren().clear();
-                stackPane.getChildren().add(StudentProfilePane);
-                FriendListPane.setVisible(false);
-                FriendRequestPane.setVisible(false);
-                AddParentPane.setVisible(false);
-                //ViewFriendProfilePage.setVisible(false);
+                stackPane.getChildren().add(ParentProfilePane);
+                AddChildPane.setVisible(false);
                 EditProfilePane.setVisible(false);
                 setUpProfilePage(sessionManager.getCurrentUser().getUsername());
             });
@@ -242,44 +248,25 @@ public class StudentController implements Initializable {
                     editProfile_Password(sessionManager.getCurrentUser().getUsername());
                 }
             });
-            AddParentPage.setOnAction(event -> {
-                AddParentPane.setVisible(true);
-                AddParentPane.toFront();
+            AddChildPage.setOnAction(event -> {
+                AddChildPane.setVisible(true);
+                AddChildPane.toFront();
             });
-            AddParentButton.setOnAction(event -> {
-                String parentUsername = ParentUsernameField.getText();
-                if (parentUsername.isBlank()) {
+            AddChildButton.setOnAction(event -> {
+                String childrenUsername = ChildUsernameField.getText();
+                if (childrenUsername.isBlank()) {
                     JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
-                } else if (Students.getParentList(sessionManager.getCurrentUser().getUsername()).contains(userRepository.getID(parentUsername))) {
-                    JOptionPane.showMessageDialog(null, "The parent has been added before!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (Parents.getChildList(sessionManager.getCurrentUser().getUsername()).contains(userRepository.getID(childrenUsername))) {
+                    JOptionPane.showMessageDialog(null, "The child has been added before!!!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    Students.addParent(sessionManager.getCurrentUser().getUsername(), parentUsername);                
-                    setUpParentTable(sessionManager.getCurrentUser().getUsername());
+                    Parents.addChildren(childrenUsername, sessionManager.getCurrentUser().getUsername());//change parent add children                   
+                    setUpProfilePage(sessionManager.getCurrentUser().getUsername());
                 }
-                ParentUsernameField.clear();
-                AddParentPane.setVisible(false);
+                ChildUsernameField.clear();
+                AddChildPane.setVisible(false);
             });
-            ExitAddParentPane.setOnAction(event -> {
-                AddParentPane.setVisible(false);
-            });
-            FriendListScrollPane.setContent(FriendListVBox);
-            FriendListPage.setOnAction(event -> {
-                FriendListPane.setVisible(true);
-                FriendListPane.toFront();
-            });
-            ButtonEffect(ExitFriendListPage);
-            ExitFriendListPage.setOnAction(event -> {
-                FriendListPane.setVisible(false);
-            });
-            FriendRequestScrollPane.setContent(FriendRequestVBox);
-            FriendRequestPage.setOnAction(event -> {
-                FriendRequestPane.setVisible(true);
-                FriendRequestPane.toFront();
-                showFriendRequests(sessionManager.getCurrentUser().getUsername());
-            });
-            ButtonEffect(ExitFriendRequestPage);
-            ExitFriendRequestPage.setOnAction(event -> {
-                FriendRequestPane.setVisible(false);
+            ExitAddChildPane.setOnAction(event -> {
+                AddChildPane.setVisible(false);
             });
 
             DiscussionScrollPane.setContent(DiscussionVBox);
@@ -316,25 +303,62 @@ public class StudentController implements Initializable {
                 }
             });
 
-            QuizScrollPane.setContent(QuizVBox);
-            createFilterDropdown(theme);
-            QuizPage.setOnAction(event -> {
+            BookingPage.setOnAction(event -> {
                 selectedButton.setId("");
-                ObservableList<Node> children = FilterVBox.getChildren();
-                for (int i = 1; i < children.size(); i++) { // Start from 1 to skip the FilterButton
-                    Node node = children.get(i);
-                    if (node instanceof CheckBox) {
-                        CheckBox checkBox = (CheckBox) node;
-                        checkBox.setVisible(false);
-                        checkBox.setSelected(false); // Ensure the checkbox is unselected
-                    }
-                }
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
-                refreshQuiz();
                 stackPane.getChildren().clear();
-                stackPane.getChildren().add(QuizPane);
+                stackPane.getChildren().add(BookingPane);
+                setUpSuggestedDestination();
+                DestinationIDChoiceBox.setItems(destinationID);
+                ChildChoiceBox.setDisable(true);
+                AvailableTimeSlotChoiceBox.setDisable(true);
+            });
+            DestinationIDChoiceBox.setOnAction(event -> {
+                String destinationID = DestinationIDChoiceBox.getValue();
+                if (destinationID != null) {
+                    setUpChildChoiceBox();
+                }
+            });
+            ChildChoiceBox.setOnAction(event -> {
+                String destinationID = DestinationIDChoiceBox.getValue();
+                String childUsername = ChildChoiceBox.getValue();
+                if (destinationID != null && childUsername != null) {
+                    setUpAvailableTimeSlotChoiceBox(childUsername);
+                }
+            });
+            DoneBooking.setOnAction(event -> {
+                if (MenuPane.getTranslateX() == 0) {
+                    slideInTransition.play();
+                }
+                String destinationID = DestinationIDChoiceBox.getValue();
+                String childUsername = ChildChoiceBox.getValue();
+                String timeSlot = AvailableTimeSlotChoiceBox.getValue();
+                if (childUsername.equals("All Children")) {
+                    ArrayList<String> allChild = Parents.getChildList(sessionManager.getCurrentUser().getUsername());
+                    for (int i = 0; i < allChild.size(); i++) {
+                        saveBooking(destinationID, userRepository.getUsernameByID(allChild.get(i)), timeSlot);
+                    }
+                    JOptionPane.showMessageDialog(null, "Successfully booked!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    DestinationIDChoiceBox.setValue("");
+                    ChildChoiceBox.getItems().clear();
+                    ChildChoiceBox.setDisable(true);
+                    AvailableTimeSlotChoiceBox.getItems().clear();
+                    AvailableTimeSlotChoiceBox.setDisable(true);
+                    setUpProfilePage(sessionManager.getCurrentUser().getUsername());
+                } else if (destinationID != null && childUsername != null && timeSlot != null) {
+                    saveBooking(destinationID, childUsername, timeSlot);
+                    JOptionPane.showMessageDialog(null, "Successfully booked!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    DestinationIDChoiceBox.setValue("");
+                    ChildChoiceBox.getItems().clear();
+                    ChildChoiceBox.setDisable(true);
+                    AvailableTimeSlotChoiceBox.getItems().clear();
+                    AvailableTimeSlotChoiceBox.setDisable(true);
+                    setUpProfilePage(sessionManager.getCurrentUser().getUsername());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             });
 
             EventPage.setOnAction(event -> {
@@ -345,7 +369,7 @@ public class StudentController implements Initializable {
                 refreshEvent();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(EventPane);
-            });           
+            });
             currentIndex = 0;
             ButtonEffect(PreviousButton);
             ButtonEffect(NextButton);
@@ -362,10 +386,8 @@ public class StudentController implements Initializable {
                     }
                     if (btn.equals(HomePage)) {
                         switchHomePage();
-                        selectedButton.setId("selected");
                     } else if (btn.equals(LeaderboardPage)) {
                         switchLeaderboardPage();
-                        selectedButton.setId("selected");
                     }
                 });
             }
@@ -432,53 +454,41 @@ public class StudentController implements Initializable {
         });
     }
 
-    // Method to add a friend to the friendlist
-    private void addFriendList(String friendName) {
-        Button friendButton = new Button(friendName);
-        friendButton.getStyleClass().add("friend-button");
-        ButtonEffect(friendButton);
-        friendButton.setOnAction(event -> {
-            if (canOpenProfilePage(friendName)) {
-                if (friendNameNavigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
-                    friendButton.setDisable(true);
-                } else {
-                    friendNameNavigate.push(friendName);
-                    openProfilePage(friendNameNavigate.peek());
-                }
-            }
-        });
-        FriendListVBox.getChildren().add(friendButton);
-    }
-
     // Method to open the friend's profile page
     private void openProfilePage(String friendName) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
-            Parent root = loader.load();
+        String role = userRepository.getRole(friendName).toUpperCase();
+        if (role.equals("STUDENT")) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
+                Parent root = loader.load();
 
-            FriendProfileController controller = loader.getController();
+                FriendProfileController controller = loader.getController();
 
-            // Create a new stage for the second view
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.TRANSPARENT);
+                // Create a new stage for the second view
+                Stage stage = new Stage();
+                stage.initStyle(StageStyle.TRANSPARENT);
 
-            // Ensure the scene is also transparent
-            Scene scene = new Scene(root);
-            scene.setFill(Color.TRANSPARENT);
-            stage.setScene(scene);
+                // Ensure the scene is also transparent
+                Scene scene = new Scene(root);
+                scene.setFill(Color.TRANSPARENT);
+                stage.setScene(scene);
 
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(((Stage) MENU.getScene().getWindow()));
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.initOwner(((Stage) MENU.getScene().getWindow()));
 
-            stage.setResizable(false);
-            stage.show();
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
-            stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
-        } catch (IOException e) {
-            e.printStackTrace();
+                stage.setResizable(false);
+                stage.show();
+                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+                stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
+                stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (role.equals("EDUCATOR")) {
+            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (role.equals("PARENT")) {
+            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
     public boolean canOpenProfilePage(String friendName) {
@@ -493,243 +503,6 @@ public class StudentController implements Initializable {
             return false;
         } else {
             return false;
-        }
-    }
-
-    // Method to add an HBox with three buttons to the VBox
-    public void addFriendRequest(String friendName) {
-        // Create an HBox
-        HBox FriendRequestHBox = new HBox();
-        FriendRequestHBox.setSpacing(10); // Spacing between buttons
-        FriendRequestHBox.setAlignment(Pos.CENTER_LEFT);
-
-        // Create three buttons and add them to the HBox
-        Button name = new Button(friendName);
-        Button confirm = new Button("CONFIRM");
-        Button delete = new Button("DELETE");
-
-        name.setStyle("-fx-background-color: transparent; -fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 20px; ");
-        name.setPrefWidth(170);
-
-        // Add custom styles to button2 and button3
-        confirm.getStyleClass().add("confirm");
-        delete.getStyleClass().add("delete");
-
-        ButtonEffect(name);
-        name.setOnAction(event -> {
-            if (canOpenProfilePage(friendName)) {
-                if (friendNameNavigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
-                    name.setDisable(true);
-                } else {
-                    friendNameNavigate.push(friendName);
-                    openProfilePage(friendNameNavigate.peek());
-                }
-            }
-        });
-
-        confirm.setOnAction(event -> {
-            Students.acceptFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
-            // Retrieve the parent HBox of the confirm button
-            HBox parentHBox = (HBox) confirm.getParent();
-            // Remove the parent HBox from the FriendRequestVBox
-            FriendRequestVBox.getChildren().remove(parentHBox);
-            setUpProfilePage(sessionManager.getCurrentUser().getUsername());
-            hasFriendRequest();
-        });
-
-        delete.setOnAction(event -> {
-            Students.rejectFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
-            // Retrieve the parent HBox of the confirm button
-            HBox parentHBox = (HBox) confirm.getParent();
-            // Remove the parent HBox from the FriendRequestVBox
-            FriendRequestVBox.getChildren().remove(parentHBox);
-            hasFriendRequest();
-        });
-
-        FriendRequestHBox.getChildren().addAll(name, confirm, delete);
-
-        // Add the HBox to the VBox
-        FriendRequestVBox.getChildren().add(FriendRequestHBox);
-    }
-
-    private void addNewQuiz(Quiz quiz, boolean isQuizDone) {
-        // Create the HBox
-        HBox hBox = new HBox();
-        hBox.setAlignment(Pos.CENTER_LEFT);
-        hBox.setSpacing(10);
-
-        // Create the VBox
-        VBox vBox = new VBox();
-        vBox.setAlignment(Pos.TOP_LEFT);
-        vBox.setPadding(new Insets(0, 0, 0, 20));
-
-        // Add three text elements to the VBox
-        Text titleText = new Text(quiz.getTitle());
-
-        HBox temp = new HBox();
-        temp.setSpacing(5);
-        temp.setAlignment(Pos.TOP_LEFT);
-        Text t = new Text("Theme: ");
-        t.setStyle("-fx-fill: #737373; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 16px; ");
-        Button themeButton = new Button(quiz.getTheme());
-        String setColour = "";
-        if (quiz.getTheme().equals("SCIENCE")) {
-            setColour = "-fx-background-color: #c3dbc2;";
-        } else if (quiz.getTheme().equals("TECHNOLOGY")) {
-            setColour = "-fx-background-color: #a7d1df;";
-        } else if (quiz.getTheme().equals("ENGINEERING")) {
-            setColour = "-fx-background-color: #e4cfb4;";
-        } else if (quiz.getTheme().equals("MATHEMATIC")) {
-            setColour = "-fx-background-color: #f0c9dc;";
-        }
-        themeButton.setStyle(setColour + "-fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 12px; -fx-background-radius: 20px;");
-        temp.getChildren().addAll(t, themeButton);
-
-        Text descriptionText = new Text(quiz.getDescription());
-        descriptionText.setWrappingWidth(800);
-        titleText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 30px; ");
-        descriptionText.setStyle("-fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 14px; ");
-        vBox.getChildren().addAll(titleText, temp, descriptionText);
-
-        // Create a button
-        Button button = new Button("ATTEMPT QUIZ");
-        button.setPrefWidth(150);
-        button.setStyle("-fx-background-color: linear-gradient( to right,#8c52ff, #5ce1e6); -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
-        button.setOnAction(event -> {
-            Students.addDoneQuiz(sessionManager.getCurrentUser().getUsername(), quiz.getID());
-            refreshQuiz();
-            pointsFromDataBase.addPoints(2);
-            refreshPoints();
-            JOptionPane.showMessageDialog(null, "Congratulations!!! You've earned 2 points!!! ", "Success", JOptionPane.INFORMATION_MESSAGE);
-            try {
-                // Open the link in the default browser
-                Desktop.getDesktop().browse(new URI(quiz.getContent()));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            //ArrayList<String> doneQuizList = Students.getDoneQuizList(sessionManager.getCurrentUser().getUsername());
-//            user.setDoneQuiz(user.getDoneQuiz()+str);
-//            currentUser.addDoneQuiz(quiz.getID()+",");
-        });
-        if (isQuizDone) {
-            button.setDisable(true);
-            button.setStyle("-fx-background-color: #239F24; -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
-            button.setText("QUIZ DONE");
-        }
-
-        // Add the VBox and the button to the HBox
-        hBox.getChildren().addAll(vBox, button);
-
-        // Add the HBox to the main VBox
-        QuizVBox.getChildren().add(0, hBox);
-    }
-
-    public void createFilterDropdown(ObservableList<String> themes) {
-        FilterVBox.setAlignment(Pos.CENTER);
-
-        // Create checkboxes for each theme
-        for (String theme : themes) {
-            CheckBox checkBox = new CheckBox(theme);
-            checkBox.setStyle("-fx-background-color: white;-fx-font-family: \"Arial Black\";-fx-font-size: 14px;-fx-background-color: rgba(255, 255, 255, 0.7);");
-            checkBox.setVisible(false); // Initially hide checkboxes
-            checkBox.setMinWidth(150);
-            FilterVBox.getChildren().add(checkBox);
-        }
-
-        // Add click event handler to toggle checkboxes visibility
-        FilterButton.setOnMouseClicked(event -> {
-            ObservableList<Node> children = FilterVBox.getChildren();
-            for (int i = 1; i < children.size(); i++) {
-                Node node = children.get(i);
-                node.setVisible(!node.isVisible());
-            }
-        });
-        // Add listener to each checkbox to trigger filterTheme method
-        for (Node node : FilterVBox.getChildren()) {
-            if (node instanceof CheckBox) {
-                CheckBox checkBox = (CheckBox) node;
-                checkBox.setOnAction(event -> filterTheme());
-            }
-        }
-
-    }
-
-    private String getThemeText(Node node) {
-        if (node instanceof HBox) {
-            HBox hbox = (HBox) node;
-            ObservableList<Node> children = hbox.getChildren();
-            for (Node child : children) {
-                if (child instanceof VBox) {
-                    VBox vbox = (VBox) child;
-                    ObservableList<Node> vboxChildren = vbox.getChildren();
-                    for (Node vboxChild : vboxChildren) {
-                        if (vboxChild instanceof HBox) {
-                            HBox tempHBox = (HBox) vboxChild;
-                            ObservableList<Node> tempHBoxChildren = tempHBox.getChildren();
-                            for (Node tempChild : tempHBoxChildren) {
-                                if (tempChild instanceof Button) {
-                                    return ((Button) tempChild).getText();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return "";
-    }
-
-    public void filterTheme() {
-        // Get the children of the main VBox
-        ObservableList<Node> children = QuizVBox.getChildren();
-
-        // Check if any checkbox is selected
-        boolean anyCheckboxSelected = false;
-        for (Node filterChild : FilterVBox.getChildren()) {
-            if (filterChild instanceof CheckBox) {
-                CheckBox checkBox = (CheckBox) filterChild;
-                if (checkBox.isSelected()) {
-                    anyCheckboxSelected = true;
-                    break;
-                }
-            }
-        }
-
-        // Iterate over the children
-        for (Node child : children) {
-            if (child instanceof HBox) {
-                HBox hbox = (HBox) child;
-                boolean showQuiz = true; // Default to true, display the quiz
-
-                // Get the theme of the current quiz
-                String theme = getThemeText(child);
-
-                // If any checkbox is selected, proceed with filtering
-                if (anyCheckboxSelected) {
-                    // If the theme is not empty
-                    if (!theme.isEmpty()) {
-                        // Check if any checkbox with the corresponding theme is selected
-                        for (Node filterChild : FilterVBox.getChildren()) {
-                            if (filterChild instanceof CheckBox) {
-                                CheckBox checkBox = (CheckBox) filterChild;
-                                if (checkBox.isSelected() && checkBox.getText().equals(theme)) {
-                                    showQuiz = true;
-                                    break;
-                                } else {
-                                    showQuiz = false;
-                                }
-                            }
-                        }
-                    } else {
-                        showQuiz = false; // If the theme is empty, don't show the quiz
-                    }
-                }
-
-                // Set visibility of the quiz based on showQuiz flag
-                hbox.setVisible(showQuiz);
-                hbox.setManaged(showQuiz);
-            }
         }
     }
 
@@ -766,11 +539,11 @@ public class StudentController implements Initializable {
         usernameButton.getStyleClass().add("username-button");
         usernameButton.setOnAction(event -> {
             if (canOpenProfilePage(username)) {
-                if (friendNameNavigate.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
+                if (friendNameNavigateParent.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
                     usernameButton.setDisable(true);
                 } else {
-                    friendNameNavigate.push(username);
-                    openProfilePage(friendNameNavigate.peek());
+                    friendNameNavigateParent.push(username);
+                    openProfilePage(friendNameNavigateParent.peek());
                 }
             }
         });
@@ -828,40 +601,30 @@ public class StudentController implements Initializable {
         UsernameMenuPane.setText(username);
     }
 
-    private void setUpParentTable(String username) {
+    private void setUpChildTable(String username) {
         //associate data with column
-        NoColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, Integer>("no"));
-        ParentColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, String>("username"));
+        NoColumnChildren.setCellValueFactory(new PropertyValueFactory<ChildrenColumn, Integer>("no"));
+        ChildColumn.setCellValueFactory(new PropertyValueFactory<ChildrenColumn, String>("username"));
 
         //get chilren arraylist from parent
-        ArrayList<ParentColumn> arrayList = new ArrayList<>(Students.getParent(username));
-        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList(arrayList);
-
-        ParentTable.setItems(parentList);
+        ArrayList<ChildrenColumn> arrayList = new ArrayList<>(Parents.getChildren(username));
+        System.out.println(arrayList);
+        ObservableList<ChildrenColumn> childrenList = FXCollections.observableArrayList(arrayList);
+        ChildTable.setItems(childrenList);
     }
 
-    private void setUpEventTable(String username) {
-        ArrayList<EventColumn> temp = Students.getStudentRegisteredEvents(username);
-        ObservableList<EventColumn> eventList = FXCollections.observableArrayList(temp);
-
+    private void setUpPastBookingTable(String username) {
+        ArrayList<PastBookingColumn> temp = Parents.getPastBooking(username);
+        ObservableList<PastBookingColumn> pastBookingList = FXCollections.observableArrayList(temp);
+        System.out.println(temp);
         //associate data with column
-        DateColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("date"));
-        TitleColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("title"));
-        VenueColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("venue"));
-        TimeColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("time"));
+        NoColumnPastBooking.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, Integer>("no"));
+        DateColumn.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, String>("date"));
+        ChildrenColumn.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, String>("children"));
+        PlaceColumn.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, String>("place"));
+        DistanceColumn.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, String>("distance"));
 
-        EventTable.setItems(eventList);
-    }
-
-    private void setUpBookedStudyTourTable(String username) {
-        ArrayList<BookedStudyTourColumn> temp = Students.getStudentBookedStudyTour(username);
-        ObservableList<BookedStudyTourColumn> bookedStudyTourList = FXCollections.observableArrayList(temp);
-
-        //associate data with column
-        BookedDateColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("date"));
-        BookedVenueColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("venue"));
-
-        BookedStudyTourTable.setItems(bookedStudyTourList);
+        PastBookingTable.setItems(pastBookingList);
     }
 
     private void setUpProfilePage(String username) {
@@ -876,37 +639,9 @@ public class StudentController implements Initializable {
         UsernameLabel.setText(username);
         EmailLabel.setText(email);
         LocationLabel.setText(location);
-        NumOfFriend.setText(totalNumOfFriend);
 
-        setUpParentTable(username);
-        setUpEventTable(username);
-        setUpBookedStudyTourTable(username);
-
-        int point = userRepository.getPoints(username);
-        PointDisplay.setText(String.valueOf(point) + " POINTS");
-
-        showFriendList(username);
-        hasFriendRequest();
-    }
-
-    public void showFriendList(String username) {
-        FriendListVBox.getChildren().clear();
-        ArrayList<String> friendList = Students.getFriendList(username);
-        for (String friend : friendList) {
-            addFriendList(friend);
-        }
-    }
-
-    public void showFriendRequests(String username) {
-        FriendRequestVBox.getChildren().clear();
-        ArrayList<String> friendRequestList = Students.getFriendRequestList(username);
-        if (friendRequestList != null) {
-            for (String friendRequest : friendRequestList) {
-                addFriendRequest(friendRequest);
-            }
-        } else {
-            System.out.println("Friend request list is null.");
-        }
+        setUpChildTable(username);
+        setUpPastBookingTable(username);
     }
 
     public static void showReminderDialog(String warningContent) {
@@ -1123,17 +858,7 @@ public class StudentController implements Initializable {
         joinButton.getStyleClass().add("colorGradientButton");
         joinButton.setTextFill(javafx.scene.paint.Color.WHITE);
         joinButton.setFont(new Font("Segoe UI Black", 20.0));
-        joinButton.setOnAction(event -> {
-            try {
-                e.addJoinedEvent(sessionManager.getCurrentUser().getUsername(), e.getId());
-                JOptionPane.showMessageDialog(null, "You've successfully joined the event. 5 Points rewarded!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                pointsFromDataBase.addPoints(5);
-                refreshPoints();
-                refreshEvent();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+        joinButton.setDisable(true);
         //Check if liked then red; if never like then black;
         List<String> JoinedEvent = e.getJoinedEventList(sessionManager.getCurrentUser().getUsername());
         if (JoinedEvent.contains(e.getId())) {
@@ -1207,33 +932,13 @@ public class StudentController implements Initializable {
         }
     }
 
-    private void refreshQuiz() {
-        List<Quiz> quizList = Quiz.getQuizList();
-        QuizVBox.getChildren().clear();
-        List<Quiz> notDoneQuizList = new ArrayList<>();
-        ArrayList<String> doneQuizList = Students.getDoneQuizList(sessionManager.getCurrentUser().getUsername());
-        System.out.println(doneQuizList.size());
-        for (Quiz quiz : quizList) {
-            System.out.println(doneQuizList.size());
-            if (doneQuizList.contains(quiz.getID())) {
-                System.out.println(quiz.getID());
-                addNewQuiz(quiz, true);
-            } else {
-                notDoneQuizList.add(quiz);
-            }
-        }
-        for (Quiz quiz : notDoneQuizList) {
-            addNewQuiz(quiz, false);
-        }
-    }
-
     public static Date convertToDate(LocalDate localDate) {
         // Convert LocalDate to Instant
         Instant instant = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
         // Convert Instant to Date
         return Date.from(instant);
     }
-   
+
     private void refreshEvent() {
         ArrayList<EventHBoxElement> EventHBoxElementList = User.getLiveEventList();
         LiveEventHBox.getChildren().clear();
@@ -1252,22 +957,6 @@ public class StudentController implements Initializable {
                 }
             }
         }
-
-//        List<EventHBoxElement> notJoinEventList = new ArrayList<>();
-//        ArrayList<String> joinedEventList = EventHBoxElement.getJoinedEventList(sessionManager.getCurrentUser().getUsername());
-//        System.out.println(joinedEventList.size());
-//        for (EventHBoxElement2 eventHBoxElement2: EventHBoxElement2List) {
-//            System.out.println(joinedEventList.size());
-//            if (joinedEventList.contains(eventHBoxElement2.getID())) {
-//                System.out.println(eventHBoxElement2.getID());
-//                addNewEvent(eventHBoxElement2, true);
-//            } else {
-//                notJoinEventList.add(eventHBoxElement2);
-//            }
-//        }
-//        for (EventHBoxElement2 eventHBoxElement2 : notJoinEventList) {
-//            addNewQuiz(eventHBoxElement2, false);
-//        }
     }
 
     private void createDiscussion() {
@@ -1305,14 +994,11 @@ public class StudentController implements Initializable {
 
     //ADD
     public void refreshPoints() {
-        //(String.valueOf(sessionManager.getPoint()) + "   point(s)");
-        PointDisplay.setText(String.valueOf(userRepository.getPoints(sessionManager.getCurrentUser().getUsername())) + " POINTS");
         sessionManager.timestampPoints();
         updateGlobalLeaderboard();
     }
 
     public void updateGlobalLeaderboard() {
-
         Winner1.setText(sessionManager.getTopUsername(0));
         Winner2.setText(sessionManager.getTopUsername(1));
         Winner3.setText(sessionManager.getTopUsername(2));
@@ -1335,30 +1021,9 @@ public class StudentController implements Initializable {
         Winner10pts.setText(sessionManager.getTopPoints(9) + " pts");
     }
 
-    private void hasFriendRequest() {
-        notification1.getChildren().clear();
-        notification2.getChildren().clear();
-        notification3.getChildren().clear();
-        Circle redDot1 = new Circle(5);
-        Circle redDot2 = new Circle(5);
-        Circle redDot3 = new Circle(5);
-        if (Students.getFriendRequestList(sessionManager.getCurrentUser().getUsername()).size() > 0) {
-            redDot1.setFill(Color.RED);
-            redDot2.setFill(Color.RED);
-            redDot3.setFill(Color.RED);
-        } else {
-            redDot1.setFill(new Color(0, 0, 0, 0));
-            redDot2.setFill(new Color(0, 0, 0, 0));
-            redDot3.setFill(new Color(0, 0, 0, 0));
-        }
-        notification1.getChildren().add(redDot1);
-        notification2.getChildren().add(redDot2);
-        notification3.getChildren().add(redDot3);
-    }
-
     private void setProfileImage() {
         // Load the image
-        Image image = new Image(getClass().getResource("../png/StudentProfile.jpg").toExternalForm()); // Replace with your image path
+        Image image = new Image(getClass().getResource("../png/ParentProfile.jpg").toExternalForm()); // Replace with your image path
 
         // Create a circle with a specific radius
         Circle circle = new Circle(100); // Radius 100 pixels
@@ -1374,5 +1039,127 @@ public class StudentController implements Initializable {
 
         // Create a layout pane and add the circle to it
         ProfileImage.getChildren().addAll(circle, borderCircle);
+    }
+
+    private void setUpSuggestedDestination() {
+        List<Destination> destination = Parents.getTop5ShortestDistances();
+        Suggested1.setText(destination.get(0).getDestinationName());
+        Distance1.setText(String.valueOf(destination.get(0).getDistance()) + " km away");
+        Suggested2.setText(destination.get(1).getDestinationName());
+        Distance2.setText(String.valueOf(destination.get(1).getDistance()) + " km away");
+        Suggested3.setText(destination.get(2).getDestinationName());
+        Distance3.setText(String.valueOf(destination.get(2).getDistance()) + " km away");
+        Suggested4.setText(destination.get(3).getDestinationName());
+        Distance4.setText(String.valueOf(destination.get(3).getDistance()) + " km away");
+        Suggested5.setText(destination.get(4).getDestinationName());
+        Distance5.setText(String.valueOf(destination.get(4).getDistance()) + " km away");
+    }
+
+    private void setUpChildChoiceBox() {
+        ArrayList<ChildrenColumn> temp = Parents.getChildren(sessionManager.getCurrentUser().getUsername());
+        ArrayList<String> childName = new ArrayList<>();
+        for (int i = 0; i < temp.size(); i++) {
+            childName.add(temp.get(i).getUsername());
+        }
+        if (temp.size() == 0) {
+            JOptionPane.showMessageDialog(null, "Since you did not add any child, you cannot book any event. Please add child in profile page first before proceed.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            ChildChoiceBox.setDisable(false);
+            ChildChoiceBox.getItems().clear();
+            if (childName.size() != 1) {
+                childName.add("All Children");
+            }
+            ObservableList<String> child = FXCollections.observableArrayList(childName);
+            ChildChoiceBox.setItems(child);
+        }
+    }
+
+    private void setUpAvailableTimeSlotChoiceBox(String childUsername) {
+        AvailableTimeSlotChoiceBox.setDisable(false);
+        AvailableTimeSlotChoiceBox.getItems().clear();
+        if (childUsername.equals("All Children")) {
+            ArrayList<String> allChild = Parents.getChildList(sessionManager.getCurrentUser().getUsername());
+            System.out.println(allChild);
+
+            Set<String> commonTimeSlots = new HashSet<>(Parents.compareDate(userRepository.getUsernameByID(allChild.get(0))));
+            System.out.println(commonTimeSlots);
+
+            for (int i = 1; i < allChild.size(); i++) {
+                List<String> childTimeSlots = Parents.compareDate(userRepository.getUsernameByID(allChild.get(i)));
+                commonTimeSlots.retainAll(childTimeSlots);
+                System.out.println("Common Time Slots after child " + i + ": " + commonTimeSlots);
+            }
+
+            // Define a custom comparator for date strings
+            Comparator<String> dateComparator = (dateStr1, dateStr2) -> {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date1 = sdf.parse(dateStr1);
+                    Date date2 = sdf.parse(dateStr2);
+                    return date1.compareTo(date2);
+                } catch (ParseException e) {
+                    e.printStackTrace(); // Handle parsing exception
+                }
+                return 0; // Default to 0 if parsing fails
+            };
+
+            // Convert set to list
+            List<String> sortedTimeSlots = new ArrayList<>(commonTimeSlots);
+
+            // Sort the list using the custom comparator
+            Collections.sort(sortedTimeSlots, dateComparator);
+
+            // Convert sorted list back to set
+            commonTimeSlots = new LinkedHashSet<>(sortedTimeSlots);
+            AvailableTimeSlotChoiceBox.setItems(FXCollections.observableArrayList(commonTimeSlots));
+            if (commonTimeSlots.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Your child's schedule is full!!! No available time slots!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                AvailableTimeSlotChoiceBox.setDisable(true);
+            }
+        } else {
+            ObservableList<String> timeSlot = FXCollections.observableArrayList(Parents.compareDate(childUsername));
+            System.out.println(timeSlot);
+            AvailableTimeSlotChoiceBox.setItems(timeSlot);
+            if (timeSlot.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Your child's schedule is full!!! No available time slots!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                AvailableTimeSlotChoiceBox.setDisable(true);
+            }
+        }
+    }
+
+    private void saveBooking(String destinationID, String childUsername, String timeSlot) {
+        String destination = "";
+        String distance = "";
+        switch (destinationID) {
+            case "1":
+                destination = Suggested1.getText();
+                distance = Distance1.getText();
+                break;
+            case "2":
+                destination = Suggested2.getText();
+                distance = Distance2.getText();
+                break;
+            case "3":
+                destination = Suggested3.getText();
+                distance = Distance3.getText();
+                break;
+            case "4":
+                destination = Suggested4.getText();
+                distance = Distance4.getText();
+                break;
+            case "5":
+                destination = Suggested5.getText();
+                distance = Distance5.getText();
+                break;
+            default:
+                destination = "";
+                distance = "";
+                break;
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date = LocalDate.parse(timeSlot, formatter);
+        Booking.getBookingList();
+        Booking booking = new Booking(destination, distance, date, userRepository.getID(sessionManager.getCurrentUser().getUsername()), userRepository.getID(childUsername));
+        booking.saveBooking(sessionManager.getCurrentUser().getUsername(), childUsername);
     }
 }

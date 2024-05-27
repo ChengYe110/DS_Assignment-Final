@@ -8,11 +8,11 @@ package gui;
  *
  * @author enjye
  */
-public class ParentColumn {
+public class ChildrenColumn {
     private String username;
     private Integer no;
     
-    public ParentColumn(Integer no,String username){
+    public ChildrenColumn(Integer no,String username){
         this.username=username;
         this.no=no;
     }
@@ -32,5 +32,4 @@ public class ParentColumn {
     public void setNo(Integer no) {
         this.no = no;
     }
-    
 }

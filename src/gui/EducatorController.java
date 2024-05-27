@@ -7,7 +7,8 @@ package gui;
 import ds.assignment.DatabaseConnection;
 import ds.assignment.Discussion;
 import ds.assignment.Login;
-import ds.assignment.Parents;
+import ds.assignment.NumEventCreated;
+import ds.assignment.NumQuizCreated;
 import ds.assignment.Points;
 import ds.assignment.Quiz;
 import ds.assignment.SessionManager;
@@ -91,67 +92,58 @@ import javax.swing.JOptionPane;
  *
  * @author enjye
  */
-public class StudentController implements Initializable {
+public class EducatorController implements Initializable {
 
     @FXML
-    private StackPane stackPane, ExtraStackPane, notification1, notification2, notification3, ProfileImage;
+    private StackPane stackPane, ExtraStackPane, ProfileImage;
     @FXML
     private Button DiscussionPage, EventPage, HomePage, LeaderboardPage, MenuButton, ProfilePage, QuizPage,
-            FriendListPage, ExitFriendListPage, FriendRequestPage, ExitFriendRequestPage, ExitViewFriendProfilePage, 
-            CreateDiscussionPage, DoneCreateDiscussion,AddParentButton, AddParentPage, ExitAddParentPane, 
-            ChangeUsernameAndEmailButton, ChangePasswordButton,SaveChangeUsernameAndEmailButton, SaveChangePasswordButton, 
-            EditProfilePage, ExitEditProfilePage,PointDisplay, FilterButton, LogOutButton, NextButton, PreviousButton;
+            CreateQuizPage, DoneCreateQuiz, DoneCreateEvent, CreateEventPage, CreateDiscussionPage, DoneCreateDiscussion,
+            ChangeUsernameAndEmailButton, ChangePasswordButton, SaveChangeUsernameAndEmailButton, SaveChangePasswordButton,
+            EditProfilePage, ExitEditProfilePage, FilterButton, LogOutButton, NextButton, PreviousButton,
+            CreateQuizShortCut, CreateEventShortCut;
     @FXML
-    private VBox DrawerPane, FriendListVBox, FriendRequestVBox, QuizVBox, DiscussionVBox, FilterVBox;
+    private VBox DrawerPane, QuizVBox, DiscussionVBox, FilterVBox;
     @FXML
-    private AnchorPane MenuPane, TopPane, HomePagePane, LeaderboardPane, QuizPane, EventPane,StudentProfilePane, 
-            FriendListPane, FriendRequestPane, ViewFriendProfilePage,DiscussionPane, CreateDiscussionPane, 
-            AddParentPane, ChangeUsernameAndEmailPane, ChangePasswordPane, EditProfilePane;
+    private AnchorPane MenuPane, TopPane, HomePagePane, LeaderboardPane, QuizPane, CreateQuizPane, EventPane,
+            CreateEventPane, EducatorProfilePane, DiscussionPane, CreateDiscussionPane, ChangeUsernameAndEmailPane,
+            ChangePasswordPane, EditProfilePane;
     @FXML
-    private Text UsernameMenuPane, UsernameProfilePage, NumOfFriend, Winner1, Winner1pts, Winner2, Winner2pts, Winner3, 
-            Winner3pts, Winner4,Winner4pts, Winner5, Winner5pts, Winner6, Winner6pts, Winner7, Winner7pts, Winner8, 
-            Winner8pts, Winner9, Winner9pts,Winner10, Winner10pts;
+    private Text UsernameMenuPane, UsernameProfilePage, Winner1, Winner1pts, Winner2, Winner2pts, Winner3, Winner3pts, Winner4,
+            Winner4pts, Winner5, Winner5pts, Winner6, Winner6pts, Winner7, Winner7pts, Winner8, Winner8pts, Winner9, Winner9pts,
+            Winner10, Winner10pts, totalQuizCreated, totalEventCreated;
     @FXML
-    private TextArea DiscussionContentField;
+    private TextArea QuizDescriptionField, EventDescriptionField, DiscussionContentField;
     @FXML
     private Label UsernameLabel, EmailLabel, LocationLabel;
     @FXML
-    private TextField NewUsername, NewEmail, ParentUsernameField,DiscussionTitleField;
+    private TextField NewUsername, NewEmail, ParentUsernameField, EventTitleField, EventVenueField, QuizTitleField, QuizContentField,
+            DiscussionTitleField;
     @FXML
     private PasswordField OldPassword1, OldPassword2, NewPassword, ConfirmPassword;
     @FXML
-    private ChoiceBox<String> QuizThemeChoiceBox;
+    private ChoiceBox<String> QuizThemeChoiceBox, EventTimeChoiceBox;
+    @FXML
+    private DatePicker EventDatePicker;
     @FXML
     private HBox MENU, LiveEventHBox, EventHBox1, EventHBox2, EventHBox3;
     private Button selectedButton = null;
     private ObservableList<String> theme = FXCollections.observableArrayList("SCIENCE", "TECHNOLOGY", "ENGINEERING", "MATHEMATIC");
+    private ObservableList<String> time = FXCollections.observableArrayList("8 am - 10 am", "10 am - 12 pm", "12 pm - 2 pm", "2 pm - 4 pm", "4 pm - 6 pm", "6 pm - 8 pm");
+
     @FXML
-    private TableView<ParentColumn> ParentTable;
-    @FXML
-    private TableColumn<ParentColumn, Integer> NoColumn;
-    @FXML
-    private TableColumn<ParentColumn, String> ParentColumn;
-    @FXML
-    private TableView<EventColumn> EventTable;
-    @FXML
-    private TableColumn<EventColumn, String> DateColumn, TitleColumn, VenueColumn, TimeColumn;
-    @FXML
-    private TableView<BookedStudyTourColumn> BookedStudyTourTable;
-    @FXML
-    private TableColumn<BookedStudyTourColumn, String> BookedDateColumn, BookedVenueColumn;
-    @FXML
-    private ScrollPane FriendListScrollPane, FriendRequestScrollPane, QuizScrollPane, DiscussionScrollPane;
+    private ScrollPane QuizScrollPane, DiscussionScrollPane;
 
     private TranslateTransition slideOutTransition, slideInTransition;
     private int currentIndex;
-    //public static String friendNameProfile;
-    public static Stack<String> friendNameNavigate = new Stack<>();
+    public static Stack<String> friendNameNavigateEducator = new Stack<>();
 
     DatabaseConnection dbConnect = new DatabaseConnection();
     UserRepository userRepository = new UserRepository(dbConnect);
     Login login = new Login();  // Create a single instance of Login
     SessionManager sessionManager = new SessionManager(userRepository, login);  // Pass the Login instance to SessionManage
-    Points pointsFromDataBase = new Points();
+    NumQuizCreated numQuizCreatedFromDataBase = new NumQuizCreated();
+    NumEventCreated numEventCreatedFromDataBase = new NumEventCreated();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -169,7 +161,6 @@ public class StudentController implements Initializable {
             slideInTransition = new TranslateTransition(Duration.seconds(0.5), MenuPane);
             slideInTransition.setToX(-MenuPane.getWidth()); // Slide back to the initial position
 
-            hasFriendRequest();
             ButtonEffect(MenuButton);
             MenuButton.setOnAction(event -> {
                 if (MenuPane.getTranslateX() != 0) {
@@ -178,18 +169,15 @@ public class StudentController implements Initializable {
                     slideInTransition.play(); // Slide in the menu
                 }
             });
-            
+
+            EventTimeChoiceBox.setItems(time);
             ProfilePage.setOnAction(event -> {
                 selectedButton.setId("");
                 if (MenuPane.getTranslateX() == 0) {
                     slideInTransition.play();
                 }
                 stackPane.getChildren().clear();
-                stackPane.getChildren().add(StudentProfilePane);
-                FriendListPane.setVisible(false);
-                FriendRequestPane.setVisible(false);
-                AddParentPane.setVisible(false);
-                //ViewFriendProfilePage.setVisible(false);
+                stackPane.getChildren().add(EducatorProfilePane);
                 EditProfilePane.setVisible(false);
                 setUpProfilePage(sessionManager.getCurrentUser().getUsername());
             });
@@ -202,6 +190,23 @@ public class StudentController implements Initializable {
                 NewEmail.setText(userRepository.getEmailByUsername(sessionManager.getCurrentUser().getUsername())); //get email from database   
                 ChangeUsernameAndEmailButton.setStyle("-fx-background-color: white;");
                 ChangePasswordButton.setStyle("-fx-background-color: transparent;");
+            });
+            ButtonEffect(CreateQuizShortCut);
+            CreateQuizShortCut.setOnAction(event -> {
+                if (MenuPane.getTranslateX() == 0) {
+                    slideInTransition.play();
+                }
+                clearCreateQuiz();
+                stackPane.getChildren().clear();
+                stackPane.getChildren().add(CreateQuizPane);
+            });
+            CreateEventShortCut.setOnAction(event -> {
+                if (MenuPane.getTranslateX() == 0) {
+                    slideInTransition.play();
+                }
+                clearCreateEvent();
+                stackPane.getChildren().clear();
+                stackPane.getChildren().add(CreateEventPane);
             });
             ButtonEffect(ChangeUsernameAndEmailButton);
             ChangeUsernameAndEmailButton.setOnAction(event -> {
@@ -241,45 +246,6 @@ public class StudentController implements Initializable {
                 } else {
                     editProfile_Password(sessionManager.getCurrentUser().getUsername());
                 }
-            });
-            AddParentPage.setOnAction(event -> {
-                AddParentPane.setVisible(true);
-                AddParentPane.toFront();
-            });
-            AddParentButton.setOnAction(event -> {
-                String parentUsername = ParentUsernameField.getText();
-                if (parentUsername.isBlank()) {
-                    JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
-                } else if (Students.getParentList(sessionManager.getCurrentUser().getUsername()).contains(userRepository.getID(parentUsername))) {
-                    JOptionPane.showMessageDialog(null, "The parent has been added before!!!", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    Students.addParent(sessionManager.getCurrentUser().getUsername(), parentUsername);                
-                    setUpParentTable(sessionManager.getCurrentUser().getUsername());
-                }
-                ParentUsernameField.clear();
-                AddParentPane.setVisible(false);
-            });
-            ExitAddParentPane.setOnAction(event -> {
-                AddParentPane.setVisible(false);
-            });
-            FriendListScrollPane.setContent(FriendListVBox);
-            FriendListPage.setOnAction(event -> {
-                FriendListPane.setVisible(true);
-                FriendListPane.toFront();
-            });
-            ButtonEffect(ExitFriendListPage);
-            ExitFriendListPage.setOnAction(event -> {
-                FriendListPane.setVisible(false);
-            });
-            FriendRequestScrollPane.setContent(FriendRequestVBox);
-            FriendRequestPage.setOnAction(event -> {
-                FriendRequestPane.setVisible(true);
-                FriendRequestPane.toFront();
-                showFriendRequests(sessionManager.getCurrentUser().getUsername());
-            });
-            ButtonEffect(ExitFriendRequestPage);
-            ExitFriendRequestPage.setOnAction(event -> {
-                FriendRequestPane.setVisible(false);
             });
 
             DiscussionScrollPane.setContent(DiscussionVBox);
@@ -336,6 +302,31 @@ public class StudentController implements Initializable {
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(QuizPane);
             });
+            QuizThemeChoiceBox.setItems(theme);
+            CreateQuizPage.setOnAction(event -> {
+                selectedButton.setId("");
+                if (MenuPane.getTranslateX() == 0) {
+                    slideInTransition.play();
+                }
+                clearCreateQuiz();
+                stackPane.getChildren().clear();
+                stackPane.getChildren().add(CreateQuizPane);
+            });
+            DoneCreateQuiz.setOnAction(event -> {
+                if (MenuPane.getTranslateX() == 0) {
+                    slideInTransition.play();
+                }
+                createQuiz();
+                ObservableList<Node> children = FilterVBox.getChildren();
+                for (int i = 1; i < children.size(); i++) { // Start from 1 to skip the FilterButton
+                    Node node = children.get(i);
+                    if (node instanceof CheckBox) {
+                        CheckBox checkBox = (CheckBox) node;
+                        checkBox.setVisible(false);
+                        checkBox.setSelected(false); // Ensure the checkbox is unselected
+                    }
+                }
+            });
 
             EventPage.setOnAction(event -> {
                 selectedButton.setId("");
@@ -345,10 +336,26 @@ public class StudentController implements Initializable {
                 refreshEvent();
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(EventPane);
-            });           
+            });
+            CreateEventPage.setOnAction(event -> {
+                selectedButton.setId("");
+                if (MenuPane.getTranslateX() == 0) {
+                    slideInTransition.play();
+                }
+                clearCreateEvent();
+                stackPane.getChildren().clear();
+                stackPane.getChildren().add(CreateEventPane);
+            });
             currentIndex = 0;
             ButtonEffect(PreviousButton);
             ButtonEffect(NextButton);
+
+            DoneCreateEvent.setOnAction(event -> {
+                if (MenuPane.getTranslateX() == 0) {
+                    slideInTransition.play();
+                }
+                createEvent();
+            });
 
             for (Node node : MENU.getChildren()) {
                 ((Button) node).setOnAction(event -> {
@@ -371,8 +378,10 @@ public class StudentController implements Initializable {
             }
             selectedButton = (Button) MENU.getChildren().get(0);
             selectedButton.setId("selected");
-        });
-        LogOutButton.setOnAction(event -> {
+        }
+        );
+        LogOutButton.setOnAction(event
+                -> {
             try {
                 // Load the login page FXML
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Educator/Login_Register.fxml"));
@@ -388,7 +397,8 @@ public class StudentController implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
+        }
+        );
         setUsername(sessionManager.getCurrentUser().getUsername());
     }
 
@@ -432,53 +442,41 @@ public class StudentController implements Initializable {
         });
     }
 
-    // Method to add a friend to the friendlist
-    private void addFriendList(String friendName) {
-        Button friendButton = new Button(friendName);
-        friendButton.getStyleClass().add("friend-button");
-        ButtonEffect(friendButton);
-        friendButton.setOnAction(event -> {
-            if (canOpenProfilePage(friendName)) {
-                if (friendNameNavigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
-                    friendButton.setDisable(true);
-                } else {
-                    friendNameNavigate.push(friendName);
-                    openProfilePage(friendNameNavigate.peek());
-                }
-            }
-        });
-        FriendListVBox.getChildren().add(friendButton);
-    }
-
     // Method to open the friend's profile page
     private void openProfilePage(String friendName) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
-            Parent root = loader.load();
+        String role = userRepository.getRole(friendName).toUpperCase();
+        if (role.equals("STUDENT")) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
+                Parent root = loader.load();
 
-            FriendProfileController controller = loader.getController();
+                FriendProfileController controller = loader.getController();
 
-            // Create a new stage for the second view
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.TRANSPARENT);
+                // Create a new stage for the second view
+                Stage stage = new Stage();
+                stage.initStyle(StageStyle.TRANSPARENT);
 
-            // Ensure the scene is also transparent
-            Scene scene = new Scene(root);
-            scene.setFill(Color.TRANSPARENT);
-            stage.setScene(scene);
+                // Ensure the scene is also transparent
+                Scene scene = new Scene(root);
+                scene.setFill(Color.TRANSPARENT);
+                stage.setScene(scene);
 
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(((Stage) MENU.getScene().getWindow()));
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.initOwner(((Stage) MENU.getScene().getWindow()));
 
-            stage.setResizable(false);
-            stage.show();
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
-            stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
-        } catch (IOException e) {
-            e.printStackTrace();
+                stage.setResizable(false);
+                stage.show();
+                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+                stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
+                stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (role.equals("EDUCATOR")) {
+            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (role.equals("PARENT")) {
+            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
     public boolean canOpenProfilePage(String friendName) {
@@ -496,63 +494,7 @@ public class StudentController implements Initializable {
         }
     }
 
-    // Method to add an HBox with three buttons to the VBox
-    public void addFriendRequest(String friendName) {
-        // Create an HBox
-        HBox FriendRequestHBox = new HBox();
-        FriendRequestHBox.setSpacing(10); // Spacing between buttons
-        FriendRequestHBox.setAlignment(Pos.CENTER_LEFT);
-
-        // Create three buttons and add them to the HBox
-        Button name = new Button(friendName);
-        Button confirm = new Button("CONFIRM");
-        Button delete = new Button("DELETE");
-
-        name.setStyle("-fx-background-color: transparent; -fx-text-fill: black; -fx-font-family: \"Segoe UI Semibold\";-fx-font-size: 20px; ");
-        name.setPrefWidth(170);
-
-        // Add custom styles to button2 and button3
-        confirm.getStyleClass().add("confirm");
-        delete.getStyleClass().add("delete");
-
-        ButtonEffect(name);
-        name.setOnAction(event -> {
-            if (canOpenProfilePage(friendName)) {
-                if (friendNameNavigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
-                    name.setDisable(true);
-                } else {
-                    friendNameNavigate.push(friendName);
-                    openProfilePage(friendNameNavigate.peek());
-                }
-            }
-        });
-
-        confirm.setOnAction(event -> {
-            Students.acceptFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
-            // Retrieve the parent HBox of the confirm button
-            HBox parentHBox = (HBox) confirm.getParent();
-            // Remove the parent HBox from the FriendRequestVBox
-            FriendRequestVBox.getChildren().remove(parentHBox);
-            setUpProfilePage(sessionManager.getCurrentUser().getUsername());
-            hasFriendRequest();
-        });
-
-        delete.setOnAction(event -> {
-            Students.rejectFriendRequest(sessionManager.getCurrentUser().getUsername(), friendName);
-            // Retrieve the parent HBox of the confirm button
-            HBox parentHBox = (HBox) confirm.getParent();
-            // Remove the parent HBox from the FriendRequestVBox
-            FriendRequestVBox.getChildren().remove(parentHBox);
-            hasFriendRequest();
-        });
-
-        FriendRequestHBox.getChildren().addAll(name, confirm, delete);
-
-        // Add the HBox to the VBox
-        FriendRequestVBox.getChildren().add(FriendRequestHBox);
-    }
-
-    private void addNewQuiz(Quiz quiz, boolean isQuizDone) {
+    private void addNewQuiz(Quiz quiz) {
         // Create the HBox
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
@@ -595,28 +537,7 @@ public class StudentController implements Initializable {
         Button button = new Button("ATTEMPT QUIZ");
         button.setPrefWidth(150);
         button.setStyle("-fx-background-color: linear-gradient( to right,#8c52ff, #5ce1e6); -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
-        button.setOnAction(event -> {
-            Students.addDoneQuiz(sessionManager.getCurrentUser().getUsername(), quiz.getID());
-            refreshQuiz();
-            pointsFromDataBase.addPoints(2);
-            refreshPoints();
-            JOptionPane.showMessageDialog(null, "Congratulations!!! You've earned 2 points!!! ", "Success", JOptionPane.INFORMATION_MESSAGE);
-            try {
-                // Open the link in the default browser
-                Desktop.getDesktop().browse(new URI(quiz.getContent()));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            //ArrayList<String> doneQuizList = Students.getDoneQuizList(sessionManager.getCurrentUser().getUsername());
-//            user.setDoneQuiz(user.getDoneQuiz()+str);
-//            currentUser.addDoneQuiz(quiz.getID()+",");
-        });
-        if (isQuizDone) {
-            button.setDisable(true);
-            button.setStyle("-fx-background-color: #239F24; -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
-            button.setText("QUIZ DONE");
-        }
+        button.setDisable(true);
 
         // Add the VBox and the button to the HBox
         hBox.getChildren().addAll(vBox, button);
@@ -766,11 +687,11 @@ public class StudentController implements Initializable {
         usernameButton.getStyleClass().add("username-button");
         usernameButton.setOnAction(event -> {
             if (canOpenProfilePage(username)) {
-                if (friendNameNavigate.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
+                if (friendNameNavigateEducator.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
                     usernameButton.setDisable(true);
                 } else {
-                    friendNameNavigate.push(username);
-                    openProfilePage(friendNameNavigate.peek());
+                    friendNameNavigateEducator.push(username);
+                    openProfilePage(friendNameNavigateEducator.peek());
                 }
             }
         });
@@ -826,87 +747,6 @@ public class StudentController implements Initializable {
 
     private void setUsername(String username) {
         UsernameMenuPane.setText(username);
-    }
-
-    private void setUpParentTable(String username) {
-        //associate data with column
-        NoColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, Integer>("no"));
-        ParentColumn.setCellValueFactory(new PropertyValueFactory<ParentColumn, String>("username"));
-
-        //get chilren arraylist from parent
-        ArrayList<ParentColumn> arrayList = new ArrayList<>(Students.getParent(username));
-        ObservableList<ParentColumn> parentList = FXCollections.observableArrayList(arrayList);
-
-        ParentTable.setItems(parentList);
-    }
-
-    private void setUpEventTable(String username) {
-        ArrayList<EventColumn> temp = Students.getStudentRegisteredEvents(username);
-        ObservableList<EventColumn> eventList = FXCollections.observableArrayList(temp);
-
-        //associate data with column
-        DateColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("date"));
-        TitleColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("title"));
-        VenueColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("venue"));
-        TimeColumn.setCellValueFactory(new PropertyValueFactory<EventColumn, String>("time"));
-
-        EventTable.setItems(eventList);
-    }
-
-    private void setUpBookedStudyTourTable(String username) {
-        ArrayList<BookedStudyTourColumn> temp = Students.getStudentBookedStudyTour(username);
-        ObservableList<BookedStudyTourColumn> bookedStudyTourList = FXCollections.observableArrayList(temp);
-
-        //associate data with column
-        BookedDateColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("date"));
-        BookedVenueColumn.setCellValueFactory(new PropertyValueFactory<BookedStudyTourColumn, String>("venue"));
-
-        BookedStudyTourTable.setItems(bookedStudyTourList);
-    }
-
-    private void setUpProfilePage(String username) {
-        String email = userRepository.getEmailByUsername(username);
-        System.out.println(email);
-        String location = userRepository.getLocation(username);
-        System.out.println(location);
-        String totalNumOfFriend = String.valueOf(Students.getTotalFriend(username));
-        System.out.println(totalNumOfFriend);
-
-        UsernameProfilePage.setText(username);
-        UsernameLabel.setText(username);
-        EmailLabel.setText(email);
-        LocationLabel.setText(location);
-        NumOfFriend.setText(totalNumOfFriend);
-
-        setUpParentTable(username);
-        setUpEventTable(username);
-        setUpBookedStudyTourTable(username);
-
-        int point = userRepository.getPoints(username);
-        PointDisplay.setText(String.valueOf(point) + " POINTS");
-
-        showFriendList(username);
-        hasFriendRequest();
-    }
-
-    public void showFriendList(String username) {
-        FriendListVBox.getChildren().clear();
-        ArrayList<String> friendList = Students.getFriendList(username);
-        for (String friend : friendList) {
-            addFriendList(friend);
-        }
-    }
-
-    public void showFriendRequests(String username) {
-        FriendRequestVBox.getChildren().clear();
-        ArrayList<String> friendRequestList = Students.getFriendRequestList(username);
-        if (friendRequestList != null) {
-            for (String friendRequest : friendRequestList) {
-                addFriendRequest(friendRequest);
-            }
-        } else {
-            System.out.println("Friend request list is null.");
-        }
     }
 
     public static void showReminderDialog(String warningContent) {
@@ -1123,24 +963,7 @@ public class StudentController implements Initializable {
         joinButton.getStyleClass().add("colorGradientButton");
         joinButton.setTextFill(javafx.scene.paint.Color.WHITE);
         joinButton.setFont(new Font("Segoe UI Black", 20.0));
-        joinButton.setOnAction(event -> {
-            try {
-                e.addJoinedEvent(sessionManager.getCurrentUser().getUsername(), e.getId());
-                JOptionPane.showMessageDialog(null, "You've successfully joined the event. 5 Points rewarded!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                pointsFromDataBase.addPoints(5);
-                refreshPoints();
-                refreshEvent();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-        //Check if liked then red; if never like then black;
-        List<String> JoinedEvent = e.getJoinedEventList(sessionManager.getCurrentUser().getUsername());
-        if (JoinedEvent.contains(e.getId())) {
-            joinButton.setDisable(true);
-            joinButton.setStyle("-fx-background-color: #239F24; -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
-            joinButton.setText("JOINED");
-        }
+        joinButton.setDisable(true);
         // Add all children to the main HBox
         hbox.getChildren().addAll(vbox1, vbox2, joinButton);
 
@@ -1207,24 +1030,38 @@ public class StudentController implements Initializable {
         }
     }
 
+    private void createQuiz() {
+        String title = QuizTitleField.getText();
+        String description = QuizDescriptionField.getText();
+        String theme = QuizThemeChoiceBox.getValue();
+        String content = QuizContentField.getText();
+
+        if (title.isBlank() || description.isBlank() || theme == null || content.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Quiz quiz = new Quiz(title, description, theme, content);
+            quiz.saveQuiz(sessionManager.getCurrentUser().getUsername());
+            numQuizCreatedFromDataBase.addQuizCreated(1);
+            refreshQuiz();
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(QuizPane);
+            clearCreateQuiz();
+        }
+    }
+
     private void refreshQuiz() {
         List<Quiz> quizList = Quiz.getQuizList();
         QuizVBox.getChildren().clear();
-        List<Quiz> notDoneQuizList = new ArrayList<>();
-        ArrayList<String> doneQuizList = Students.getDoneQuizList(sessionManager.getCurrentUser().getUsername());
-        System.out.println(doneQuizList.size());
         for (Quiz quiz : quizList) {
-            System.out.println(doneQuizList.size());
-            if (doneQuizList.contains(quiz.getID())) {
-                System.out.println(quiz.getID());
-                addNewQuiz(quiz, true);
-            } else {
-                notDoneQuizList.add(quiz);
-            }
+            addNewQuiz(quiz);
         }
-        for (Quiz quiz : notDoneQuizList) {
-            addNewQuiz(quiz, false);
-        }
+    }
+
+    private void clearCreateQuiz() {
+        QuizTitleField.clear();
+        QuizDescriptionField.clear();
+        QuizThemeChoiceBox.setValue(null);
+        QuizContentField.clear();
     }
 
     public static Date convertToDate(LocalDate localDate) {
@@ -1233,7 +1070,30 @@ public class StudentController implements Initializable {
         // Convert Instant to Date
         return Date.from(instant);
     }
-   
+
+    private void createEvent() {
+        String title = EventTitleField.getText();
+        String description = EventDescriptionField.getText();
+        String venue = EventVenueField.getText();
+        LocalDate dateA = EventDatePicker.getValue();
+        String time = EventTimeChoiceBox.getValue();
+
+        if (title.isBlank() || description.isBlank() || venue.isBlank() || dateA == null || time.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all information!!!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (dateA.isBefore(LocalDate.now()) || dateA.equals(LocalDate.now())) {
+            JOptionPane.showMessageDialog(null, "Please choose the date after " + LocalDate.now(), "Error", JOptionPane.ERROR_MESSAGE);
+            EventDatePicker.setValue(null);
+        } else {
+            EventHBoxElement eventHboxElement = new EventHBoxElement(title, description, venue, dateA, time);
+            eventHboxElement.saveEvent(sessionManager.getCurrentUser().getUsername());
+            numEventCreatedFromDataBase.addEventCreated(1);
+            refreshEvent();
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(EventPane);
+            clearCreateEvent();
+        }
+    }
+
     private void refreshEvent() {
         ArrayList<EventHBoxElement> EventHBoxElementList = User.getLiveEventList();
         LiveEventHBox.getChildren().clear();
@@ -1252,22 +1112,14 @@ public class StudentController implements Initializable {
                 }
             }
         }
+    }
 
-//        List<EventHBoxElement> notJoinEventList = new ArrayList<>();
-//        ArrayList<String> joinedEventList = EventHBoxElement.getJoinedEventList(sessionManager.getCurrentUser().getUsername());
-//        System.out.println(joinedEventList.size());
-//        for (EventHBoxElement2 eventHBoxElement2: EventHBoxElement2List) {
-//            System.out.println(joinedEventList.size());
-//            if (joinedEventList.contains(eventHBoxElement2.getID())) {
-//                System.out.println(eventHBoxElement2.getID());
-//                addNewEvent(eventHBoxElement2, true);
-//            } else {
-//                notJoinEventList.add(eventHBoxElement2);
-//            }
-//        }
-//        for (EventHBoxElement2 eventHBoxElement2 : notJoinEventList) {
-//            addNewQuiz(eventHBoxElement2, false);
-//        }
+    private void clearCreateEvent() {
+        EventTitleField.clear();
+        EventDescriptionField.clear();
+        EventVenueField.clear();
+        EventDatePicker.setValue(null);
+        EventTimeChoiceBox.setValue("");
     }
 
     private void createDiscussion() {
@@ -1303,16 +1155,12 @@ public class StudentController implements Initializable {
         DiscussionContentField.clear();
     }
 
-    //ADD
     public void refreshPoints() {
-        //(String.valueOf(sessionManager.getPoint()) + "   point(s)");
-        PointDisplay.setText(String.valueOf(userRepository.getPoints(sessionManager.getCurrentUser().getUsername())) + " POINTS");
         sessionManager.timestampPoints();
         updateGlobalLeaderboard();
     }
 
     public void updateGlobalLeaderboard() {
-
         Winner1.setText(sessionManager.getTopUsername(0));
         Winner2.setText(sessionManager.getTopUsername(1));
         Winner3.setText(sessionManager.getTopUsername(2));
@@ -1335,30 +1183,9 @@ public class StudentController implements Initializable {
         Winner10pts.setText(sessionManager.getTopPoints(9) + " pts");
     }
 
-    private void hasFriendRequest() {
-        notification1.getChildren().clear();
-        notification2.getChildren().clear();
-        notification3.getChildren().clear();
-        Circle redDot1 = new Circle(5);
-        Circle redDot2 = new Circle(5);
-        Circle redDot3 = new Circle(5);
-        if (Students.getFriendRequestList(sessionManager.getCurrentUser().getUsername()).size() > 0) {
-            redDot1.setFill(Color.RED);
-            redDot2.setFill(Color.RED);
-            redDot3.setFill(Color.RED);
-        } else {
-            redDot1.setFill(new Color(0, 0, 0, 0));
-            redDot2.setFill(new Color(0, 0, 0, 0));
-            redDot3.setFill(new Color(0, 0, 0, 0));
-        }
-        notification1.getChildren().add(redDot1);
-        notification2.getChildren().add(redDot2);
-        notification3.getChildren().add(redDot3);
-    }
-
     private void setProfileImage() {
         // Load the image
-        Image image = new Image(getClass().getResource("../png/StudentProfile.jpg").toExternalForm()); // Replace with your image path
+        Image image = new Image(getClass().getResource("../png/EducatorProfile.jpg").toExternalForm()); // Replace with your image path
 
         // Create a circle with a specific radius
         Circle circle = new Circle(100); // Radius 100 pixels
@@ -1374,5 +1201,23 @@ public class StudentController implements Initializable {
 
         // Create a layout pane and add the circle to it
         ProfileImage.getChildren().addAll(circle, borderCircle);
+    }
+
+    private void setUpProfilePage(String username) {
+        String email = userRepository.getEmailByUsername(username);
+        System.out.println(email);
+        String location = userRepository.getLocation(username);
+        System.out.println(location);
+        int quizCreated = userRepository.getNumQuizCreated(username);
+        int eventCreated = userRepository.getNumEventCreated(username);
+
+        UsernameProfilePage.setText(username);
+        UsernameLabel.setText(username);
+        EmailLabel.setText(email);
+        LocationLabel.setText(location);
+
+        totalQuizCreated.setText(String.valueOf(quizCreated)); //setTotalQuiz
+        totalEventCreated.setText(String.valueOf(eventCreated)); //setTotalEvent
+
     }
 }

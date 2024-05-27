@@ -19,13 +19,18 @@ import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import ds.assignment.Parents;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import ds.assignment.Students;
+import gui.EducatorController;
+import gui.ParentController;
 import javax.swing.JDialog;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class Login_RegisterController implements Initializable {
 
@@ -170,11 +175,13 @@ public class Login_RegisterController implements Initializable {
             }
         });
 
+        DatabaseConnection dbConnect = new DatabaseConnection();
+        UserRepository userRepository = new UserRepository(dbConnect);
+        Login userLogin = new Login();  // Create a single instance of Login
+        SessionManager sessionManager = new SessionManager(userRepository, userLogin);
+        userLogin.setSessionManager(sessionManager);
+
         login.setOnAction(event -> {
-            DatabaseConnection dbConnect = new DatabaseConnection();
-            UserRepository userRepository = new UserRepository(dbConnect);
-            Login login2 = new Login();  // Create a single instance of Login
-            SessionManager sessionManager = new SessionManager(userRepository, login2);
 
             // Get the entered email and password
             String enteredEmailUsername = username_email_login.getText();
@@ -190,6 +197,7 @@ public class Login_RegisterController implements Initializable {
                 System.out.println("exist");
                 boolean isAuthenticated = userLogin.authenticateUser(enteredEmailUsername, enteredPassword);
                 if (isAuthenticated) {
+                    String role = userLogin.getUserRole(enteredEmailUsername);
                     // Open the new window or perform other actions
                     sessionManager.login(enteredEmailUsername, enteredPassword);
 //                    Timestamp lastCheckinTimestamp = sessionManager.getLastTimestampFromDatabase();
@@ -204,10 +212,20 @@ public class Login_RegisterController implements Initializable {
                     dialog.setAlwaysOnTop(true);
 
                     try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Student.fxml"));
-                        root = loader.load();
-
-                        StudentController HPController = loader.getController();
+                        FXMLLoader loader;
+                        if (role.equals("Educator")) {
+                            loader = new FXMLLoader(getClass().getResource("/gui/Educator.fxml"));
+                            root = loader.load();
+                            EducatorController educatorController = loader.getController();
+                        } else if (role.equals("Student")) {
+                            loader = new FXMLLoader(getClass().getResource("/gui/Student.fxml"));
+                            root = loader.load();
+                            StudentController studentController = loader.getController();
+                        } else if (role.equals("Parent")) {
+                            loader = new FXMLLoader(getClass().getResource("/gui/Parent.fxml"));
+                            root = loader.load();
+                            ParentController parentController = loader.getController();
+                        }
 
                         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                         scene = new Scene(root);
@@ -216,10 +234,8 @@ public class Login_RegisterController implements Initializable {
                         stage.show();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    
-                  
-                    }
 
+                    }
 
 //                    if (lastCheckinTimestamp == null || !isSameDay(new Timestamp(System.currentTimeMillis()), lastCheckinTimestamp)) {
 //                        sessionManager.saveTimestampToDatabase();
@@ -252,12 +268,7 @@ public class Login_RegisterController implements Initializable {
             String username = username_register.getText();
             String email = email_register.getText();
             String password = passwordHidden_register.getText();
-
-            DatabaseConnection dbConnect = new DatabaseConnection();
-            UserRepository userRepository = new UserRepository(dbConnect);
-            Login loginRegister = new Login();
-            SessionManager sessionManager = new SessionManager(userRepository, loginRegister);  // Pass the Login instance to SessionManager
-            loginRegister.setSessionManager(sessionManager);
+            String confirmPasswprd = confirmpasswordHidden_register.getText();
 
             // Input validation
             if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
@@ -273,15 +284,36 @@ public class Login_RegisterController implements Initializable {
             }
 
             try {
+                Pattern upperCasePattern = Pattern.compile("[A-Z]");
+                Matcher hasUpperCase = upperCasePattern.matcher(password);
+
+                Pattern digitPattern = Pattern.compile("[0-9]");
+                Matcher hasDigit = digitPattern.matcher(password);
+
+                Pattern specialCharPattern = Pattern.compile("[^a-zA-Z0-9]");
+                Matcher hasSpecialChar = specialCharPattern.matcher(password);
 
                 if ((userRepository.isUsernameTaken(username))) {
                     JOptionPane.showMessageDialog(null, "Username has been taken", "Error", JOptionPane.ERROR_MESSAGE);
                 } // Provide user feedback for successful insertion
                 else if ((userRepository.isEmailTaken(email))) {
                     JOptionPane.showMessageDialog(null, "Email existed. Please use another email", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (!password.equals(confirmPasswprd)) {
+                    JOptionPane.showMessageDialog(null, "Passwords do not match. Please re-enter your password.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (password == null) {
+                    JOptionPane.showMessageDialog(null, "Password cannot be null.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (password.length() < 8) {
+                    JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (!hasUpperCase.find()) {
+                    JOptionPane.showMessageDialog(null, "Password must contain at least one uppercase letter.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (!hasDigit.find()) {
+                    JOptionPane.showMessageDialog(null, "Password must contain at least one digit.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (!hasSpecialChar.find()) {
+                    JOptionPane.showMessageDialog(null, "Password must contain at least one special character.", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "User created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-
+                    REGISTER.setVisible(false);
+                    LOGIN.setVisible(true);
                     String role = (student.isSelected()) ? "student"
                             : (parent.isSelected()) ? "parent"
                             : "educator";

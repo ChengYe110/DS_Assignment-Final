@@ -7,6 +7,8 @@ package ds.assignment;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -14,12 +16,21 @@ import java.sql.ResultSet;
  */
 public class Quiz {
 
+    private String ID;
     private String title;
     private String description;
     private String theme;
     private String content;
 
     public Quiz(String title, String description, String theme, String content) {
+        this.title = title;
+        this.description = description;
+        this.theme = theme;
+        this.content = content;
+    }
+    
+    public Quiz(String ID, String title, String description, String theme, String content) {
+        this.ID = ID;
         this.title = title;
         this.description = description;
         this.theme = theme;
@@ -40,6 +51,10 @@ public class Quiz {
 
     public String getContent() {
         return content;
+    }
+    
+    public String getID(){
+        return this.ID;
     }
 
     public static Quiz getQuizFromDatabase(String quizId) {
@@ -65,6 +80,67 @@ public class Quiz {
         }
 
         return null;
+    }
+    
+    public void saveQuiz(String educatorUsername) {
+        DatabaseConnection connectNow = new DatabaseConnection();
+        Connection connectDB = connectNow.linkDatabase();
+
+        try {
+
+            String query = "INSERT INTO quiz (Title, Description, Theme, Content) VALUES (?,?,?,?)";
+            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+            preparedStatement.setString(1, this.title);
+            preparedStatement.setString(2, this.description);
+            preparedStatement.setString(3, this.theme);
+            preparedStatement.setString(4, this.content);
+            
+            preparedStatement.executeUpdate(); //delete after execute next
+            System.out.println("haha");
+
+//            if (preparedStatement.executeUpdate() == 0) {
+//                String query2 = "UPDATE educator SET NumQuiz=NumQuiz+1 WHERE Username=?";
+//                PreparedStatement preparedStatement2 = connectDB.prepareStatement(query2);
+//                preparedStatement2.setString(1, educatorUsername);
+//                preparedStatement2.executeUpdate();
+//            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectNow.endDatabase();
+        }
+    }
+    
+    public static List<Quiz> getQuizList(){
+        DatabaseConnection connectNow = new DatabaseConnection();
+        Connection connectDB = connectNow.linkDatabase();
+        
+        List<Quiz> res = new ArrayList<>();
+
+        try {
+
+            String query = "SELECT * FROM quiz";
+            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                String ID = resultSet.getString("id_quiz");
+                String title = resultSet.getString("Title");
+                String description = resultSet.getString("Description");
+                String theme = resultSet.getString("Theme");
+                String content = resultSet.getString("Content");
+                res.add(new Quiz(ID, title, description, theme, content));
+            }
+            
+            return res;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            connectNow.endDatabase();
+        }
     }
 
 }
