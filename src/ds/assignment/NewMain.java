@@ -14,6 +14,9 @@ public class NewMain {
         User user = new User("", "", "","");
         Parent parent = new Parent("kjfkjdbkfj","iefuie", "wuegfuiaf", "parent");
         parent.readFile();
+//        parent.bookingDestination("Penang Science Cluster");
+        parent.calcDistance("Penang Science Cluster");
+        parent.showDateOfBookingDestination();
     }
     
 }

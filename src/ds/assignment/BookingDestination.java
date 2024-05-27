@@ -15,7 +15,7 @@ public interface BookingDestination {
     
     public void readFile();//read the coordinates inside the txt file //done
     
-    public double calcDistance();//calculate the distance between all coordinates
+    public double calcDistance(String destinationName);//calculate the distance between all coordinates
     
     public boolean checkCollision();//booking date inside the parentheses //done
     
