@@ -47,7 +47,6 @@ public class Login {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 return resultSet.next();
-                
 
             }
         } catch (SQLException e) {
@@ -79,7 +78,6 @@ public class Login {
             connection = dbConnect.linkDatabase();
 
             // SQL query to retrieve the hashed password based on email
-
             String selectQuery = "SELECT Password FROM user WHERE Email = ? OR Username = ?";
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
@@ -116,6 +114,31 @@ public class Login {
         }
 
         return false; // Current user is null or email not found in the database
+    }
+
+    public String getUserRole(String enteredEmailUsername) {
+        String role = null;
+        DatabaseConnection dbConnect = new DatabaseConnection();
+        Connection connection = null;
+        try {
+            connection = dbConnect.linkDatabase();
+
+            String selectQuery = "SELECT Role FROM user WHERE Email = ? OR Username = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                preparedStatement.setString(1, enteredEmailUsername);
+                preparedStatement.setString(2, enteredEmailUsername);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    role = resultSet.getString("Role");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately in a real application.
+        } finally {
+            dbConnect.endDatabase();
+        }
+        return role;
     }
 
 //    public String getCurrentUsername() {

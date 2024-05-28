@@ -534,7 +534,7 @@ public class ParentController implements Initializable {
     private void setUpPastBookingTable(String username) {
         //ArrayList<PastBookingColumn> temp = Parent.getPastBooking(username); //implement method from parent
         //ObservableList<PastBookingColumn> pastBookingList = FXCollections.observableArrayList(temp);
-
+        
         //associate data with column
         NoColumnPastBooking.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, Integer>("no"));
         DateColumn.setCellValueFactory(new PropertyValueFactory<PastBookingColumn, String>("date"));

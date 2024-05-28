@@ -5,7 +5,6 @@
 package gui;
 
 import ds.assignment.DatabaseConnection;
-<<<<<<< HEAD
 import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,17 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.sql.Date;
 import java.util.List;
-=======
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-
->>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
 
 /**
  *
@@ -38,7 +26,6 @@ import java.util.Collections;
  */
 public class EventHBoxElement {
 
-<<<<<<< HEAD
     private String ID, eventTitle, eventDescription, eventVenue, eventDateS, eventTime;
     private LocalDate eventDate;
 
@@ -66,25 +53,6 @@ public class EventHBoxElement {
     public String getId() {
         return ID;
     }
-=======
-    private String eventTitle, eventDescription, eventVenue, eventDateS, eventTimeS;
-    private LocalDate eventDate;
-    private LocalTime eventTime;
-
-
-    public EventHBoxElement(String eventTitle, String eventDescription, String eventVenue, String eventDate, String eventTime) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        
-        this.eventTitle = eventTitle;
-        this.eventDescription = eventDescription;
-        this.eventVenue = eventVenue;
-        this.eventDate = LocalDate.parse(eventDate, dateFormatter);
-        this.eventTime = LocalTime.parse(eventTime, timeFormatter);
-        this.eventDateS = eventDate;
-        this.eventTimeS = eventTime;
-    }
->>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
     
     public String getEventTitle() {
         return eventTitle;
@@ -116,7 +84,6 @@ public class EventHBoxElement {
 
     public void setEventDate(String eventDate) {
         this.eventDateS = eventDate;
-<<<<<<< HEAD
     }
 
     public LocalDate getEventDate() {
@@ -125,15 +92,12 @@ public class EventHBoxElement {
 
     public void setEventDate(LocalDate eventDate) {
         this.eventDate = eventDate;
-=======
->>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
     }
 
-    public String getEventTimeS() {
-        return eventTimeS;
+    public String getEventTime() {
+        return eventTime;
     }
 
-<<<<<<< HEAD
     public void saveEvent(String educatorUsername) {
         System.out.println("hi");
         DatabaseConnection connectNow = new DatabaseConnection();
@@ -164,52 +128,6 @@ public class EventHBoxElement {
         } finally {
             connectNow.endDatabase();
         }
-=======
-    public void setEventTime(String eventTime) {
-        this.eventTimeS = eventTime;
-    }
-    
-    public LocalDate getEventDate() {
-        return eventDate;
-    }
-
-    public void setEventDate(LocalDate eventDate) {
-        this.eventDate = eventDate;
-    }
-
-    public LocalTime getEventTime() {
-        return eventTime;
-    }
-
-    public void setEventTime(LocalTime eventTime) {
-        this.eventTime = eventTime;
->>>>>>> 29ba784c124343ae65e8b6d025881793aa5bf3d2
-    }
-    
-    public static ArrayList<LocalDate> getEventDateList(){
-        ArrayList<LocalDate> eventDateList = new ArrayList<>();
-        try {
-            DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.linkDatabase();
-            String query = "SELECT Date FROM event";
-            PreparedStatement preparedStatement = connectDB.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                LocalDate date = resultSet.getDate("Date").toLocalDate();
-                eventDateList.add(date);
-            }
-            Collections.sort(eventDateList);
-            
-            resultSet.close();
-            preparedStatement.close();
-            connectDB.close();
-        } catch (Exception e) {
-            System.out.println("SQL query failed.");
-            e.printStackTrace();
-        } 
-
-        return eventDateList;
     }
 
     public static ArrayList<LocalDate> getEventDateList() {

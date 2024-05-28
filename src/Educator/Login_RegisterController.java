@@ -25,6 +25,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import ds.assignment.Students;
+import gui.EducatorController;
 import javax.swing.JDialog;
 
 public class Login_RegisterController implements Initializable {
@@ -192,6 +193,7 @@ public class Login_RegisterController implements Initializable {
                 System.out.println("exist");
                 boolean isAuthenticated = userLogin.authenticateUser(enteredEmailUsername, enteredPassword);
                 if (isAuthenticated) {
+                    String role = userLogin.getUserRole(enteredEmailUsername);
                     // Open the new window or perform other actions
                     sessionManager.login(enteredEmailUsername, enteredPassword);
 //                    Timestamp lastCheckinTimestamp = sessionManager.getLastTimestampFromDatabase();
@@ -206,11 +208,18 @@ public class Login_RegisterController implements Initializable {
                     dialog.setAlwaysOnTop(true);
 
                     try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Student.fxml"));
-                        root = loader.load();
 
-                        StudentController HPController = loader.getController();
-                        
+                        FXMLLoader loader;
+                        if (role.equals("Educator")) {
+                            loader = new FXMLLoader(getClass().getResource("/gui/Educator.fxml"));
+                            root = loader.load();
+                            EducatorController educatorController = loader.getController();
+                        } else if (role.equals("Student")) {
+                            loader = new FXMLLoader(getClass().getResource("/gui/Student.fxml"));
+                            root = loader.load();
+                            StudentController studentController = loader.getController();
+                        }
+
                         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                         scene = new Scene(root);
                         stage.setScene(scene);
