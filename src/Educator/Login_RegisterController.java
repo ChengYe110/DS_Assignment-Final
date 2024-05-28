@@ -19,6 +19,7 @@ import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import ds.assignment.Parents;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
@@ -26,7 +27,10 @@ import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import ds.assignment.Students;
 import gui.EducatorController;
+import gui.ParentController;
 import javax.swing.JDialog;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class Login_RegisterController implements Initializable {
 
@@ -218,6 +222,10 @@ public class Login_RegisterController implements Initializable {
                             loader = new FXMLLoader(getClass().getResource("/gui/Student.fxml"));
                             root = loader.load();
                             StudentController studentController = loader.getController();
+                        } else if (role.equals("Parent")) {
+                            loader = new FXMLLoader(getClass().getResource("/gui/Parent.fxml"));
+                            root = loader.load();
+                            ParentController parentController = loader.getController();
                         }
 
                         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -261,6 +269,7 @@ public class Login_RegisterController implements Initializable {
             String username = username_register.getText();
             String email = email_register.getText();
             String password = passwordHidden_register.getText();
+            String confirmPasswprd = confirmpasswordHidden_register.getText();
 
             // Input validation
             if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
@@ -276,12 +285,32 @@ public class Login_RegisterController implements Initializable {
             }
 
             try {
+                Pattern upperCasePattern = Pattern.compile("[A-Z]");
+                Matcher hasUpperCase = upperCasePattern.matcher(password);
+
+                Pattern digitPattern = Pattern.compile("[0-9]");
+                Matcher hasDigit = digitPattern.matcher(password);
+
+                Pattern specialCharPattern = Pattern.compile("[^a-zA-Z0-9]");
+                Matcher hasSpecialChar = specialCharPattern.matcher(password);
 
                 if ((userRepository.isUsernameTaken(username))) {
                     JOptionPane.showMessageDialog(null, "Username has been taken", "Error", JOptionPane.ERROR_MESSAGE);
                 } // Provide user feedback for successful insertion
                 else if ((userRepository.isEmailTaken(email))) {
                     JOptionPane.showMessageDialog(null, "Email existed. Please use another email", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (!password.equals(confirmPasswprd)) {
+                    JOptionPane.showMessageDialog(null, "Passwords do not match. Please re-enter your password.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (password == null) {
+                    JOptionPane.showMessageDialog(null, "Password cannot be null.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (password.length() < 8) {
+                    JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (!hasUpperCase.find()) {
+                    JOptionPane.showMessageDialog(null, "Password must contain at least one uppercase letter.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (!hasDigit.find()) {
+                    JOptionPane.showMessageDialog(null, "Password must contain at least one digit.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (!hasSpecialChar.find()) {
+                    JOptionPane.showMessageDialog(null, "Password must contain at least one special character.", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "User created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                     REGISTER.setVisible(false);

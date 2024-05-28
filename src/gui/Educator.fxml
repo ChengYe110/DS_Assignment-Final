@@ -296,57 +296,6 @@
                   </ImageView>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="CreateQuizPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Title">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Description">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Theme">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Content">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <TextArea fx:id="QuizDescriptionField" layoutX="291.0" layoutY="143.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" wrapText="true" />
-                        <Button fx:id="DoneCreateQuiz" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI Black" size="20.0" />
-                           </font>
-                        </Button>
-                        <ChoiceBox fx:id="QuizThemeChoiceBox" layoutX="291.0" layoutY="279.0" prefHeight="43.0" prefWidth="203.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                        </ChoiceBox>
-                        <TextField fx:id="QuizTitleField" layoutX="291.0" layoutY="64.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;;" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextField fx:id="QuizContentField" layoutX="291.0" layoutY="357.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;;" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE QUIZ">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
             <AnchorPane fx:id="QuizPane" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
                <children>
                   <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
@@ -433,59 +382,6 @@
                      </children>
                   </AnchorPane>
                   <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE QUIZ">
-                     <font>
-                        <Font name="Segoe UI Black" size="36.0" />
-                     </font>
-                  </Text>
-                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../png/AddIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="CreateEventPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
-               <children>
-                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
-                     <children>
-                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Title">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="79.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Description" wrappingWidth="195.69140625">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="80.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Venue">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="77.0" layoutY="405.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Time">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <TextArea fx:id="EventDescriptionField" layoutX="291.0" layoutY="121.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" wrapText="true" />
-                        <Button fx:id="DoneCreateEvent" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI Black" size="20.0" />
-                           </font>
-                        </Button>
-                        <Text layoutX="79.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Date">
-                           <font>
-                              <Font name="Segoe UI Black" size="24.0" />
-                           </font>
-                        </Text>
-                        <DatePicker fx:id="EventDatePicker" layoutX="291.0" layoutY="314.0" prefHeight="35.0" prefWidth="294.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextField fx:id="EventTitleField" layoutX="291.0" layoutY="64.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;;" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <TextField fx:id="EventVenueField" layoutX="291.0" layoutY="250.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;;" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                        <ChoiceBox fx:id="EventTimeChoiceBox" layoutX="291.0" layoutY="378.0" prefHeight="35.0" prefWidth="294.0" style="-fx-background-color: white;" styleClass="text-field" stylesheets="@StudentStyle.css" />
-                     </children>
-                  </AnchorPane>
-                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE EVENT">
                      <font>
                         <Font name="Segoe UI Black" size="36.0" />
                      </font>
@@ -776,6 +672,110 @@
                         </StackPane>
                      </children>
                   </AnchorPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="CreateQuizPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Title">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Description">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Theme">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz Content">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <TextArea fx:id="QuizDescriptionField" layoutX="291.0" layoutY="143.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" wrapText="true" />
+                        <Button fx:id="DoneCreateQuiz" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="20.0" />
+                           </font>
+                        </Button>
+                        <ChoiceBox fx:id="QuizThemeChoiceBox" layoutX="291.0" layoutY="279.0" prefHeight="43.0" prefWidth="203.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-font-family: &quot;Yu Gothic UI Semibold&quot;; -fx-font-size: 14px;" stylesheets="@StudentStyle.css">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </ChoiceBox>
+                        <TextField fx:id="QuizTitleField" layoutX="291.0" layoutY="64.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextField fx:id="QuizContentField" layoutX="291.0" layoutY="357.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE QUIZ">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="CreateEventPane" layoutX="10.0" layoutY="10.0" prefHeight="606.0" prefWidth="1260.0" style="-fx-background-color: #030305;">
+               <children>
+                  <AnchorPane layoutX="65.0" layoutY="61.0" prefHeight="511.0" prefWidth="1131.0" style="-fx-background-radius: 40px;" styleClass="colorGradientBackground" stylesheets="@StudentStyle.css">
+                     <children>
+                        <Text layoutX="80.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Title">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="79.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Description" wrappingWidth="195.69140625">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="80.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Venue">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="77.0" layoutY="405.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Time">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <TextArea fx:id="EventDescriptionField" layoutX="291.0" layoutY="121.0" prefHeight="106.0" prefWidth="758.0" styleClass="text-field" stylesheets="@StudentStyle.css" wrapText="true" />
+                        <Button fx:id="DoneCreateEvent" layoutX="497.0" layoutY="436.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="137.0" style="-fx-background-radius: 25px;" styleClass="colorGradientButton" stylesheets="@StudentStyle.css" text="CREATE" textFill="WHITE">
+                           <font>
+                              <Font name="Segoe UI Black" size="20.0" />
+                           </font>
+                        </Button>
+                        <Text layoutX="79.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Date">
+                           <font>
+                              <Font name="Segoe UI Black" size="24.0" />
+                           </font>
+                        </Text>
+                        <DatePicker fx:id="EventDatePicker" layoutX="291.0" layoutY="314.0" prefHeight="35.0" prefWidth="294.0" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextField fx:id="EventTitleField" layoutX="291.0" layoutY="64.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <TextField fx:id="EventVenueField" layoutX="291.0" layoutY="250.0" prefHeight="35.0" prefWidth="758.0" style="-fx-border-color: #ccc; -fx-font-size: 14px; -fx-font-family: Yu Gothic UI Semibold;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                        <ChoiceBox fx:id="EventTimeChoiceBox" layoutX="291.0" layoutY="378.0" prefHeight="35.0" prefWidth="294.0" style="-fx-background-color: white;" styleClass="text-field" stylesheets="@StudentStyle.css" />
+                     </children>
+                  </AnchorPane>
+                  <Text fill="WHITE" layoutX="74.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE EVENT">
+                     <font>
+                        <Font name="Segoe UI Black" size="36.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="1062.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../png/AddIcon.png" />
+                     </image>
+                  </ImageView>
                </children>
             </AnchorPane>
          </children>

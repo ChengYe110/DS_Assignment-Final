@@ -12,7 +12,7 @@ public class ParentColumn {
     private String username;
     private Integer no;
     
-    ParentColumn(Integer no,String username){
+    public ParentColumn(Integer no,String username){
         this.username=username;
         this.no=no;
     }
