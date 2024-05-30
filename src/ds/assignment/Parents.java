@@ -108,6 +108,7 @@ public class Parents extends User {
     }
 
 //    public void readFile() {
+//      //this method is to read the bookingDestination File
 //        String line;        
 //        
 //        try{
@@ -138,6 +139,7 @@ public class Parents extends User {
 //            System.out.println("Problem with file input and output");
 //        }
 //    }
+//    
 //    public void calcDistance() {
 //        String line;
 //        try {
@@ -224,6 +226,7 @@ public class Parents extends User {
 //            System.out.println("\n" + bookingDate.);
 //        }
 //    }
+    
     public String bookingDestination(String chooseTour) {
         //check whether all the children have event at that day or not //done but need modify
         //if success  - database connection
