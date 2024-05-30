@@ -31,6 +31,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -81,7 +82,7 @@ public class FriendProfileController implements Initializable {
     SessionManager sessionManager = new SessionManager(userRepository, login);
 
     private Stack<String> navigate = new Stack<>();
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadStack();
@@ -136,39 +137,42 @@ public class FriendProfileController implements Initializable {
         friendButton.getStyleClass().add("friend-button");
         ButtonEffect(friendButton);
         friendButton.setOnAction(event -> {
-            if (canOpenProfilePage(friendName)) {
-                if (navigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
-                    friendButton.setDisable(true);
-                } else {
-                    navigate.push(friendName);
-                    openProfilePage(navigate.peek());
-                }
+            if (navigate.contains(friendName) || friendName.equals(sessionManager.getCurrentUser().getUsername())) {
+                friendButton.setDisable(true);
+            } else {
+                navigate.push(friendName);
+                openProfilePage(navigate.peek());
             }
         });
         FriendListVBox.getChildren().add(friendButton);
     }
 
-    public boolean canOpenProfilePage(String friendName) {
+    public String profilePageRole(String friendName) {
         String role = userRepository.getRole(friendName).toUpperCase();
         if (role.equals("STUDENT")) {
-            return true;
+            return "FriendProfile.fxml";
         } else if (role.equals("EDUCATOR")) {
-            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
+            return "FriendProfileEducator.fxml";
         } else if (role.equals("PARENT")) {
-            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
+            return "FriendProfileParent.fxml";
         } else {
-            return false;
+            return "";
         }
     }
 
     private void openProfilePage(String friendName) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(profilePageRole(friendName)));
             Parent root = loader.load();
 
-            FriendProfileController controller = loader.getController();
+            String role = userRepository.getRole(friendName).toUpperCase();
+            if (role.equals("STUDENT")) {
+                FriendProfileController controller = loader.getController();
+            } else if (role.equals("PARENT")) {
+                FriendProfileParentController controller = loader.getController();
+            } else if (role.equals("EDUCATOR")) {
+                FriendProfileEducatorController controller = loader.getController();
+            }
 
             // Create a new stage for the second view
             Stage stage = new Stage();
@@ -276,8 +280,8 @@ public class FriendProfileController implements Initializable {
             AddFriendButton.setVisible(false);
         }
     }
-    
-    public void loadStack(){
+
+    public void loadStack() {
         String role = userRepository.getRole(sessionManager.getCurrentUser().getUsername()).toUpperCase();
         if (role.equals("STUDENT")) {
             navigate = StudentController.friendNameNavigate;
@@ -285,18 +289,18 @@ public class FriendProfileController implements Initializable {
             navigate = EducatorController.friendNameNavigateEducator;
         } else if (role.equals("PARENT")) {
             navigate = ParentController.friendNameNavigateParent;
-        } 
+        }
     }
-    
-    public void resetStack(){
+
+    public void resetStack() {
         String role = userRepository.getRole(sessionManager.getCurrentUser().getUsername()).toUpperCase();
         if (role.equals("STUDENT")) {
             StudentController.friendNameNavigate = navigate;
         } else if (role.equals("EDUCATOR")) {
             EducatorController.friendNameNavigateEducator = navigate;
         } else if (role.equals("PARENT")) {
-            ParentController.friendNameNavigateParent= navigate;
-        } 
+            ParentController.friendNameNavigateParent = navigate;
+        }
     }
 
 }

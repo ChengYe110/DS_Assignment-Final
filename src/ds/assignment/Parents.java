@@ -18,11 +18,13 @@ import java.sql.SQLException;
 
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 
 import java.time.LocalDate;
 import java.time.DayOfWeek;
@@ -490,7 +492,8 @@ public class Parents extends User {
                 updateStatement.setString(2, parentName);
                 updateStatement.executeUpdate();
                 updateStatement.close();
-                
+                         
+                addRecordToTxt(parentName,childName);
                 JOptionPane.showMessageDialog(null, "You've successfully add "+childName+" as your child!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 // update student table: parentNums and parentEmail
@@ -502,6 +505,20 @@ public class Parents extends User {
             connectDB.close();
         } catch (Exception e) {
             System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+    
+    public static void addRecordToTxt(String parentUsername, String childName) {
+        String filename = "ParentChild.txt";
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            String line = parentUsername + ", " + childName;
+            writer.write(line);
+            writer.newLine();
+            System.out.println("Successfully written to the file: " + line);
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
             e.printStackTrace();
         }
     }

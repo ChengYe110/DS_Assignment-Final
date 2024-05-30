@@ -89,6 +89,8 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -454,56 +456,54 @@ public class ParentController implements Initializable {
         });
     }
 
-    // Method to open the friend's profile page
-    private void openProfilePage(String friendName) {
+    public String profilePageRole(String friendName) {
         String role = userRepository.getRole(friendName).toUpperCase();
         if (role.equals("STUDENT")) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("FriendProfile.fxml"));
-                Parent root = loader.load();
-
-                FriendProfileController controller = loader.getController();
-
-                // Create a new stage for the second view
-                Stage stage = new Stage();
-                stage.initStyle(StageStyle.TRANSPARENT);
-
-                // Ensure the scene is also transparent
-                Scene scene = new Scene(root);
-                scene.setFill(Color.TRANSPARENT);
-                stage.setScene(scene);
-
-                stage.initModality(Modality.WINDOW_MODAL);
-                stage.initOwner(((Stage) MENU.getScene().getWindow()));
-
-                stage.setResizable(false);
-                stage.show();
-                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-                stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
-                stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return "FriendProfile.fxml";
         } else if (role.equals("EDUCATOR")) {
-            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return "FriendProfileEducator.fxml";
         } else if (role.equals("PARENT")) {
-            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
+            return "FriendProfileParent.fxml";
+        } else {
+            return "";
         }
     }
 
-    public boolean canOpenProfilePage(String friendName) {
-        String role = userRepository.getRole(friendName).toUpperCase();
-        if (role.equals("STUDENT")) {
-            return true;
-        } else if (role.equals("EDUCATOR")) {
-            JOptionPane.showMessageDialog(null, "You cannot view an Educator's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        } else if (role.equals("PARENT")) {
-            JOptionPane.showMessageDialog(null, "You cannot view a Parent's profile page!!!", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        } else {
-            return false;
+    private void openProfilePage(String friendName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(profilePageRole(friendName)));
+            Parent root = loader.load();
+
+            String role = userRepository.getRole(friendName).toUpperCase();
+            if (role.equals("STUDENT")) {
+                FriendProfileController controller = loader.getController();
+            } else if (role.equals("PARENT")) {
+                FriendProfileParentController controller = loader.getController();
+            } else if (role.equals("EDUCATOR")) {
+                FriendProfileEducatorController controller = loader.getController();
+            }
+
+            // Create a new stage for the second view
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.TRANSPARENT);
+
+            // Ensure the scene is also transparent
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.setScene(scene);
+
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Stage) MENU.getScene().getWindow()));
+
+            stage.setResizable(false);
+            stage.show();
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
+            stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
     private void addNewDiscussion(Discussion discussion) {
@@ -538,13 +538,11 @@ public class ParentController implements Initializable {
         Button usernameButton = new Button(username);
         usernameButton.getStyleClass().add("username-button");
         usernameButton.setOnAction(event -> {
-            if (canOpenProfilePage(username)) {
-                if (friendNameNavigateParent.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
-                    usernameButton.setDisable(true);
-                } else {
-                    friendNameNavigateParent.push(username);
-                    openProfilePage(friendNameNavigateParent.peek());
-                }
+            if (friendNameNavigateParent.contains(username) || username.equals(sessionManager.getCurrentUser().getUsername())) {
+                usernameButton.setDisable(true);
+            } else {
+                friendNameNavigateParent.push(username);
+                openProfilePage(friendNameNavigateParent.peek());
             }
         });
         Text dateText = new Text("(" + discussion.getDatetime() + ")");
@@ -632,8 +630,8 @@ public class ParentController implements Initializable {
         System.out.println(email);
         String location = userRepository.getLocation(username);
         System.out.println(location);
-        String totalNumOfFriend = String.valueOf(Students.getTotalFriend(username));
-        System.out.println(totalNumOfFriend);
+//        String totalNumOfFriend = String.valueOf(Students.getTotalFriend(username));
+//        System.out.println(totalNumOfFriend);
 
         UsernameProfilePage.setText(username);
         UsernameLabel.setText(username);
@@ -783,9 +781,31 @@ public class ParentController implements Initializable {
         String newPassword = NewPassword.getText();
         String confirmPassword = ConfirmPassword.getText();
 
+        Pattern upperCasePattern = Pattern.compile("[A-Z]");
+        Matcher hasUpperCase = upperCasePattern.matcher(newPassword);
+
+        Pattern digitPattern = Pattern.compile("[0-9]");
+        Matcher hasDigit = digitPattern.matcher(newPassword);
+
         if (login.isPasswordCorrectForUser(oldPassword2)) {
             // Check if the new password and confirmation match
-            if (newPassword.equals(confirmPassword)) {
+            if (!newPassword.equals(confirmPassword)) {
+                NewPassword.setText("");
+                ConfirmPassword.setText("");
+                JOptionPane.showMessageDialog(null, "New password and confirmation do not match. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (newPassword.length() < 8) {
+                NewPassword.setText("");
+                ConfirmPassword.setText("");
+                JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (!hasUpperCase.find()) {
+                NewPassword.setText("");
+                ConfirmPassword.setText("");
+                JOptionPane.showMessageDialog(null, "Password must contain at least one uppercase letter.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (!hasDigit.find()) {
+                NewPassword.setText("");
+                ConfirmPassword.setText("");
+                JOptionPane.showMessageDialog(null, "Password must contain at least one digit.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (newPassword.equals(confirmPassword)) {
                 // Update the password for the current user
                 userRepository.updatePasswordInDatabase(sessionManager.getCurrentUser().getUsername(), newPassword);
                 sessionManager.getCurrentUser().setPassword(newPassword); // Update the password field in the User object
@@ -794,11 +814,6 @@ public class ParentController implements Initializable {
                 NewPassword.setText("");
                 ConfirmPassword.setText("");
                 EditProfilePane.setVisible(false);
-            } else {
-                OldPassword2.setText("");
-                NewPassword.setText("");
-                ConfirmPassword.setText("");
-                JOptionPane.showMessageDialog(null, "New password and confirmation do not match. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             OldPassword2.setText("");

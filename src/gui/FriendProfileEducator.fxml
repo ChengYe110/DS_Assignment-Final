@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="461.0" prefWidth="1104.0" style="-fx-background-color: e1e1e1; -fx-background-radius: 40px;" stylesheets="@StudentStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.FriendProfileEducatorController">
+   <children>
+      <Text fx:id="UsernameProfilePage" layoutX="30.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="USERNAME" wrappingWidth="286.2734375">
+         <font>
+            <Font name="Segoe UI Black" size="35.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="55.0" fitWidth="61.0" layoutX="30.0" layoutY="154.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../png/ProfileIconBlack.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="43.0" layoutY="248.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../png/EmailIconBlack.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="65.0" fitWidth="55.0" layoutX="30.0" layoutY="236.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../png/CircleIcon.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="35.0" fitWidth="39.0" layoutX="40.0" layoutY="325.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../png/LocationIcon.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="65.0" fitWidth="55.0" layoutX="30.0" layoutY="315.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../png/CircleIcon.png" />
+         </image>
+      </ImageView>
+      <Line endX="100.0" endY="281.0" layoutX="360.0" layoutY="162.0" startX="100.0" startY="-134.0" stroke="WHITE" strokeWidth="5.0" />
+      <Text layoutX="481.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quiz" wrappingWidth="404.2734375">
+         <font>
+            <Font name="Segoe UI Black" size="24.0" />
+         </font>
+      </Text>
+      <Text layoutX="481.0" layoutY="257.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event" wrappingWidth="404.2734375">
+         <font>
+            <Font name="Segoe UI Black" size="24.0" />
+         </font>
+      </Text>
+      <Label fx:id="EmailLabel" layoutX="110.0" layoutY="246.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;">
+         <font>
+            <Font name="Segoe UI Semibold" size="20.0" />
+         </font>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </Label>
+      <Label fx:id="LocationLabel" layoutX="110.0" layoutY="323.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;">
+         <font>
+            <Font name="Segoe UI Semibold" size="20.0" />
+         </font>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </Label>
+      <Label fx:id="UsernameLabel" layoutX="110.0" layoutY="164.0" prefHeight="35.0" prefWidth="316.0" style="-fx-background-color: white;">
+         <font>
+            <Font name="Segoe UI Semibold" size="20.0" />
+         </font>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </Label>
+      <Button fx:id="ExitFriendProfilePage" layoutX="1065.0" layoutY="20.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="17.0" styleClass="exit" stylesheets="@StudentStyle.css" />
+      <Button layoutX="32.0" layoutY="86.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="139.0" style="-fx-background-color: ffd230; -fx-background-radius: 20px;" text="EDUCATOR" textFill="#fffcfc">
+         <font>
+            <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+         </font>
+      </Button>
+      <AnchorPane layoutX="481.0" layoutY="105.0" prefHeight="82.0" prefWidth="567.0" style="-fx-background-color: white;">
+         <children>
+            <Text fx:id="UsernameText12" layoutX="33.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TOTAL QUIZ CREATED :" wrappingWidth="241.7431640625">
+               <font>
+                  <Font name="Franklin Gothic Medium" size="18.0" />
+               </font>
+            </Text>
+            <Text fx:id="totalQuizCreated" layoutX="390.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="XX" textAlignment="RIGHT" wrappingWidth="145.0">
+               <font>
+                  <Font name="Segoe UI Semibold" size="18.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="481.0" layoutY="284.0" prefHeight="82.0" prefWidth="567.0" style="-fx-background-color: white;">
+         <children>
+            <Text fx:id="UsernameText121" layoutX="33.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TOTAL EVENT CREATED :" wrappingWidth="241.7431640625">
+               <font>
+                  <Font name="Franklin Gothic Medium" size="18.0" />
+               </font>
+            </Text>
+            <Text fx:id="totalEventCreated" layoutX="360.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="XX" textAlignment="RIGHT" wrappingWidth="171.2265625000001">
+               <font>
+                  <Font name="Segoe UI Semibold" size="18.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
