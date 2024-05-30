@@ -72,6 +72,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ds.assignment.Students;
 import ds.assignment.User;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -993,7 +996,7 @@ public class ParentController implements Initializable {
             clearCreateDiscussion();
         }
     }
-
+    
     private void refreshDiscussion() {
         List<Discussion> discussionList = Discussion.getDiscussionList();
         DiscussionVBox.getChildren().clear();
@@ -1176,5 +1179,5 @@ public class ParentController implements Initializable {
         Booking.getBookingList();
         Booking booking = new Booking(destination, distance, date, userRepository.getID(sessionManager.getCurrentUser().getUsername()), userRepository.getID(childUsername));
         booking.saveBooking(sessionManager.getCurrentUser().getUsername(), childUsername);
-    }
+    }  
 }

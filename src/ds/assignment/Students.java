@@ -17,6 +17,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import gui.StudentController;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -612,6 +615,7 @@ public class Students extends User {
                 // Remove pending friend from friend request list
                 addFriend(username, friendToAccept);
                 addFriend(friendToAccept, username);
+                recordToFriendTxt(username,friendToAccept);
                 JOptionPane.showMessageDialog(null, "You have a new friend!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 updateStatement.close();
             }
@@ -620,6 +624,20 @@ public class Students extends User {
             connectDB.close();
         } catch (SQLException e) {
             System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+    
+    public static void recordToFriendTxt(String username, String friendName) {
+        String filename = "Friends.txt";
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            String line = username + ", " + friendName;
+            writer.write(line);
+            writer.newLine();
+            System.out.println("Successfully written to the file: " + line);
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
             e.printStackTrace();
         }
     }

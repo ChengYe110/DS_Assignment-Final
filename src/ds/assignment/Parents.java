@@ -493,7 +493,7 @@ public class Parents extends User {
                 updateStatement.executeUpdate();
                 updateStatement.close();
                          
-                addRecordToTxt(parentName,childName);
+                recordToParentChildTxt(parentName,childName);
                 JOptionPane.showMessageDialog(null, "You've successfully add "+childName+" as your child!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 // update student table: parentNums and parentEmail
@@ -509,7 +509,7 @@ public class Parents extends User {
         }
     }
     
-    public static void addRecordToTxt(String parentUsername, String childName) {
+    public static void recordToParentChildTxt(String parentUsername, String childName) {
         String filename = "ParentChild.txt";
         
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {

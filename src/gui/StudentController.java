@@ -71,6 +71,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ds.assignment.Students;
 import ds.assignment.User;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -600,6 +604,7 @@ public class StudentController implements Initializable {
         button.setPrefWidth(150);
         button.setStyle("-fx-background-color: linear-gradient( to right,#8c52ff, #5ce1e6); -fx-text-fill: white; -fx-font-family: \"Segoe UI Black\";-fx-font-size: 16px; -fx-background-radius: 20px;");
         button.setOnAction(event -> {
+            recordToCompletedQuizCSV(sessionManager.getCurrentUser().getUsername(), quiz.getTitle(), quiz.getTheme(),quiz.getContent());
             Students.addDoneQuiz(sessionManager.getCurrentUser().getUsername(), quiz.getID());
             refreshQuiz();
             pointsFromDataBase.addPoints(2);
@@ -627,6 +632,25 @@ public class StudentController implements Initializable {
 
         // Add the HBox to the main VBox
         QuizVBox.getChildren().add(0, hBox);
+    }
+    
+    public static void recordToCompletedQuizCSV(String studentName, String titleQuizCompleted, String theme,String url) {
+        String fileName = "Completed_Quiz.csv";
+        File file = new File(fileName);
+        boolean fileExists = file.exists();
+        
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
+            // Write the header if the file is newly created
+            if (!fileExists) {
+                bw.write("StudentName,TitleQuizCompleted,Theme,Url");
+                bw.newLine();
+            }
+            // Write the quiz data
+            bw.write(escapeCSV(studentName) + "," + escapeCSV(titleQuizCompleted) + "," + escapeCSV(theme)+","+escapeCSV(url));
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void createFilterDropdown(ObservableList<String> themes) {
@@ -1146,6 +1170,7 @@ public class StudentController implements Initializable {
         joinButton.setOnAction(event -> {
             try {
                 e.addJoinedEvent(sessionManager.getCurrentUser().getUsername(), e.getId());
+                recordToEventCSV(sessionManager.getCurrentUser().getUsername(),eventTitle, eventDescription, eventVenue, eventDate,eventTime);
                 JOptionPane.showMessageDialog(null, "You've successfully joined the event. 5 Points rewarded!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 pointsFromDataBase.addPoints(5);
                 refreshPoints();
@@ -1165,6 +1190,33 @@ public class StudentController implements Initializable {
         hbox.getChildren().addAll(vbox1, vbox2, joinButton);
 
         return hbox;
+    }
+    
+    public static void recordToEventCSV(String studentName, String title, String description, String venue, String date, String time) {
+        String fileName = "Events.csv";
+        File file = new File(fileName);
+        boolean fileExists = file.exists();
+        
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
+            // Write the header if the file is newly created
+            if (!fileExists) {
+                bw.write("StudentName,Title,Description,Venue,Date,Time");
+                bw.newLine();
+            }
+            // Write the event data
+            bw.write(escapeCSV(studentName) + "," + escapeCSV(title) + "," + escapeCSV(description) + "," + escapeCSV(venue) + "," + escapeCSV(date) + "," + escapeCSV(time));
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static String escapeCSV(String value) {
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            value = value.replace("\"", "\"\"");
+            value = "\"" + value + "\"";
+        }
+        return value;
     }
 
     private HBox createLabelWithTextHBox(String labelText, String bgColor, String textValue) {

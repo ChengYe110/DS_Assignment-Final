@@ -5,6 +5,11 @@
 package gui;
 
 import ds.assignment.DatabaseConnection;
+import ds.assignment.UserRepository;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,12 +34,17 @@ public class Booking {
     private String id_parent;
     private String id_student;
 
+    DatabaseConnection dbConnect = new DatabaseConnection();
+    UserRepository userRepository = new UserRepository(dbConnect);
+
     public Booking(String venue, String distance, LocalDate date, String id_parent, String id_student) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         this.venue = venue;
         this.distance = distance;
         this.date = date;
         this.id_parent = id_parent;
         this.id_student = id_student;
+        this.dateS = date.format(dateFormatter);
     }
 
     public Booking(String ID, String venue, String distance, LocalDate date, String id_parent, String id_student) {
@@ -111,6 +121,7 @@ public class Booking {
             latestBookingStmt.close();
             connectDB.close();
 
+            recordToBookingCSV(userRepository.getUsernameByID(this.id_student), this.venue, this.distance, this.dateS);           
             System.out.println("Booking saved successfully with id_booking: " + idBooking);
 
         } catch (Exception e) {
@@ -204,9 +215,8 @@ public class Booking {
             e.printStackTrace();
         }
     }
-    
-    
-        public void addPastBookingStudent(String username, String pastBooking) {
+
+    public void addPastBookingStudent(String username, String pastBooking) {
 
         try {
             DatabaseConnection connectNow = new DatabaseConnection();
@@ -298,5 +308,32 @@ public class Booking {
         } finally {
             connectNow.endDatabase();
         }
+    }
+
+    public static void recordToBookingCSV(String studentName, String venue, String distance, String date) {
+        String fileName = "Bookings.csv";
+        File file = new File(fileName);
+        boolean fileExists = file.exists();
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
+            // Write the header if the file is newly created
+            if (!fileExists) {
+                bw.write("StudentName,Venue,Distance,Date");
+                bw.newLine();
+            }
+            // Write the booking data
+            bw.write(escapeCSV(studentName) + "," + escapeCSV(venue) + "," + escapeCSV(distance) + "," + escapeCSV(date));
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String escapeCSV(String value) {
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            value = value.replace("\"", "\"\"");
+            value = "\"" + value + "\"";
+        }
+        return value;
     }
 }

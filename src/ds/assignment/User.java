@@ -7,6 +7,10 @@ package ds.assignment;
 import ds.assignment.DatabaseConnection;
 import ds.assignment.UserRepository;
 import gui.EventHBoxElement;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -41,6 +45,7 @@ public class User {
         this.location = generateLocation();
         this.role = role;
         System.out.println(location);
+        recordToUserCSV(this.username,this.email,this.role,this.location);
     }
     
     DatabaseConnection dbConnect = new DatabaseConnection();
@@ -270,6 +275,33 @@ public class User {
         }
 
         return liveEventList;
+    }
+    
+    public static void recordToUserCSV(String username, String email, String role, String location) {
+        String fileName = "Users.csv";
+        File file = new File(fileName);
+        boolean fileExists = file.exists();
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
+            // Write the header if the file is newly created
+            if (!fileExists) {
+                bw.write("Username,Email,Role,Location");
+                bw.newLine();
+            }
+            // Write the user data
+            bw.write(escapeCSV(username) + "," + escapeCSV(email) + "," + role + "," + escapeCSV(location));
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static String escapeCSV(String value) {
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            value = value.replace("\"", "\"\"");
+            value = "\"" + value + "\"";
+        }
+        return value;
     }
     
 }
