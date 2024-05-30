@@ -16,7 +16,6 @@ public class NewMain {
         parent.readFile();
 //        parent.bookingDestination("Penang Science Cluster");
         parent.calcDistance("Penang Science Cluster");
-        parent.showDateOfBookingDestination();
     }
     
 }
