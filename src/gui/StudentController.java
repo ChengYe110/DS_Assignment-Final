@@ -543,6 +543,7 @@ public class StudentController implements Initializable {
             HBox parentHBox = (HBox) confirm.getParent();
             // Remove the parent HBox from the FriendRequestVBox
             FriendRequestVBox.getChildren().remove(parentHBox);
+            setUpProfilePage(sessionManager.getCurrentUser().getUsername());
             hasFriendRequest();
         });
 

@@ -290,9 +290,6 @@ public class Login_RegisterController implements Initializable {
                 Pattern digitPattern = Pattern.compile("[0-9]");
                 Matcher hasDigit = digitPattern.matcher(password);
 
-                Pattern specialCharPattern = Pattern.compile("[^a-zA-Z0-9]");
-                Matcher hasSpecialChar = specialCharPattern.matcher(password);
-
                 if ((userRepository.isUsernameTaken(username))) {
                     JOptionPane.showMessageDialog(null, "Username has been taken", "Error", JOptionPane.ERROR_MESSAGE);
                 } // Provide user feedback for successful insertion
@@ -308,8 +305,6 @@ public class Login_RegisterController implements Initializable {
                     JOptionPane.showMessageDialog(null, "Password must contain at least one uppercase letter.", "Error", JOptionPane.ERROR_MESSAGE);
                 } else if (!hasDigit.find()) {
                     JOptionPane.showMessageDialog(null, "Password must contain at least one digit.", "Error", JOptionPane.ERROR_MESSAGE);
-                } else if (!hasSpecialChar.find()) {
-                    JOptionPane.showMessageDialog(null, "Password must contain at least one special character.", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "User created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                     REGISTER.setVisible(false);
@@ -325,6 +320,8 @@ public class Login_RegisterController implements Initializable {
                         newStud.insertIntoDatabase();
                     } else if (parent.isSelected()) {
                         System.out.println("save parent");
+                        Parents newPar = new Parents(email, username, password, role);
+                        newPar.insertIntoDatabase();
                     } else {
                         // Create a Educator object with the user's input
                         Educator newEdu = new Educator(email, username, password, role);
