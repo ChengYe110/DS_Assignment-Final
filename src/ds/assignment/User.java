@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import org.mindrot.jbcrypt.BCrypt;
 /**
  *
@@ -215,40 +216,76 @@ public class User {
         return eventList;
     }
     
+//    public static ArrayList<EventHBoxElement> getLatestEventList() {
+//        ArrayList<EventHBoxElement> eventList = getEventList(); // get the event list
+//        LocalDate currentDate = LocalDate.now();  // get the current date
+//        System.out.println("Today's date: " + currentDate);
+//
+//        // Filter the events to get only upcoming events
+//        ArrayList<EventHBoxElement> upcomingEventList = new ArrayList<>();
+//        for (EventHBoxElement event : eventList) {
+//            if (!event.getEventDate().isBefore(currentDate) && !event.getEventDate().equals(currentDate)) {
+//                upcomingEventList.add(event);
+//            }
+//        }
+//
+//        // Sort the upcoming events by date and time
+//        Collections.sort(upcomingEventList, new Comparator<EventHBoxElement>() {
+//            @Override
+//            public int compare(EventHBoxElement event1, EventHBoxElement event2) {
+//                if (!event1.getEventDate().equals(event2.getEventDate())) {
+//                    return event1.getEventDate().compareTo(event2.getEventDate());
+//                } 
+//                return -1;
+//            }
+//        });
+//
+//        // Get the closest three upcoming events
+//        ArrayList<EventHBoxElement> closestThreeUpcomingEvents = new ArrayList<>();
+//        for (int i = 0; i < Math.min(3, upcomingEventList.size()); i++) {
+//            closestThreeUpcomingEvents.add(upcomingEventList.get(i));
+//        }
+//
+//        // Display the closest events
+//        System.out.println("Closest upcoming events to " + currentDate + " are:");
+//        for (EventHBoxElement event : closestThreeUpcomingEvents) {
+//        long daysUntilEvent = ChronoUnit.DAYS.between(currentDate, event.getEventDate());
+//            System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTime() + " (in " + daysUntilEvent + " days)");
+//        }
+//
+//        return closestThreeUpcomingEvents;
+//    }
+    
     public static ArrayList<EventHBoxElement> getLatestEventList() {
         ArrayList<EventHBoxElement> eventList = getEventList(); // get the event list
         LocalDate currentDate = LocalDate.now();  // get the current date
         System.out.println("Today's date: " + currentDate);
 
-        // Filter the events to get only upcoming events
-        ArrayList<EventHBoxElement> upcomingEventList = new ArrayList<>();
-        for (EventHBoxElement event : eventList) {
-            if (!event.getEventDate().isBefore(currentDate) && !event.getEventDate().equals(currentDate)) {
-                upcomingEventList.add(event);
-            }
-        }
-
-        // Sort the upcoming events by date and time
-        Collections.sort(upcomingEventList, new Comparator<EventHBoxElement>() {
+        // Use PriorityQueue to keep track of upcoming events
+        PriorityQueue<EventHBoxElement> upcomingEventQueue = new PriorityQueue<>(new Comparator<EventHBoxElement>() {
             @Override
             public int compare(EventHBoxElement event1, EventHBoxElement event2) {
-                if (!event1.getEventDate().equals(event2.getEventDate())) {
-                    return event1.getEventDate().compareTo(event2.getEventDate());
-                } 
-                return -1;
+                return event1.getEventDate().compareTo(event2.getEventDate());
             }
         });
 
+        // Filter the events to get only upcoming events
+        for (EventHBoxElement event : eventList) {
+            if (!event.getEventDate().isBefore(currentDate) && !event.getEventDate().equals(currentDate)) {
+                upcomingEventQueue.add(event);
+            }
+        }
+
         // Get the closest three upcoming events
         ArrayList<EventHBoxElement> closestThreeUpcomingEvents = new ArrayList<>();
-        for (int i = 0; i < Math.min(3, upcomingEventList.size()); i++) {
-            closestThreeUpcomingEvents.add(upcomingEventList.get(i));
+        for (int i = 0; i < 3 && !upcomingEventQueue.isEmpty(); i++) {
+            closestThreeUpcomingEvents.add(upcomingEventQueue.poll());
         }
 
         // Display the closest events
         System.out.println("Closest upcoming events to " + currentDate + " are:");
         for (EventHBoxElement event : closestThreeUpcomingEvents) {
-        long daysUntilEvent = ChronoUnit.DAYS.between(currentDate, event.getEventDate());
+            long daysUntilEvent = ChronoUnit.DAYS.between(currentDate, event.getEventDate());
             System.out.println("Title Event: " + event.getEventTitle() + " " + event.getEventDateS() + " " + event.getEventTime() + " (in " + daysUntilEvent + " days)");
         }
 
