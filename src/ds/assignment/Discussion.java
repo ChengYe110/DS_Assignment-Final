@@ -4,6 +4,10 @@
  */
 package ds.assignment;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -116,7 +120,7 @@ public class Discussion {
             preparedStatement.setString(5, this.datetime);
 
             preparedStatement.executeUpdate(); //delete after execute next
-            System.out.println("haha");
+            recordToDiscussionPostCSV(Username,userRepository.getRole(Username),this.title,this.content,this.datetime);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -330,4 +334,35 @@ public class Discussion {
     public void deductLike(String username, String role) {
         removeLike(username, role);
     }
+    
+    public static void recordToDiscussionPostCSV(String author, String role, String title, String content, String datePublished) {
+        String fileName = "Discussion_Posts.csv";
+        File file = new File(fileName);
+        boolean fileExists = file.exists();
+        
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
+            // Write the header if the file is newly created
+            if (!fileExists) {
+                bw.write("Author,Role,Title,Content,DatePublished");
+                bw.newLine();
+            }
+            // Write the discussion post data
+            bw.write(escapeCSV(author) + "," + escapeCSV(role) + "," + escapeCSV(title) + "," + escapeCSV(content) + "," + escapeCSV(datePublished));
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String escapeCSV(String value) {
+        if (value == null) {
+            return "";
+        }
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            value = value.replace("\"", "\"\"");
+            value = "\"" + value + "\"";
+        }
+        return value;
+    }
+
 }

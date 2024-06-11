@@ -17,6 +17,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import gui.StudentController;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -612,6 +615,7 @@ public class Students extends User {
                 // Remove pending friend from friend request list
                 addFriend(username, friendToAccept);
                 addFriend(friendToAccept, username);
+                recordToFriendTxt(username,friendToAccept);
                 JOptionPane.showMessageDialog(null, "You have a new friend!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 updateStatement.close();
             }
@@ -620,6 +624,20 @@ public class Students extends User {
             connectDB.close();
         } catch (SQLException e) {
             System.out.println("SQL query failed.");
+            e.printStackTrace();
+        }
+    }
+    
+    public static void recordToFriendTxt(String username, String friendName) {
+        String filename = "Friends.txt";
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            String line = username + ", " + friendName;
+            writer.write(line);
+            writer.newLine();
+            System.out.println("Successfully written to the file: " + line);
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
             e.printStackTrace();
         }
     }
@@ -871,59 +889,61 @@ public class Students extends User {
 
     // get id_event in student table --> get event details in event table
     public static ArrayList<EventColumn> getStudentRegisteredEvents(String studentUsername) {
-        ArrayList<EventColumn> registeredEventList = new ArrayList<>();
+    ArrayList<EventColumn> registeredEventList = new ArrayList<>();
 
-        try {
-            DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.linkDatabase();
+    try {
+        DatabaseConnection connectNow = new DatabaseConnection();
+        try (Connection connectDB = connectNow.linkDatabase()) {
 
-            // get id_event from RegisteredEvent column in student table
+            // Get id_event from RegisteredEvent column in student table
             String getRegisteredEventsQuery = "SELECT RegisteredEvent FROM student WHERE Username = ?";
-            PreparedStatement getRegisteredEventsStmt = connectDB.prepareStatement(getRegisteredEventsQuery);
-            getRegisteredEventsStmt.setString(1, studentUsername);
-            ResultSet registeredEventsResultSet = getRegisteredEventsStmt.executeQuery();
+            try (PreparedStatement getRegisteredEventsStmt = connectDB.prepareStatement(getRegisteredEventsQuery)) {
+                getRegisteredEventsStmt.setString(1, studentUsername);
+                try (ResultSet registeredEventsResultSet = getRegisteredEventsStmt.executeQuery()) {
 
-            if (registeredEventsResultSet.next()) {
-                String registeredEvents = registeredEventsResultSet.getString("RegisteredEvent");
-                String[] eventIds = registeredEvents.split(",");
+                    if (registeredEventsResultSet.next()) {
+                        String registeredEvents = registeredEventsResultSet.getString("RegisteredEvent");
 
-                // get event details for each id_event in event table row by row
-                String getEventDetailsQuery = "SELECT Date, Title, Venue, Time FROM event WHERE id_event = ?";
-                PreparedStatement getEventDetailsStmt = connectDB.prepareStatement(getEventDetailsQuery);
+                        if (registeredEvents != null && !registeredEvents.isEmpty()) {
+                            String[] eventIds = registeredEvents.split(",");
 
-                for (String eventId : eventIds) {
-                    getEventDetailsStmt.setString(1, eventId.trim());
-                    ResultSet eventDetailsResultSet = getEventDetailsStmt.executeQuery();
+                            // Get event details for each id_event in event table row by row
+                            String getEventDetailsQuery = "SELECT Date, Title, Venue, Time FROM event WHERE id_event = ?";
+                            try (PreparedStatement getEventDetailsStmt = connectDB.prepareStatement(getEventDetailsQuery)) {
 
-                    if (eventDetailsResultSet.next()) {
-                        Date date = eventDetailsResultSet.getDate("Date");
-                        LocalDate localDate = date.toLocalDate();
-                        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                        String dateS = localDate.format(dateFormatter).toString();
-                        System.out.println(dateS);
-                        String title = eventDetailsResultSet.getString("Title");
-                        String venue = eventDetailsResultSet.getString("Venue");
-                        String time = eventDetailsResultSet.getString("Time");
+                                for (String eventId : eventIds) {
+                                    getEventDetailsStmt.setString(1, eventId.trim());
+                                    try (ResultSet eventDetailsResultSet = getEventDetailsStmt.executeQuery()) {
 
-                        EventColumn event = new EventColumn(dateS, title, venue, time);
-                        registeredEventList.add(event);
+                                        if (eventDetailsResultSet.next()) {
+                                            Date date = eventDetailsResultSet.getDate("Date");
+                                            LocalDate localDate = date.toLocalDate();
+                                            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                                            String dateS = localDate.format(dateFormatter);
+                                            String title = eventDetailsResultSet.getString("Title");
+                                            String venue = eventDetailsResultSet.getString("Venue");
+                                            String time = eventDetailsResultSet.getString("Time");
+
+                                            EventColumn event = new EventColumn(dateS, title, venue, time);
+                                            registeredEventList.add(event);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                    eventDetailsResultSet.close();  // Close the ResultSet for each event ID                  
                 }
-                getEventDetailsStmt.close();
             }
-            registeredEventsResultSet.close();
-            getRegisteredEventsStmt.close();
-            connectDB.close();
-
-        } catch (SQLException e) {
-            System.out.println("SQL query failed.");
-            e.printStackTrace();
         }
-        // Sort the list by date before returning
-        Collections.sort(registeredEventList);
-        return registeredEventList;
+    } catch (SQLException e) {
+        System.out.println("SQL query failed.");
+        e.printStackTrace();
     }
+    // Sort the list by date before returning
+    Collections.sort(registeredEventList);
+    return registeredEventList;
+}
+
 
     // get id_booking in student table --> get study tour details in booking table
     public static ArrayList<BookedStudyTourColumn> getStudentBookedStudyTour(String studentUsername) {

@@ -4,6 +4,10 @@
  */
 package ds.assignment;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +25,11 @@ public class Quiz {
     private String description;
     private String theme;
     private String content;
+    
+    DatabaseConnection dbConnect = new DatabaseConnection();
+    UserRepository userRepository = new UserRepository(dbConnect);
+    Login login = new Login();  // Create a single instance of Login
+    SessionManager sessionManager = new SessionManager(userRepository, login);  // Pass the Login instance to SessionManage
 
     public Quiz(String title, String description, String theme, String content) {
         this.title = title;
@@ -94,9 +103,9 @@ public class Quiz {
             preparedStatement.setString(2, this.description);
             preparedStatement.setString(3, this.theme);
             preparedStatement.setString(4, this.content);
+            recordToQuizCreatedCSV(educatorUsername, this.title, this.theme, this.description, this.content);
             
             preparedStatement.executeUpdate(); //delete after execute next
-            System.out.println("haha");
 
 //            if (preparedStatement.executeUpdate() == 0) {
 //                String query2 = "UPDATE educator SET NumQuiz=NumQuiz+1 WHERE Username=?";
@@ -143,4 +152,33 @@ public class Quiz {
         }
     }
 
+    public static void recordToQuizCreatedCSV(String author, String title, String theme, String description, String content) {
+        String fileName = "Quiz_Created.csv";
+        File file = new File(fileName);
+        boolean fileExists = file.exists();
+        
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
+            // Write the header if the file is newly created
+            if (!fileExists) {
+                bw.write("Author,Title,Theme,Description,Content");
+                bw.newLine();
+            }
+            // Write the quiz data
+            bw.write(escapeCSV(author) + "," + escapeCSV(title) + "," + escapeCSV(theme) + "," + escapeCSV(description) + "," + escapeCSV(content));
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String escapeCSV(String value) {
+        if (value == null) {
+            return "";
+        }
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            value = value.replace("\"", "\"\"");
+            value = "\"" + value + "\"";
+        }
+        return value;
+    }
 }

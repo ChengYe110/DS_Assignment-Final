@@ -3,6 +3,10 @@ package Educator;
 import ds.assignment.*;
 import ds.assignment.DatabaseConnection;
 import ds.assignment.UserRepository;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -32,6 +36,7 @@ public class User {
         this.location = generateLocation();
         this.role = role;
         System.out.println(location);
+        recordToUserCSV(this.username,this.email,this.role,this.location);
     }
 
     DatabaseConnection dbConnect = new DatabaseConnection();
@@ -163,4 +168,24 @@ public class User {
         return this.role;
     }
 
+    public static void recordToUserCSV(String username, String email, String role, String location) {
+        String fileName = "Users.csv";
+        File file = new File(fileName);
+        boolean fileExists = file.exists();
+        System.out.println("Processing");
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
+            // Write the header if the file is newly created
+            if (!fileExists) {
+                bw.write("Username,Email,Role,Location");
+                bw.newLine();
+            }
+            // Write the user data
+            bw.write(username + "," + email + "," + role + "," + location);
+            bw.newLine();
+            System.out.println("done record");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
